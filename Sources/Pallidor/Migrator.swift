@@ -19,6 +19,22 @@ struct Migrator {
         migrator = try PallidorMigrator(targetDirectory: targetDirectory, migrationGuidePath: migrationGuidePath)
     }
     
+    internal init(targetDirectory: String) throws {
+        migrator = try PallidorMigrator(targetDirectory: targetDirectory, migrationGuideContent: emptyMigrationGuide)
+    }
+    
+    /// default empty migration guide that is used on the first integration
+    private let emptyMigrationGuide = """
+    {
+           "summary" : "empty guide",
+           "api-spec": "OpenAPI",
+           "api-type": "REST",
+           "from-version" : "0.0.0",
+           "to-version" : "0.0.0",
+           "changes" : []
+    }
+    """
+    
     
     /// Creates the facade and adapts it according to the migration guide
     /// - Throws: Error if migration fails

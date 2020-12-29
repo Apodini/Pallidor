@@ -21,7 +21,15 @@ struct Pallidor : ParsableCommand {
     @Option(name: .shortAndLong, help: "Name of the package generated")
     var packageName : String
     
+    @Option(name: .shortAndLong, help: "Programming language that the client library should be generated in")
+    var language : String = "Swift"
+    
+    @Option(name: .shortAndLong, help: "Migration strategy indicates which types of changes should be migrated.")
+    var strategy : MigrationStrategy = .all
+    
     mutating func run() throws {
+        
+        precondition(!(migrationGuideURL == nil && strategy != .none), "Migration guide must be present for strategies other than 'none'!")
         
         /// prepare formatter
         let codeFormatter = try Formatter(configPath: customFormattingRulePath != nil ? URL(string: customFormattingRulePath!) : nil )
@@ -42,9 +50,10 @@ struct Pallidor : ParsableCommand {
         files.append(contentsOf: try generator.generate())
         
         let facadePath = targetDir + Path(packageName + "/Sources/" + packageName)
+
         
         /// build facade and perform migration steps
-        let migrator = try Migrator(targetDirectory: facadePath.string, migrationGuidePath: migrationGuideURL!)
+        let migrator = strategy == .none ? try Migrator(targetDirectory: facadePath.string) : try Migrator(targetDirectory: facadePath.string, migrationGuidePath: migrationGuideURL!)
         files.append(contentsOf: try migrator.buildFacade())
         try codeFormatter.format(paths: files)
     }
