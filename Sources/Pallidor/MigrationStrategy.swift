@@ -8,7 +8,7 @@
 import Foundation
 import ArgumentParser
 
-enum MigrationStrategy : String, ExpressibleByArgument {
+enum MigrationStrategy: String, ExpressibleByArgument {
     /// migrates all changes as stated in migration guide - `default`
     case all
     /// migrates no change. This is used for the first integration of the client library.

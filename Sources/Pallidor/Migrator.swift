@@ -11,17 +11,17 @@ import PallidorMigrator
 
 /// Responsible for creating the facade of an OpenAPI library according to a migration guide.
 struct Migrator {
-
     /// Migration handler
-    var migrator : PallidorMigrator
+    var migrator: PallidorMigrator
     
-    internal init(targetDirectory: String, migrationGuidePath: String) throws {
+    internal init(targetDirectory: String, migrationGuidePath: String? = nil) throws {
+        guard let migrationGuidePath = migrationGuidePath else {
+            migrator = try PallidorMigrator(targetDirectory: targetDirectory, migrationGuideContent: emptyMigrationGuide)
+            return
+        }
         migrator = try PallidorMigrator(targetDirectory: targetDirectory, migrationGuidePath: migrationGuidePath)
     }
     
-    internal init(targetDirectory: String) throws {
-        migrator = try PallidorMigrator(targetDirectory: targetDirectory, migrationGuideContent: emptyMigrationGuide)
-    }
     
     /// default empty migration guide that is used on the first integration
     private let emptyMigrationGuide = """

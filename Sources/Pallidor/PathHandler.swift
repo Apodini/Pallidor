@@ -10,14 +10,13 @@ import PathKit
 
 /// Creates the directory structure for Pallidor generated files
 struct PathHandler {
-    
     /// File manager instance
     let fileManager = FileManager()
 
     /// Target location of the generated code
-    var targetDirectory : Path
+    var targetDirectory: Path
     /// Name of the library
-    var packageName : String
+    var packageName: String
     
     
     /// Creates the directory structure for the Swift Package to be generated
@@ -27,9 +26,19 @@ struct PathHandler {
         let testPath = targetDirectory + Path("\(packageName)/Tests/\(packageName)Tests/")
         try fileManager.createDirectory(atPath: outputPath.absolute().string + "/Models/", withIntermediateDirectories: true, attributes: nil)
         try fileManager.createDirectory(atPath: outputPath.absolute().string + "/APIs/", withIntermediateDirectories: true, attributes: nil)
-        try fileManager.createDirectory(atPath: outputPath.absolute().string + "/PersistentModels/", withIntermediateDirectories: true, attributes: nil)
-        try fileManager.createDirectory(atPath: outputPath.absolute().string + "/PersistentAPIs/", withIntermediateDirectories: true, attributes: nil)
-        try fileManager.createDirectory(atPath: testPath.absolute().string, withIntermediateDirectories: true, attributes: nil)
+        try fileManager.createDirectory(
+            atPath: outputPath.absolute().string +
+            "/PersistentModels/",
+            withIntermediateDirectories: true,
+            attributes: nil)
+        try fileManager.createDirectory(
+            atPath: outputPath.absolute().string +
+            "/PersistentAPIs/",
+            withIntermediateDirectories: true,
+            attributes: nil)
+        try fileManager.createDirectory(
+            atPath: testPath.absolute().string,
+            withIntermediateDirectories: true,
+            attributes: nil)
     }
-    
 }

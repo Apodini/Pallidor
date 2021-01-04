@@ -11,13 +11,12 @@ import PathKit
 
 /// Generator for parsing an OpenAPI specification and generating a library from it
 struct Generator {
-    
     /// path to the specification JSON
     var specificationPath: URL
     /// path to the directory where output files shall be located
-    var targetDirectory : Path
+    var targetDirectory: Path
     /// name of the library to be generated
-    var packageName : String
+    var packageName: String
     
     
     /// Parses an OpenAPI specification and generates a library

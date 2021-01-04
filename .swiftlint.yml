@@ -1,4 +1,6 @@
-# Apodini SwiftLint file Apodini
+# SwiftLint file LS1 TUM
+# Created by Paul Schmiedmayer on 08/16/18.
+# Copyright © 2020 Paul Schmiedmayer. All rights reserved.
   
 # The whitelist_rules configuration also includes rules that are enabled by default to provide a good overview of all rules.
 whitelist_rules:

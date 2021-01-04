@@ -9,7 +9,7 @@ let package = Package(
         .macOS(.v10_15)
     ],
     products: [
-        .executable(name: "Pallidor", targets: [ "Pallidor" ]),
+        .executable(name: "Pallidor", targets: [ "Pallidor" ])
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -18,7 +18,6 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "0.3.1")),
         .package(url: "https://github.com/tum-aweink/PallidorGenerator.git", .branch("develop")),
         .package(url: "https://github.com/tum-aweink/PallidorMigrator.git", .branch("develop"))
-        
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -30,9 +29,9 @@ let package = Package(
                 .product(name: "SwiftFormat", package: "swift-format"),
                 .product(name: "PallidorGenerator", package: "PallidorGenerator"),
                 .product(name: "PallidorMigrator", package: "PallidorMigrator")
-        ]),
+            ]),
         .testTarget(
             name: "PallidorTests",
-            dependencies: ["Pallidor"]),
+            dependencies: ["Pallidor"])
     ]
 )

@@ -12,13 +12,12 @@ import SwiftFormatConfiguration
 /// responsible for code formatting
 /// uses `SwiftFormatter` either with a provided or a default configuration
 struct Formatter {
-
     /// SwiftFormatter
     var formatter: SwiftFormatter
         
-    init(configPath path: URL? = nil) throws {
+    init(configPath path: String? = nil) throws {
         if let path = path {
-            let config = try Configuration(contentsOf: path)
+            let config = try Configuration(contentsOf: URL(fileURLWithPath: path))
             self.formatter = SwiftFormatter(configuration: config)
         } else {
             let defaultConfig = Configuration()
@@ -31,12 +30,12 @@ struct Formatter {
     /// - Parameter paths: fileURLs as `[URL]`
     /// - Throws: error if formatting or writing fails
     func format(paths: [URL]) throws {
-        for p in paths {
+        for path in paths {
             var output = ""
 
-            try formatter.format(contentsOf: p, to: &output)
+            try formatter.format(contentsOf: path, to: &output)
 
-            try output.write(to: p, atomically: true, encoding: .utf8)
+            try output.write(to: path, atomically: true, encoding: .utf8)
         }
     }
 }
