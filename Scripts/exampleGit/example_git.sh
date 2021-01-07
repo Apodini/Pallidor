@@ -11,15 +11,23 @@
 #							#
 #########################################################
 
-subpath="Scripts/addEndpoint"
+subpath="Scripts/exampleGit"
 
-while getopts t:s: flag
+while getopts t:g: flag
 do
     case "${flag}" in
         t) targetDirectory=${OPTARG};;
+	g) gitrepo=${OPTARG};;
     esac
 done
 
-swift run Pallidor -o "$subpath/openapi.json" -p "MyPetAPIBefore" -s "none" -t "$targetDirectory"
-swift run Pallidor -o "$subpath/openapi_addedStoreEndpoint.json" -p "MyPetAPIAfter" -s "none" -t "$targetDirectory"
+# Run Pallidor to generate new client library
+swift run Pallidor -o "$subpath/openapi.json" -p "MyPetAPI" -s "none" -t "$targetDirectory"
 
+# Publish result of Pallidor to specified Git repository
+git init "$targetDirectory/MyPetAPI"
+git add .
+git commit -m "new version of client library"
+cd "$targetDirectory/MyPetAPI"
+git remote add origin $gitrepo
+git push --set-upstream origin master

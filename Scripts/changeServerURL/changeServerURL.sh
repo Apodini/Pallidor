@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# if you experience an error caused by SwiftSyntax manually enter the following command:
+# ln -s $(xcode-select -p)/../Frameworks/lib_InternalSwiftSyntaxParser.dylib /usr/local/lib
+
 #########################################################
 # 	Script for changing the servers URL & ports	#
 #							#
