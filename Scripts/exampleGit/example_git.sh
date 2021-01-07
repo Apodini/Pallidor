@@ -30,4 +30,4 @@ git add .
 git commit -m "new version of client library"
 cd "$targetDirectory/MyPetAPI"
 git remote add origin $gitrepo
-git push --set-upstream origin master
+git push --set-upstream origin develop
