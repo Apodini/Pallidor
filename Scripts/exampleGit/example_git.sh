@@ -11,6 +11,11 @@
 #							#
 #########################################################
 
+###
+### use the -g parameter to specify your remote git-repository
+### e.g. https://github.com/USER/REPOSITORY
+###
+
 subpath="Scripts/exampleGit"
 
 while getopts t:g: flag
@@ -25,10 +30,10 @@ done
 swift run Pallidor -o "$subpath/openapi.json" -p "MyPetAPI" -s "none" -t "$targetDirectory"
 
 # Publish result of Pallidor to specified Git repository
-git init "$targetDirectory/MyPetAPI"
+cd "$targetDirectory/MyPetAPI"
+git init
 git add .
 git commit -m "new version of client library"
-cd "$targetDirectory/MyPetAPI"
+git branch -m develop
 git remote add origin $gitrepo
-#git push --set-upstream origin develop
-git push
+git push --set-upstream origin develop
