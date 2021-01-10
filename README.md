@@ -18,6 +18,10 @@
 ## Requirements
 Executing Pallidor requires at least Swift 5.3 and macOS 10.15.
 
+If executing Pallidor fails, make sure to add the following symbolic link to SwiftSyntax:
+
+`ln -s $(xcode-select -p)/../Frameworks/lib_InternalSwiftSyntaxParser.dylib /usr/local/lib`
+
 ## Usage
 Use Pallidor via the commandline or integrate the binaries into your CI/CD system.
 By running `swift run Pallidor -h` all available commands are displayed.
@@ -50,6 +54,13 @@ OPTIONS:
  - Since Pallidor is a prototype, only Swift is supported as the target language. Furthermore, only two strategies can be used: `all` (migrates all changes including deletions) and `none` (does not migrate changes, derives the facade layer directly from the library layer)
 
 Because Pallidor is a prototype and currently under active development, there is no guarantee for source-stability.
+
+## Examples
+Pallidor includes several script files that demonstrate generating a Swift package for different versions of a Web API. They can executed from the root directory of this repository:
+
+`sh Scripts/{script_directory}/{script_name}.sh -t {target_location_of_package}`
+
+Each script file contains a description of the process to be performed.
  
 ## Contributing
 Contributions to this projects are welcome. Please make sure to read the [contribution guidelines](https://github.com/Apodini/.github/blob/release/CONTRIBUTING.md) first.
