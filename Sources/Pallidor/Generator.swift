@@ -12,7 +12,7 @@ import PathKit
 /// Generator for parsing an OpenAPI specification and generating a library from it
 struct Generator {
     /// path to the specification JSON
-    var specificationPath: URL
+    var specification: String
     /// path to the directory where output files shall be located
     var targetDirectory: Path
     /// name of the library to be generated
@@ -23,7 +23,7 @@ struct Generator {
     /// - Throws: error if generating the library fails
     /// - Returns: list of file URLs of generated library
     func generate() throws -> [URL] {
-        let generator = try PallidorGenerator(specification: specificationPath)
+        let generator = try PallidorGenerator(specification: specification)
         let filePaths = try generator.generate(target: targetDirectory, package: packageName)
         
         return filePaths

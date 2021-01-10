@@ -14,12 +14,12 @@ struct Migrator {
     /// Migration handler
     var migrator: PallidorMigrator
     
-    internal init(targetDirectory: String, migrationGuidePath: String? = nil) throws {
-        guard let migrationGuidePath = migrationGuidePath else {
+    internal init(targetDirectory: String, migrationGuide: String? = nil) throws {
+        guard let migrationGuide = migrationGuide else {
             migrator = try PallidorMigrator(targetDirectory: targetDirectory, migrationGuideContent: emptyMigrationGuide)
             return
         }
-        migrator = try PallidorMigrator(targetDirectory: targetDirectory, migrationGuidePath: migrationGuidePath)
+        migrator = try PallidorMigrator(targetDirectory: targetDirectory, migrationGuideContent: migrationGuide)
     }
     
     
