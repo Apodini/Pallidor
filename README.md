@@ -1,7 +1,7 @@
 # Pallidor
 
 <p align="center">
-  <img width="150" src="https://github.com/tum-aweink/Pallidor/blob/develop/Images/pallidor-icon.png">
+  <img width="150" src="https://github.com/Apodini/Pallidor/blob/develop/Images/pallidor-icon.png">
 </p>
 
 <p align="center">
@@ -13,12 +13,44 @@
     </a>
 </p>
 
+**Pallidor** is a commandline tool that generates a Swift package based on an OpenAPI specification and automatically migrates it according to changes specified in a machine-readable migration guide. 
+
 ## Requirements
-This library requires at least Swift 5.3 and macOS 10.15.
-## Integration
+Executing Pallidor requires at least Swift 5.3 and macOS 10.15.
 
 ## Usage
+Use Pallidor via the commandline or integrate the binaries into your CI/CD system.
+By running `swift run Pallidor -h` all available commands are displayed.
+```
+swift run Pallidor -h
+USAGE: pallidor [--custom-formatting-rule-path <custom-formatting-rule-path>] --openapi-specification-url <openapi-specification-url> [--migration-guide-url <migration-guide-url>] --target-directory <target-directory> --package-name <package-name> [--language <language>] [--strategy <strategy>]
 
+OPTIONS:
+  -c, --custom-formatting-rule-path <custom-formatting-rule-path>
+                          If you want to use your own code formatting rules, specify path here 
+  -o, --openapi-specification-url <openapi-specification-url>
+                          URL of OpenAPI specification of the package to be generated 
+  -m, --migration-guide-url <migration-guide-url>
+                          URL of migration guide of the package to be generated 
+  -t, --target-directory <target-directory>
+                          Output path of the package generated 
+  -p, --package-name <package-name>
+                          Name of the package generated 
+  -l, --language <language>
+                          Programming language that the client library should be generated in (default: Swift)
+  -s, --strategy <strategy>
+                          Migration strategy indicates which types of changes should be migrated. (default: all)
+  -h, --help              Show help information.
+
+```
+
+ - Pallidor uses [swift-format](https://github.com/apple/swift-format) to apply formatting rules according to your configuration. Its path can be specified using the `-c` parameter. If no configuration file is provided, a default configuration is used.
+ - It's required to set the package's name and its target directory by using the `-p` and `-t` parameters.
+ - The URLs of a Web API's specification and corresponding migration guide are provided using the `-o` and `-m` parameters. The files can be located locally or on a remote web server.
+ - Since Pallidor is a prototype, only Swift is supported as the target language. Furthermore, only two strategies can be used: `all` (migrates all changes including deletions) and `none` (does not migrate changes, derives the facade layer directly from the library layer)
+
+Because Pallidor is a prototype and currently under active development, there is no guarantee for source-stability.
+ 
 ## Contributing
 Contributions to this projects are welcome. Please make sure to read the [contribution guidelines](https://github.com/Apodini/.github/blob/release/CONTRIBUTING.md) first.
 
