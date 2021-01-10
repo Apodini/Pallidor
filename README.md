@@ -61,6 +61,9 @@ Pallidor includes several script files that demonstrate generating a Swift packa
 `sh Scripts/{script_directory}/{script_name}.sh -t {target_location_of_package}`
 
 Each script file contains a description of the process to be performed.
+
+## Documentation
+The documentation for this package is generated with [jazzy](https://github.com/realm/jazzy) and can be found [here](https://apodini.github.io/Pallidor/).
  
 ## Contributing
 Contributions to this projects are welcome. Please make sure to read the [contribution guidelines](https://github.com/Apodini/.github/blob/release/CONTRIBUTING.md) first.
