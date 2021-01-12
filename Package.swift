@@ -32,6 +32,10 @@ let package = Package(
             ]),
         .testTarget(
             name: "PallidorTests",
-            dependencies: ["Pallidor"])
+            dependencies: ["Pallidor", "PallidorGenerator", "PallidorMigrator"],
+            resources: [
+                .process("Resources/openapi.md"),
+                .process("Resources/migrationguide.md")
+            ])
     ]
 )
