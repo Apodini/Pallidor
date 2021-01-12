@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>README  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+
+    <a title="README  Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="index.html">
+          Pallidor Docs
+        </a>
+         (70% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/Apodini/Pallidor">
+            <img class="header-icon" src="img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="index.html">Pallidor Reference</a>
+      <img class="carat" src="img/carat.png" />
+      README  Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Guides.html">Guides</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="readme.html">README</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/MigrationStrategy.html">MigrationStrategy</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Formatter.html">Formatter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Generator.html">Generator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Migrator.html">Migrator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Pallidor.html">Pallidor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PathHandler.html">PathHandler</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            
+            <h1 id='pallidor' class='heading'>Pallidor</h1>
+
+<p align="center">
+  <img width="150" src="https://github.com/Apodini/Pallidor/blob/develop/Images/pallidor-icon.png">
+</p>
+
+<p align="center">
+    <a href="LICENSE">
+        <img src="https://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT License">
+    </a>
+    <a href="https://swift.org">
+        <img src="https://img.shields.io/badge/Swift-5.3-blue.svg" alt="Swift 5.3">
+    </a>
+  <a href="https://github.com/Apodini/Pallidor">
+    <img src="https://github.com/Apodini/Pallidor/workflows/Build%20and%20Test/badge.svg" alt="Build and Test">
+    </a>
+</p>
+
+<p><strong>Pallidor</strong> is a commandline tool that generates a Swift package based on an OpenAPI specification and automatically migrates it according to changes specified in a machine-readable migration guide. </p>
+<h2 id='requirements' class='heading'>Requirements</h2>
+
+<p>Executing Pallidor requires at least Swift 5.3 and macOS 10.15.</p>
+
+<p>If executing Pallidor fails, make sure to add the following symbolic link to SwiftSyntax:</p>
+
+<p><code>ln -s $(xcode-select -p)/../Frameworks/lib_InternalSwiftSyntaxParser.dylib /usr/local/lib</code></p>
+<h2 id='usage' class='heading'>Usage</h2>
+
+<p>Use Pallidor via the commandline or integrate the binaries into your CI/CD system.
+By running <code>swift run Pallidor -h</code> all available commands are displayed.</p>
+<pre class="highlight plaintext"><code>swift run Pallidor -h
+USAGE: pallidor [--custom-formatting-rule-path &lt;custom-formatting-rule-path&gt;] --openapi-specification-url &lt;openapi-specification-url&gt; [--migration-guide-url &lt;migration-guide-url&gt;] --target-directory &lt;target-directory&gt; --package-name &lt;package-name&gt; [--language &lt;language&gt;] [--strategy &lt;strategy&gt;]
+
+OPTIONS:
+  -c, --custom-formatting-rule-path &lt;custom-formatting-rule-path&gt;
+                          If you want to use your own code formatting rules, specify path here 
+  -o, --openapi-specification-url &lt;openapi-specification-url&gt;
+                          URL of OpenAPI specification of the package to be generated 
+  -m, --migration-guide-url &lt;migration-guide-url&gt;
+                          URL of migration guide of the package to be generated 
+  -t, --target-directory &lt;target-directory&gt;
+                          Output path of the package generated 
+  -p, --package-name &lt;package-name&gt;
+                          Name of the package generated 
+  -l, --language &lt;language&gt;
+                          Programming language that the client library should be generated in (default: Swift)
+  -s, --strategy &lt;strategy&gt;
+                          Migration strategy indicates which types of changes should be migrated. (default: all)
+  -h, --help              Show help information.
+
+</code></pre>
+
+<ul>
+<li>Pallidor uses <a href="https://github.com/apple/swift-format">swift-format</a> to apply formatting rules according to your configuration. Its path can be specified using the <code>-c</code> parameter. If no configuration file is provided, a default configuration is used.</li>
+<li>It&rsquo;s required to set the package&rsquo;s name and its target directory by using the <code>-p</code> and <code>-t</code> parameters.</li>
+<li>The URLs of a Web API&rsquo;s specification and corresponding migration guide are provided using the <code>-o</code> and <code>-m</code> parameters. The files can be located locally or on a remote web server.</li>
+</ul><div class="aside aside-since">
+    <p class="aside-title">Since</p>
+    Since Pallidor is a prototype, only Swift is supported as the target language. Furthermore, only two strategies can be used: <code>all</code> (migrates all changes including deletions) and <code>none</code> (does not migrate changes, derives the facade layer directly from the library layer)
+
+</div>
+
+<p>Because Pallidor is a prototype and currently under active development, there is no guarantee for source-stability.</p>
+<h2 id='examples' class='heading'>Examples</h2>
+
+<p>Pallidor includes several script files that demonstrate generating a Swift package for different versions of a Web API. They can executed from the root directory of this repository:</p>
+
+<p><code>sh Scripts/{script_directory}/{script_name}.sh -t {target_location_of_package}</code></p>
+
+<p>Each script file contains a description of the process to be performed.</p>
+<h2 id='documentation' class='heading'>Documentation</h2>
+
+<p>The documentation for this package is generated with <a href="https://github.com/realm/jazzy">jazzy</a> and can be found <a href="https://apodini.github.io/Pallidor/">here</a>.</p>
+<h2 id='contributing' class='heading'>Contributing</h2>
+
+<p>Contributions to this projects are welcome. Please make sure to read the <a href="https://github.com/Apodini/.github/blob/release/CONTRIBUTING.md">contribution guidelines</a> first.</p>
+<h2 id='license' class='heading'>License</h2>
+
+<p>This project is licensed under the MIT License. See <a href="https://github.com/Apodini/Template-Repository/blob/release/LICENSE">License</a> for more information.</p>
+
+          </div>
+        </section>
+
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>&copy; 2021 <a class="link" href="https://github.com/tum-aweink" target="_blank" rel="external">tum-aweink</a>. All rights reserved. (Last updated: 2021-01-12)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>

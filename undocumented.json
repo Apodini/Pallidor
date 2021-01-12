@@ -1,0 +1,68 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/runner/work/Pallidor/Pallidor/Sources/Pallidor/Migrator.swift",
+      "line": 17,
+      "symbol": "Migrator.init(targetDirectory:migrationGuide:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/Pallidor/Pallidor/Sources/Pallidor/main.swift",
+      "line": 8,
+      "symbol": "Pallidor",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/Pallidor/Pallidor/Sources/Pallidor/main.swift",
+      "line": 11,
+      "symbol": "Pallidor.customFormattingRulePath",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/Pallidor/Pallidor/Sources/Pallidor/main.swift",
+      "line": 15,
+      "symbol": "Pallidor.openapiSpecificationURL",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/Pallidor/Pallidor/Sources/Pallidor/main.swift",
+      "line": 19,
+      "symbol": "Pallidor.migrationGuideURL",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/Pallidor/Pallidor/Sources/Pallidor/main.swift",
+      "line": 23,
+      "symbol": "Pallidor.targetDirectory",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/Pallidor/Pallidor/Sources/Pallidor/main.swift",
+      "line": 27,
+      "symbol": "Pallidor.packageName",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/Pallidor/Pallidor/Sources/Pallidor/main.swift",
+      "line": 31,
+      "symbol": "Pallidor.language",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/Pallidor/Pallidor/Sources/Pallidor/main.swift",
+      "line": 35,
+      "symbol": "Pallidor.strategy",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/runner/work/Pallidor/Pallidor"
+}
