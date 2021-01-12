@@ -11,6 +11,9 @@
     <a href="https://swift.org">
         <img src="https://img.shields.io/badge/Swift-5.3-blue.svg" alt="Swift 5.3">
     </a>
+  <a href="https://github.com/Apodini/Pallidor">
+    <img src="https://github.com/Apodini/Pallidor/workflows/Build%20and%20Test/badge.svg" alt="Build and Test">
+    </a>
 </p>
 
 **Pallidor** is a commandline tool that generates a Swift package based on an OpenAPI specification and automatically migrates it according to changes specified in a machine-readable migration guide. 
