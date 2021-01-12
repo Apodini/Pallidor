@@ -1,4 +1,4 @@
-name: Build and Test
+name: Build
 
 on:
   push:
@@ -24,8 +24,6 @@ jobs:
       run: swift --version
     - name: Build
       run: swift build
-    - name: Test
-      run: swift test
   linux:
     container:
       image: swift:${{ matrix.linux }}
@@ -39,5 +37,3 @@ jobs:
       run: swift --version
     - name: Build
       run: swift build
-    - name: Test
-      run: swift test --enable-test-discovery --sanitize=thread
