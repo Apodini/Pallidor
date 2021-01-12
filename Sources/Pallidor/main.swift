@@ -7,26 +7,34 @@ import SwiftFormatConfiguration
 
 struct Pallidor: ParsableCommand {
     @Option(name: .shortAndLong, help: "If you want to use your own code formatting rules, specify path here")
+    /// Custom code formatting rules
     var customFormattingRulePath: String?
     
     @Option(name: .shortAndLong, help: "URL of OpenAPI specification of the package to be generated")
+    /// URL of OpenAPI specification of the package to be generated
     var openapiSpecificationURL: String
     
     @Option(name: .shortAndLong, help: "URL of migration guide of the package to be generated")
+    /// URL of migration guide of the package to be generated
     var migrationGuideURL: String?
     
     @Option(name: .shortAndLong, help: "Output path of the package generated")
+    /// Output path of the package generated
     var targetDirectory: String
     
     @Option(name: .shortAndLong, help: "Name of the package generated")
+    /// Name of the package generated
     var packageName: String
     
     @Option(name: .shortAndLong, help: "Programming language that the client library should be generated in")
+    /// Programming language that the client library should be generated in
     var language: String = "Swift"
     
     @Option(name: .shortAndLong, help: "Migration strategy indicates which types of changes should be migrated.")
+    /// Indicates which types of changes should be migrated.
     var strategy: MigrationStrategy = .all
     
+    /// Starts migration process
     func run() throws {
         precondition(
             !(migrationGuideURL == nil && strategy != .none),

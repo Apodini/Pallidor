@@ -8,6 +8,7 @@
 import Foundation
 import ArgumentParser
 
+/// Indicates which types of changes should be migrated.
 enum MigrationStrategy: String, ExpressibleByArgument {
     /// migrates all changes as stated in migration guide - `default`
     case all

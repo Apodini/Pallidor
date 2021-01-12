@@ -14,7 +14,8 @@ import SwiftFormatConfiguration
 struct Formatter {
     /// SwiftFormatter
     var formatter: SwiftFormatter
-        
+     
+    /// Initializes Formatter
     init(configPath path: String? = nil) throws {
         if let path = path {
             let config = try Configuration(contentsOf: URL(fileURLWithPath: path))

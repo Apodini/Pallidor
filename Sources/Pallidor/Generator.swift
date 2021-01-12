@@ -11,7 +11,7 @@ import PathKit
 
 /// Generator for parsing an OpenAPI specification and generating a library from it
 struct Generator {
-    /// path to the specification JSON
+    /// OpenAPI specification in JSON format
     var specification: String
     /// path to the directory where output files shall be located
     var targetDirectory: Path
