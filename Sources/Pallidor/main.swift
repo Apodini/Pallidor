@@ -62,7 +62,7 @@ struct Pallidor: ParsableCommand {
                         Pallidor.exit()
                     }
                     
-                    let getGuide = getMigrationGuide(url: migrationGuideURL)
+                    getMigrationGuide(url: migrationGuideURL)
                         .sink { com in
                             switch com {
                             case .failure(let err):
@@ -80,7 +80,7 @@ struct Pallidor: ParsableCommand {
                                 fatalError("Error in generating facade layer.")
                             }
                         }
-                    cancellables.insert(getGuide)
+                        .store(in: &cancellables)
                 } catch {
                     fatalError("Error in generating library layer.")
                 }
@@ -151,8 +151,8 @@ struct Pallidor: ParsableCommand {
                     }
                     return result
                 }
-              .receive(on: DispatchQueue.main)
-              .eraseToAnyPublisher()
+                .receive(on: DispatchQueue.main)
+                .eraseToAnyPublisher()
         } else {
             let migrationPath = URL(fileURLWithPath: url)
             guard let content = try? String(contentsOf: migrationPath, encoding: .utf8) else {
@@ -174,8 +174,8 @@ struct Pallidor: ParsableCommand {
                     }
                     return result
                 }
-              .receive(on: DispatchQueue.main)
-              .eraseToAnyPublisher()
+                .receive(on: DispatchQueue.main)
+                .eraseToAnyPublisher()
         } else {
             let specPath = URL(fileURLWithPath: url)
             guard let content = try? String(contentsOf: specPath, encoding: .utf8) else {
