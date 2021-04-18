@@ -56,14 +56,55 @@ OPTIONS:
  - The URLs of a Web API's specification and corresponding migration guide are provided using the `-o` and `-m` parameters. The files can be located locally or on a remote web server.
  - Since Pallidor is a prototype, only Swift is supported as the target language. Furthermore, only two strategies can be used: `all` (migrates all changes including deletions) and `none` (does not migrate changes, derives the facade layer directly from the library layer)
 
-Because Pallidor is a prototype and currently under active development, there is no guarantee for source-stability.
-
 ## Examples
 Pallidor includes several script files that demonstrate generating a Swift package for different versions of a Web API. They can executed from the root directory of this repository:
 
 `sh Scripts/{script_directory}/{script_name}.sh -t {target_location_of_package}`
 
 Each script file contains a description of the process to be performed.
+
+## Pallidor Generator
+
+`PallidorGenerator` is a part of Pallidor, and can be used to parse OpenAPI specifications and generate the library layer of a Swift package for client applications. To integrate the `PallidorGenerator` library in your SwiftPM project, add the following line to the dependencies in your `Package.swift` file:
+```swift
+.package(url: "https://github.com/Apodini/Pallidor.git", .branch("develop"))
+```
+and include the dependency:
+
+```swift
+.product(name: "PallidorGenerator", package: "Pallidor")
+```
+
+### Usage
+To get started with `PallidorGenerator` you first need to create an instance of it, providing the path to the directory in which the source files are located, as well as the content of the OpenAPI specification (v3):
+```swift
+var specification : String = ...
+let generator = try PallidorGenerator(specification: specification)
+```
+To start generating the OpenAPI library, you need to call the `generate()` method, providing a `Path` to the target directory where the generated files should be located and a `name` for the package.
+```swift
+var path: Path = ...
+var packageName: String = ...
+try generator.generate(target: path, package: packageName)
+```
+All generated API files will be located under `{targetDirectory}/Models` or `{targetDirectory}/APIs`.
+Additionally several meta files which are required for a SPM library are also generated and located under their respective folder in `{targetDirectory}`.
+
+## Pallidor migrator
+Pallidor additionally offers `PallidorMigrator`, a Swift library that generates a persistent facade layer for accessing a Web API dependency. Therefore, it incorporates all changes stated in a machine-readable migration guide into the internals of the facade.
+
+### Usage
+To get started with `PallidorMigrator` you first need to create an instance of it, providing the path to the directory in which the source files are located, and the textual representation of the migration guide:
+```swift
+let targetDirectory : String = ...
+let migrationGuide : String = ...
+let migrator = try PallidorMigrator(targetDirectory: targetDirectory, migrationGuideContent: migrationGuide)
+```
+To start with generating the persistent facade, you call the `buildFacade()` method:
+```swift
+try migrator.buildFacade()
+```
+All generated facade files will be located under `{targetDirectory}/PersistentModels` or `{targetDirectory}/PersistentAPIs`
 
 ## Documentation
 The documentation for this package is generated with [jazzy](https://github.com/realm/jazzy) and can be found [here](https://apodini.github.io/Pallidor/).
