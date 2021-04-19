@@ -6,6 +6,7 @@
 //
 
 import Foundation
+//import PallidorUtils
 
 extension WrappedClass {
     /// handle added a model

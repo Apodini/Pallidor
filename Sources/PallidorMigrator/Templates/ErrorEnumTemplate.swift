@@ -25,16 +25,4 @@ struct ErrorEnumTemplate: CodeTemplate {
         }
         """
     }
-
-    func write(_ modifiable: Modifiable, to path: Path) throws -> URL? {
-        let content = render(modifiable)
-
-        guard !content.isEmpty else {
-            return nil
-        }
-
-        let outputPath = URL(fileURLWithPath: path.string)
-        try content.write(to: outputPath, atomically: true, encoding: .utf8)
-        return outputPath
-    }
 }

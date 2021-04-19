@@ -11,7 +11,8 @@ let package = Package(
     products: [
         .executable(name: "Pallidor", targets: ["Pallidor"]),
         .library(name: "PallidorGenerator", targets: ["PallidorGenerator"]),
-        .library(name: "PallidorMigrator", targets: ["PallidorMigrator"])
+        .library(name: "PallidorMigrator", targets: ["PallidorMigrator"]),
+        .library(name: "PallidorUtils", targets: ["PallidorUtils"])
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -45,7 +46,8 @@ let package = Package(
             dependencies: [
                 .product(name: "OpenAPIKit", package: "OpenAPIKit"),
                 .product(name: "PathKit", package: "PathKit"),
-                .product(name: "Yams", package: "Yams")
+                .product(name: "Yams", package: "Yams"),
+                .target(name: "PallidorUtils")
             ],
             resources: [
                 .process("NetworkingTemplates/HTTPAuthorizationModel.md"),
@@ -63,9 +65,13 @@ let package = Package(
         .target(
             name: "PallidorMigrator",
             dependencies: [
-                .product(name: "SourceryFramework", package: "Sourcery")
+                .product(name: "SourceryFramework", package: "Sourcery"),
+                .target(name: "PallidorUtils")
             ]),
         
+        // MARK: - Pallidor utils
+        
+        .target(name: "PallidorUtils"),
         
         // MARK: - Pallidor tests
         
