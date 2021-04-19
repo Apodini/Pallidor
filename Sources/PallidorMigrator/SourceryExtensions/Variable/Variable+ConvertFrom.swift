@@ -59,7 +59,7 @@ extension WrappedVariable {
     
     /// initializer string for custom array types
     private var customArrayTypeInit: String {
-        "self.\(name) = from.\(name)\(isOptional ? "?" : "").map({ \("\(typeName.arrayElementType)($0)!") })"
+        "self.\(name) = from.\(name)\(isOptional ? "?" : "").compactMap({ \("\(typeName.arrayElementType)($0)") })"
     }
     
     /// initializer string for custom dictionary types

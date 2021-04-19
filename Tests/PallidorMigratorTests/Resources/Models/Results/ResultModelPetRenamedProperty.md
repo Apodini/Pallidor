@@ -45,7 +45,7 @@ self.id = from.id
 self.name = from.name
 self.photoUrls = from.photoUrls
 self.status = Status(from.status)
-self.tags = from.tagsi?.map({ Tag($0)! })
+self.tags = from.tagsi?.compactMap({ Tag($0) })
     } else {
     return nil
     }
