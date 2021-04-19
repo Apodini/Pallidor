@@ -23,9 +23,8 @@ enum ReferenceResolver {
                 fatalError("Reference must contain a name if its an object.")
             }
             let actualName = TypeAliases.store[name] ?? name
-            return actualName.isPrimitive ?
-                actualName :
-                (actualName.isArrayType ? "[_\(actualName)]" : "_\(actualName)" )
+            return actualName.isPrimitiveAndNoCollection ? actualName // TODO check dictionaries
+                : (actualName.isArrayType ? "[_\(actualName)]" : "_\(actualName)" )
         }
         throw ResolvementError.referenceTypeNotFound(msg: "Reference type could not be found")
     }

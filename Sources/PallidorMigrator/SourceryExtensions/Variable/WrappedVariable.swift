@@ -19,6 +19,7 @@ class WrappedVariable: Modifiable {
         isEnum: Bool,
         isCustomType: Bool,
         isArray: Bool,
+        isDictionary: Bool,
         isCustomInternalEnumType: Bool,
         isOptional: Bool,
         isStatic: Bool,
@@ -30,6 +31,7 @@ class WrappedVariable: Modifiable {
         self.isEnum = isEnum
         self.isCustomType = isCustomType
         self.isArray = isArray
+        self.isDictionary = isDictionary
         self.isCustomInternalEnumType = isCustomInternalEnumType
         self.isOptional = isOptional
         self.isStatic = isStatic
@@ -44,6 +46,7 @@ class WrappedVariable: Modifiable {
             isEnum: from.annotations["isEnumType"] != nil,
             isCustomType: from.annotations["isCustomType"] != nil,
             isArray: from.isArray,
+            isDictionary: from.isDictionary,
             isCustomInternalEnumType: from.annotations["isCustomInternalEnumType"] != nil,
             isOptional: from.isOptional,
             isStatic: from.isStatic,
@@ -63,6 +66,8 @@ class WrappedVariable: Modifiable {
     var isCustomType: Bool
     /// true if variable is an array type
     var isArray: Bool
+    /// true if variable is a dictionary type
+    var isDictionary: Bool
     /// true if variable is an internal enum type
     var isCustomInternalEnumType: Bool
     /// true if variable is optional

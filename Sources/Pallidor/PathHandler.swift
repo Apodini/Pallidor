@@ -18,10 +18,22 @@ struct PathHandler {
     /// Name of the library
     var packageName: String
     
+    /// only for debugging purposes
+    private func clearPreviousLibrary() {
+        #if DEBUG
+        let packagePath = (targetDirectory + Path(packageName)).string
+        if fileManager.fileExists(atPath: packagePath) {
+            try? fileManager.removeItem(atPath: packagePath)
+        }
+        #endif
+        
+    }
     
     /// Creates the directory structure for the Swift Package to be generated
     /// - Throws: error if creating any directory fails
     func createDirectoryStructure() throws {
+        clearPreviousLibrary()
+        
         let outputPath = targetDirectory + Path("\(packageName)/Sources/\(packageName)/")
         let testPath = targetDirectory + Path("\(packageName)/Tests/\(packageName)Tests/")
         try fileManager.createDirectory(atPath: outputPath.absolute().string + "/Models/", withIntermediateDirectories: true, attributes: nil)

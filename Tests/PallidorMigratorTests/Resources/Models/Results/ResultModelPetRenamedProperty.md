@@ -53,7 +53,7 @@ self.tags = from.tagsi?.map({ Tag($0)! })
 
 func to() -> _Pet? {
 
-return _Pet(category: self.category?.to(), id: self.id, name: self.name, photoUrls: self.photoUrls, status: self.status?.to(), tagsi: self.tags?.map({ $0.to()! }))
+return _Pet(category: self.category?.to(), id: self.id, name: self.name, photoUrls: self.photoUrls, status: self.status?.to(), tagsi: self.tags?.compactMap({ $0.to() }))
 }
 
 }

@@ -41,7 +41,7 @@ class WrappedTypeName {
     }
 
     convenience init(from: TypeName) {
-        let persistentName = from.isArray ? from.name.replacingOccurrences(of: "_", with: "") : from.name.removePrefix
+        let persistentName = (from.isArray || from.isDictionary) ? from.name.replacingOccurrences(of: "_", with: "") : from.name.removePrefix
         self.init(
             name: persistentName,
             actualName: persistentName,

@@ -52,7 +52,6 @@ let package = Package(
             resources: [
                 .process("NetworkingTemplates/HTTPAuthorizationModel.md"),
                 .process("NetworkingTemplates/NetworkManagerModel.md"),
-                .process("NetworkingTemplates/Extensions.md"),
                 .process("MetaModels/TestFileModel.md"),
                 .process("MetaModels/PackageModel.md"),
                 .process("MetaModels/TestManifestModel.md"),

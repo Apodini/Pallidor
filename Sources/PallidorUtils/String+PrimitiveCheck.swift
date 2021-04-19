@@ -89,7 +89,7 @@ public extension String {
     }
     
     /// used to remove square brackets and `?` on arrays and dictionaries
-    private var withoutSquareBrackets: String {
+    var withoutSquareBrackets: String {
         String(unwrapped.dropFirst().dropLast())
     }
 }

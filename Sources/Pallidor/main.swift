@@ -12,7 +12,7 @@ struct Pallidor: ParsableCommand {
     
     @Option(name: .shortAndLong, help: "URL of OpenAPI specification of the package to be generated")
     /// URL of OpenAPI specification of the package to be generated
-    var openapiSpecificationURL: String
+    var openapiSpecificationURL: String = "/Users/eld/Desktop/response.txt" // TODO remove
     
     @Option(name: .shortAndLong, help: "URL of migration guide of the package to be generated")
     /// URL of migration guide of the package to be generated
@@ -20,11 +20,11 @@ struct Pallidor: ParsableCommand {
     
     @Option(name: .shortAndLong, help: "Output path of the package generated")
     /// Output path of the package generated
-    var targetDirectory: String
+    var targetDirectory: String = "/Users/eld/Desktop/pallidor_libraries" // TODO remove
     
     @Option(name: .shortAndLong, help: "Name of the package generated")
     /// Name of the package generated
-    var packageName: String
+    var packageName: String = "PallidorApodini" // TODO remove
     
     @Option(name: .shortAndLong, help: "Programming language that the client library should be generated in")
     /// Programming language that the client library should be generated in
@@ -32,7 +32,7 @@ struct Pallidor: ParsableCommand {
     
     @Option(name: .shortAndLong, help: "Migration strategy indicates which types of changes should be migrated.")
     /// Indicates which types of changes should be migrated.
-    var strategy: MigrationStrategy = .all
+    var strategy: MigrationStrategy = .none
     
     /// Starts migration process
     func run() throws {

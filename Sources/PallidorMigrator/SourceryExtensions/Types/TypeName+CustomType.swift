@@ -30,12 +30,20 @@ extension WrappedTypeName {
             .replacingOccurrences(of: ", Error>", with: "")
     }
 
-    /// removes optional and collection characters from type name
-    var underlyingType: String {
-        isOptional && isArray ?
-            "\(name.unwrapped.dropLast().dropFirst())" :
-            (isOptional ?
-                "\(name.unwrapped)" :
-                (isArray ? "\(name.dropLast().dropFirst())" : name))
+    /// removes optional and collection characters from array type name
+    var arrayElementType: String {
+        name.withoutSquareBrackets
     }
+    
+    /// returns the string of the value type of a dictionary
+    var dictionaryValueType: String {
+        let types = String(name.withoutSquareBrackets).split(separator: ":")
+        
+        if let valueType = types.last {
+            return String(valueType).unwrapped
+        }
+        return name
+        
+    }
+
 }

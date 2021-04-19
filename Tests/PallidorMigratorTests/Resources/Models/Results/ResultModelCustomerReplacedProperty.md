@@ -42,7 +42,7 @@ let addressEncoded = try! JSONEncoder().encode(address)
 let addressesTmp = context.objectForKeyedSubscript("conversion").call(withArguments: [addressEncoded])?.toString()
 
 let addresses = try! JSONDecoder().decode([NewAddress].self, from: addressesTmp!.data(using: .utf8)!)
-return _Customer(addresses: addresses.map({ $0.to()! }), id: self.id, username: self.username)
+return _Customer(addresses: addresses.compactMap({ $0.to() }), id: self.id, username: self.username)
 }
 
 }

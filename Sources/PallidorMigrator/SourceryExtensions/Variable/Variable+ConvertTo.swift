@@ -11,11 +11,12 @@ import SourceryRuntime
 extension WrappedVariable {
     /// unmodified version of `to()` conversion
     var unmodifiedTo: String {
-        self.isMutable ? (self.isArray && self.isCustomType ?
-                            self.customTypeArrayConvert
-                            : (self.isEnum || (self.isCustomType && !self.isTypeAlias) || self.isCustomInternalEnumType
-                                ? self.complexConvert :
-                                "\(self.name): self.\(self.name)")) : ""
+        self.isMutable ?
+            (isDictionary && isCustomType) ? customTypeDictionaryConvert
+            : (self.isArray && self.isCustomType ? self.customTypeArrayConvert
+                : (self.isEnum || (self.isCustomType && !self.isTypeAlias) || self.isCustomInternalEnumType ? self.complexConvert
+                    : "\(self.name): self.\(self.name)")) : ""
+
     }
 
     /// conversion string of complex types
@@ -25,7 +26,12 @@ extension WrappedVariable {
 
     /// conversion string of complex array types
     private var customTypeArrayConvert: String {
-        "\(name): self.\(name)\(isOptional ? "?" : "").map({ $0.to()! })"
+        "\(name): self.\(name)\(isOptional ? "?" : "").compactMap({ $0.to() })"
+    }
+    
+    /// conversion string of dictionaries with complex value type
+    private var customTypeDictionaryConvert: String {
+        "\(name): self.\(name)\(isOptional ? "?" : "").compactMapValues { $0.to() }"
     }
 
     /// Replace `to()` string of variable
@@ -33,7 +39,7 @@ extension WrappedVariable {
     /// - Returns: replacement string
     func replacedTo(_ name: String) -> String {
         self.isMutable ? (self.isArray && self.isCustomType ?
-                            "\(name): \(name).map({ $0.to()! })" :
+                            "\(name): \(name).compactMap({ $0.to() })" :
                             (self.isEnum ||
                                 (self.isCustomType && !self.isTypeAlias)
                                 || self.isCustomInternalEnumType ? "\(name): \(name).to()" :

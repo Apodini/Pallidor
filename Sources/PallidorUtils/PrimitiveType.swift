@@ -11,6 +11,7 @@ enum PrimitiveType: String, RawRepresentable {
     case date = "Date"
     case uuid = "UUID"
     
+    /// Checks whether the passed string matches the raw value of any of the supported primitive types
     static func check(type: String) -> Bool {
         PrimitiveType(rawValue: type) != nil
     }

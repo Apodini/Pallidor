@@ -6,7 +6,6 @@
 //
 
 import Foundation
-//import PallidorUtils
 
 extension WrappedClass {
     /// handle added a model
@@ -43,6 +42,7 @@ extension WrappedClass {
             isEnum: false,
             isCustomType: false,
             isArray: false,
+            isDictionary: false,
             isCustomInternalEnumType: false,
             isOptional: true,
             isStatic: false,

@@ -15,9 +15,11 @@ enum PrimitiveTypeResolver {
     /// - Parameter context: string context
     /// - Returns: type as String
     static func resolveTypeFormat(context: JSONSchema.CoreContext<JSONTypeFormat.StringFormat>) -> String {
-        context.format.rawValue.isEmpty ?
-            "String" :
-            ( context.format.rawValue == "date-time" || context.format.rawValue == "date" ? "Date" : "String")
+        switch context.format.rawValue {
+        case "data-time", "date": return "Date"
+        case "uuid": return "UUID"
+        default: return "String"
+        }
     }
     
     /// Resolves Integer with special formats
@@ -90,7 +92,7 @@ enum PrimitiveTypeResolver {
                 return "[String:\(propType)]"
             }
         
-            return "[String:String]"
+            return "[String:String]" // TODO review
         case .fragment,
              .all,
              .one,
