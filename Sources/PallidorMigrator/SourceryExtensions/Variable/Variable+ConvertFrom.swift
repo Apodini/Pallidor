@@ -44,17 +44,17 @@ extension WrappedVariable {
     
     /// initializer string for enum type
     private var enumInit: String {
-        "self.\(name) = \(typeName.isOptional ? String(typeName.name.dropLast()) : typeName.name)(from.\(name))"
+        "self.\(name) = \(typeName.name.unwrapped)(from.\(name))\(isOptional ? "" : "!")"
     }
     
     /// initializer string for internal enum type
     private var customInternalEnumInit: String {
-        "self.\(name) = \(typeName.name)(from.\(name))\(isOptional ? "" : "!")"
+        "self.\(name) = \(typeName.name.unwrapped)(from.\(name))\(isOptional ? "" : "!")"
     }
     
     /// initializer string for custom types
     private var customTypeInit: String {
-        "self.\(name) = \(typeName.isOptional ? typeName.name.unwrapped : typeName.name)(from.\(name))"
+        "self.\(name) = \(typeName.name.unwrapped)(from.\(name))\(isOptional ? "" : "!")"
     }
     
     /// initializer string for custom array types

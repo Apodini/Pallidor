@@ -21,7 +21,7 @@ extension WrappedVariable {
 
     /// conversion string of complex types
     private var complexConvert: String {
-        "\(name): self.\(name)\(isOptional ? "?" : "").to()"
+        "\(name): self.\(name)\(isOptional ? "?" : "").to()\(isOptional ? "" : "!")"
     }
 
     /// conversion string of complex array types

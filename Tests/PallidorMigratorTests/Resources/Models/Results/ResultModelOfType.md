@@ -79,7 +79,7 @@ self.of = OneOf(from.of)!
 
 func to() -> _PaymentInstallmentSchedule? {
 
-return _PaymentInstallmentSchedule(of: self.of.to(), type: self.type)
+return _PaymentInstallmentSchedule(of: self.of.to()!, type: self.type)
 }
 
 }
