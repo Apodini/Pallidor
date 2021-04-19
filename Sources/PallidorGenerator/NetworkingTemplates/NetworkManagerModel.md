@@ -220,7 +220,14 @@
                             urlRequest("OPTIONS", url: route, authorization: authorization, contentType: contentType, headers: headers)
                         )
                   }
-            
-            
+                  
+                  /// Asserts that the passed path parameters conform to `CustomStringConvertible`
+                  static func assertPathParameters(_ parameters: Any...) {
+                      parameters.forEach {
+                          if !($0 is CustomStringConvertible) {
+                              fatalError("Encountered an invalid path parameter \($0). Path parameters must conform to `CustomStringConvertible`")
+                          }
+                      }
+                  }            
                 
             }

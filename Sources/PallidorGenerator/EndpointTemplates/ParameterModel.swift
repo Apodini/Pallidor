@@ -28,7 +28,7 @@ struct ParameterModel: CustomStringConvertible {
     /// default value for this parameter
     var defaultValue: String?
     /// location of parameter (header, query, cookie, path)
-    var location: Location
+    var location: ParameterLocation
     /// true if param is required in specification
     var required: Bool = false
     
@@ -43,7 +43,7 @@ struct ParameterModel: CustomStringConvertible {
             case .cookie:
                 return ""
             case .path(let name):
-                return "path = path.replacingOccurrences(of: \"{\(name)}\", with: \(name).description)" // TODO adjust test cases use name.description
+                return "path = path.replacingOccurrences(of: \"{\(name)}\", with: \(name).description)"
             case .query(let name):
                 return  required ?
                     "&\(name)=\\(\(queryInitializer)\(type.contains("[") ? "\(!required ? "?" : "" ).joined(separator: \"&\")" : "")\(!required ? " ?? \"\"" : ""))"
@@ -88,13 +88,47 @@ struct ParameterModel: CustomStringConvertible {
     private var queryInitializer: String {
         name == "String" || type.contains("[") ? name : "\(name)\(required ? "" : "?").description"
     }
+}
+
+extension ParameterModel {
     
-    /// Possible location of parameters
-    enum Location: Equatable {
-        case path(String)
-        case query(String)
-        case header(String)  /** not "Accept", "Content-Type" or "Authorization" */
-        case cookie(String)
+    var isPath: Bool {
+        if case .path = location {
+            return true
+        }
+        return false
+    }
+    
+    var isQuery: Bool {
+        if case .query = location {
+            return true
+        }
+        return false
+    }
+    
+    var isHeader: Bool {
+        if case .header = location {
+            return true
+        }
+        return false
+    }
+    
+    var isCookie: Bool {
+        if case .cookie = location {
+            return true
+        }
+        return false
+    }
+}
+
+extension Array where Element == ParameterModel {
+    
+    func filtered(_ isIncluded: (Element) -> Bool) -> Self {
+        filter(isIncluded).sorted(by: { $0.name < $1.name })
+    }
+    
+    var assertDescription: String {
+        isEmpty ? "" : "NetworkManager.assertPathParameters(\(map { $0.name }.joined(separator: ", ")))\n"
     }
 }
 
@@ -103,19 +137,6 @@ extension ParameterModel {
     /// - Parameter param: Parameter from OpenAPI document
     /// - Returns: ParameterModel object
     static func resolve(param: DereferencedParameter) -> ParameterModel {
-        var location = ParameterModel.Location.path(param.name)
-        
-        switch param.location {
-        case .cookie:
-            location = .cookie(param.name)
-        case .header:
-            location = .header(param.name)
-        case .query:
-            location = .query(param.name)
-        case .path:
-            break
-        }
-        
         let defaultValue = PrimitiveTypeResolver.resolveDefaultValue(schema: param.schemaOrContent.schemaValue)
         let minMax = PrimitiveTypeResolver.resolveMinMax(schema: param.schemaOrContent.schemaValue)
                 
@@ -130,7 +151,7 @@ extension ParameterModel {
             type: type,
             detail: param.description,
             defaultValue: defaultValue,
-            location: location,
+            location: .init(parameter: param),
             required: param.required,
             min: minMax.0,
             max: minMax.1

@@ -106,3 +106,12 @@ extension AttributeModel: Hashable {
         lhs.name == rhs.name
     }
 }
+
+extension Array where Element == AttributeModel {
+    /// Sorts the array of AttributeModels on `name` property and maps the `transform` operation
+    /// - Parameter transform: method to be executed on each element of array
+    /// - Returns: sorted & mapped array
+    func sortedMap<T>(_ transform: (Element) -> T ) -> [T] {
+        sortedMap(transform, on: \.name)
+    }
+}

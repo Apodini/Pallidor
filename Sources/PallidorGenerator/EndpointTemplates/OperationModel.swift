@@ -19,41 +19,23 @@ struct OperationModel {
     /// path where method is located
     var path: OpenAPI.Path
     /// list of parameters for this method
-    var parameters: [ParameterModel]?
+    var parameters: [ParameterModel]
     /// true if method requires authentication
     var requiresAuth: Bool = false
     
     /// filtered params for query params
-    private var queryParams: [ParameterModel]? {
-        parameters?.filter { param -> Bool in
-            if case .query = param.location {
-                return true
-            }
-            return false
-        }
-        .sorted(by: { $0.name < $1.name })
+    private var queryParams: [ParameterModel] {
+        parameters.filtered(\.isQuery)
     }
     
     /// filtered params for path params
-    private var pathParams: [ParameterModel]? {
-        parameters?.filter { param -> Bool in
-            if case .path = param.location {
-                return true
-            }
-            return false
-        }
-        .sorted(by: { $0.name < $1.name })
+    private var pathParams: [ParameterModel] {
+        parameters.filtered(\.isPath)
     }
     
     /// filtered params for header params
-    private var headerParams: [ParameterModel]? {
-        parameters?.filter { param -> Bool in
-            if case .header = param.location {
-                return true
-            }
-            return false
-        }
-        .sorted(by: { $0.name < $1.name })
+    private var headerParams: [ParameterModel] {
+        parameters.filtered(\.isHeader)
     }
     
     /// request body for this method if available
@@ -172,10 +154,7 @@ extension OperationModel: CustomStringConvertible {
     
     /// description for this methods `NetworkManager` call
     var operationDescription: String {
-        let headers = headerParams != nil &&
-            // Nil checked in previous statement
-            // swiftlint:disable:next force_unwrapping
-            !headerParams!.isEmpty ? ", headers: customHeaders" : ""
+        let headers = !headerParams.isEmpty ? ", headers: customHeaders" : ""
         switch httpMethod {
         case .get:
             return "return NetworkManager.getElement(on: URL(string: path)!, authorization: authorization, contentType: contentType\(headers))"
@@ -197,19 +176,13 @@ extension OperationModel: CustomStringConvertible {
     }
     
     var description: String {
-            let parametersString: [String?] =
+            let parametersString: [String] =
                 [
-                    parameters != nil ?
-                        // Nil checked in previous statement
-                        // swiftlint:disable:next force_unwrapping
-                        parameters!
-                        .sorted(by: { $0.name <= $1.name })
-                        .map { $0.description }
-                        .joined(separator: ", ") : nil,
-                    requestBody != nil ?
-                        // Nil checked in previous statement
-                        // swiftlint:disable:next force_unwrapping
-                        requestBody!.description : nil,
+                        parameters
+                        .sortedMap({ $0.description }, on: \.name)
+                        .joined(separator: ", "),
+                    
+                        requestBody?.description ?? "",
                     """
 authorization: HTTPAuthorization\(
     requiresAuth ? "" : "?") = NetworkManager.authorization\(
@@ -221,33 +194,14 @@ authorization: HTTPAuthorization\(
 """
                 ]
             let isGeneric = NotOfResolver.isGeneric(type: successType)
-            let parameterGuards = parameters != nil &&
-                // Nil checked in previous statement
-                // swiftlint:disable:next force_unwrapping
-                !parameters!.isEmpty ?
-                // Nil checked in previous statement
-                // swiftlint:disable:next force_unwrapping
-                parameters!.map { $0.limitGuard }
-                .skipEmptyJoined(separator: "\n") : ""
+            let parameterGuards = parameters.map { $0.limitGuard }.skipEmptyJoined(separator: "\n")
             return """
             \(comment)
             static func \(operationId)\(isGeneric ? "<T : Codable>" : "")(\(parametersString.skipEmptyJoined(separator: ", "))) -> AnyPublisher<\(isGeneric ? "\(successType)<T>" : successType), Error> {
-            \(parameters != nil &&
-                // Nil checked in previous statement
-                // swiftlint:disable:next force_unwrapping
-                !parameters!.isEmpty ? "var" : "let") path = NetworkManager.basePath! + "\(path.rawValue)"
-                \(pathParams != nil ?
-                    // Nil checked in previous statement
-                    // swiftlint:disable:next force_unwrapping
-                    pathParams!.map { $0.opDescription }.joined(separator: "\n") : "")
-            \(queryParams != nil &&
-                // Nil checked in previous statement
-                // swiftlint:disable:next force_unwrapping
-                !queryParams!.isEmpty ? "path += \"?\(queryParams!.first!.required ? "\(queryParams!.map { $0.opDescription }.joined().dropFirst())\"" : "\(queryParams!.map { $0.opDescription }.joined())\"")" : "")
-            \(headerParams != nil &&
-                // Nil checked in previous statement
-                // swiftlint:disable:next force_unwrapping
-                !headerParams!.isEmpty ? "var customHeaders = [String : String]()\n\(headerParams!.map { $0.opDescription }.joined(separator: "\n"))" : "")
+            \(!parameters.isEmpty ? "var" : "let") path = NetworkManager.basePath! + "\(path.rawValue)"
+                \(pathParams.map { $0.opDescription }.joined(separator: "\n"))
+            \(!queryParams.isEmpty ? "path += \"?\((queryParams.first?.required == true) ? "\(queryParams.map { $0.opDescription }.joined().dropFirst())\"" : "\(queryParams.map { $0.opDescription }.joined())\"")" : "")
+            \(!headerParams.isEmpty ? "var customHeaders = [String : String]()\n\(headerParams.map { $0.opDescription }.joined(separator: "\n"))" : "")
                 \(parameterGuards.isEmpty ? "" : "\(parameterGuards)\n")\(operationDescription)
             \(failureTryMap)\(successType.isPrimitiveAndNoCollection ? "" : "\n.decode(type: \(successType).self, decoder: decoder)")
                 .receive(on: DispatchQueue.main)

@@ -2,14 +2,19 @@ import Foundation
 
 /// Contains all cases of the types trated as primitive in Pallidor
 enum PrimitiveType: String, RawRepresentable {
-    case string = "String"
     case int = "Int"
     case int32 = "Int32"
     case int64 = "Int64"
-    case double = "Double"
+    case uint = "UInt"
+    case uint32 = "UInt32"
+    case uint64 = "UInt64"
     case bool = "Bool"
-    case date = "Date"
+    case string = "String"
+    case double = "Double"
+    case float = "Float"
+    
     case uuid = "UUID"
+    case date = "Date"
     
     /// Checks whether the passed string matches the raw value of any of the supported primitive types
     static func check(type: String) -> Bool {
