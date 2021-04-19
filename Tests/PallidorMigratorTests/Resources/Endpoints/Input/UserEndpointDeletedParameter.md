@@ -71,7 +71,7 @@ Responses:
 */
 public static func deleteUser(username: String, authorization: HTTPAuthorization? = NetworkManager.authorization, contentType: String? = NetworkManager.defaultContentType) -> AnyPublisher<String, Error> {
 var path = NetworkManager.basePath! + "/user/{username}"
-    path = path.replacingOccurrences(of: "{username}", with: String(username))
+    path = path.replacingOccurrences(of: "{username}", with: username.description)
 
 
     return NetworkManager.delete(at: URL(string: path)!, authorization: authorization, contentType: contentType)
@@ -104,7 +104,7 @@ Responses:
 */
 public static func getUserByName(username: String, authorization: HTTPAuthorization? = NetworkManager.authorization, contentType: String? = NetworkManager.defaultContentType) -> AnyPublisher<_User, Error> {
 var path = NetworkManager.basePath! + "/user/{username}"
-    path = path.replacingOccurrences(of: "{username}", with: String(username))
+    path = path.replacingOccurrences(of: "{username}", with: username.description)
 
 
     return NetworkManager.getElement(on: URL(string: path)!, authorization: authorization, contentType: contentType)

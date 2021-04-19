@@ -19,7 +19,7 @@ public static func updatePet(name: String, petId: Int64, status: String, authori
 let path = NetworkManager.basePath! + "/pet"
     
     var path = NetworkManager.basePath! + "/pet/{petId}"
-        path = path.replacingOccurrences(of: "{petId}", with: String(petId))
+        path = path.replacingOccurrences(of: "{petId}", with: petId.description)
     path += "?name=\(name.description)&status=\(status.description)"
 
     return NetworkManager.putElement(authorization: authorization, on: URL(string: path)!, contentType: contentType)

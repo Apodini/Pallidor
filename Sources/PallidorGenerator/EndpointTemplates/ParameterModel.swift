@@ -43,7 +43,7 @@ struct ParameterModel: CustomStringConvertible {
             case .cookie:
                 return ""
             case .path(let name):
-                return "path = path.replacingOccurrences(of: \"{\(name)}\", with: String(\(name)))" // TODO adjust test cases use name.description
+                return "path = path.replacingOccurrences(of: \"{\(name)}\", with: \(name).description)" // TODO adjust test cases use name.description
             case .query(let name):
                 return  required ?
                     "&\(name)=\\(\(queryInitializer)\(type.contains("[") ? "\(!required ? "?" : "" ).joined(separator: \"&\")" : "")\(!required ? " ?? \"\"" : ""))"
@@ -68,7 +68,7 @@ struct ParameterModel: CustomStringConvertible {
             }
             
             if let min = self.min {
-                if (self.type == "String" || self.type.isPrimitiveArrayType) && min == 0 {
+                if (["UUID", "String"].contains(type) || self.type.isPrimitiveArrayType) && min == 0 {
                     return nil
                 }
                 return """

@@ -14,7 +14,7 @@ Responses:
 */
 public static func deleteOrder(orderId: Int64, authorization: HTTPAuthorization? = NetworkManager.authorization, contentType: String? = NetworkManager.defaultContentType) -> AnyPublisher<String, Error> {
 var path = NetworkManager.basePath! + "/store/order/{orderId}"
-    path = path.replacingOccurrences(of: "{orderId}", with: String(orderId))
+    path = path.replacingOccurrences(of: "{orderId}", with: orderId.description)
 
 
     return NetworkManager.delete(at: URL(string: path)!, authorization: authorization, contentType: contentType)
@@ -74,7 +74,7 @@ Responses:
 */
 public static func getOrderById(orderId: Int64, authorization: HTTPAuthorization? = NetworkManager.authorization, contentType: String? = NetworkManager.defaultContentType) -> AnyPublisher<_Order, Error> {
 var path = NetworkManager.basePath! + "/store/order/{orderId}"
-    path = path.replacingOccurrences(of: "{orderId}", with: String(orderId))
+    path = path.replacingOccurrences(of: "{orderId}", with: orderId.description)
 
 
     return NetworkManager.getElement(on: URL(string: path)!, authorization: authorization, contentType: contentType)

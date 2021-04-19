@@ -44,7 +44,7 @@
     */
     public static func deletePet(api_key: String?, petId: Int64, authorization: HTTPAuthorization = NetworkManager.authorization!, contentType: String? = NetworkManager.defaultContentType) -> AnyPublisher<String, Error> {
     var path = NetworkManager.basePath! + "/pet/{petId}"
-        path = path.replacingOccurrences(of: "{petId}", with: String(petId))
+        path = path.replacingOccurrences(of: "{petId}", with: petId.description)
 
     var customHeaders = [String : String]()
     customHeaders["api_key"] = api_key?.description ?? ""
@@ -135,7 +135,7 @@
     */
     public static func getPetById(petId: Int64, authorization: HTTPAuthorization = NetworkManager.authorization!, contentType: String? = NetworkManager.defaultContentType) -> AnyPublisher<_Pet, Error> {
     var path = NetworkManager.basePath! + "/pet/{petId}"
-        path = path.replacingOccurrences(of: "{petId}", with: String(petId))
+        path = path.replacingOccurrences(of: "{petId}", with: petId.description)
 
 
         return NetworkManager.getElement(on: URL(string: path)!, authorization: authorization, contentType: contentType)
@@ -207,7 +207,7 @@
     */
     public static func updatePetWithFormNew(betterId: Int64, name: String, authorization: HTTPAuthorization = NetworkManager.authorization!, contentType: String? = NetworkManager.defaultContentType) -> AnyPublisher<String, Error> {
     var path = NetworkManager.basePath! + "/pet/{petId}"
-        path = path.replacingOccurrences(of: "{petId}", with: String(petId))
+        path = path.replacingOccurrences(of: "{petId}", with: petId.description)
     path += "?name=\(name.description)&status=\(status.description)"
 
         return NetworkManager.postElement(authorization: authorization, on: URL(string: path)!, contentType: contentType)
@@ -236,7 +236,7 @@
     */
     public static func uploadFile(petId: Int64, additionalMetadata: String?, element: String?, authorization: HTTPAuthorization = NetworkManager.authorization!, contentType: String? = "application/octet-stream") -> AnyPublisher<_ApiResponse, Error> {
     var path = NetworkManager.basePath! + "/pet/{petId}/uploadImage"
-        path = path.replacingOccurrences(of: "{petId}", with: String(petId))
+        path = path.replacingOccurrences(of: "{petId}", with: petId.description)
     path += "?\(additionalMetadata != nil ? "&additionalMetadata=\(additionalMetadata?.description ?? "")" : "")"
 
         return NetworkManager.postElement(element, authorization: authorization, on: URL(string: path)!, contentType: contentType)
