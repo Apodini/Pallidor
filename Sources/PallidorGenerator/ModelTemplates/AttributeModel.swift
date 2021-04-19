@@ -48,7 +48,7 @@ class AttributeModel: Schema {
     }
     
     private var isPrimitiveType: Bool {
-        refType.isPrimitiveType
+        refType.isPrimitive
     }
     
     /// name of attribute

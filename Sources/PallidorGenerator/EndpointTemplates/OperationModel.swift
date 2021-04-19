@@ -155,7 +155,7 @@ extension OperationModel: CustomStringConvertible {
     
     /// success decoding for method
     var successDecoding: String {
-            successType.isPrimitiveType && (!successType.isPrimitiveDictionary && !successType.isPrimitiveArray)
+            successType.isPrimitiveAndNoCollection
                 ? successType == "String" ? "return String(data: data, encoding: .utf8)!" : "return \(successType)(String(data: data, encoding: .utf8)!)!"
             : "return data"
     }
@@ -249,7 +249,7 @@ authorization: HTTPAuthorization\(
                 // swiftlint:disable:next force_unwrapping
                 !headerParams!.isEmpty ? "var customHeaders = [String : String]()\n\(headerParams!.map { $0.opDescription }.joined(separator: "\n"))" : "")
                 \(parameterGuards.isEmpty ? "" : "\(parameterGuards)\n")\(operationDescription)
-            \(failureTryMap)\(successType.isPrimitiveType && !(successType.isPrimitiveArray || successType.isPrimitiveDictionary) ? "" : "\n.decode(type: \(successType).self, decoder: decoder)")
+            \(failureTryMap)\(successType.isPrimitiveAndNoCollection ? "" : "\n.decode(type: \(successType).self, decoder: decoder)")
                 .receive(on: DispatchQueue.main)
                 .eraseToAnyPublisher()
             }

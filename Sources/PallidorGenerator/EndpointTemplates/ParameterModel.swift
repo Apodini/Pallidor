@@ -68,7 +68,7 @@ struct ParameterModel: CustomStringConvertible {
             }
             
             if let min = self.min {
-                if (self.type == "String" || self.type.isPrimitiveArray) && min == 0 {
+                if (self.type == "String" || self.type.isPrimitiveArrayType) && min == 0 {
                     return nil
                 }
                 return """

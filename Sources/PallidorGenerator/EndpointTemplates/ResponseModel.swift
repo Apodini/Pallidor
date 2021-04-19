@@ -48,13 +48,13 @@ extension ResponseModel {
         
         guard let actualType = TypeAliases.store[type.removePrefix] else {
             if !code.isSuccess {
-                OpenAPIErrorModel.errorTypes.insert(type.isPrimitiveType ? type.removePrefix : type)
+                OpenAPIErrorModel.errorTypes.insert(type.isPrimitive ? type.removePrefix : type)
             }
             return ResponseModel(type: type, formats: formats, detail: response.description, code: code)
         }
         
         if !code.isSuccess {
-            OpenAPIErrorModel.errorTypes.insert(actualType.isPrimitiveType ? actualType.removePrefix : actualType)
+            OpenAPIErrorModel.errorTypes.insert(actualType.isPrimitive ? actualType.removePrefix : actualType)
         }
         return ResponseModel(type: actualType, formats: formats, detail: response.description, code: code)
     }
