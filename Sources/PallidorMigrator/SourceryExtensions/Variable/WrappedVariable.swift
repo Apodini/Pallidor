@@ -114,7 +114,7 @@ class WrappedVariable: Modifiable {
     }
 
     /// Adaption string of variable inside `to()` or `from()` method if variable was replaced
-    lazy var replaceAdaption : (_ isFromConversion: Bool) -> String? = { name in nil }
+    lazy var replaceAdaption : (_ isFromConversion: Bool) -> String? = { _ in nil }
 
     var id: String { self.name }
 

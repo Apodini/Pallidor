@@ -65,7 +65,7 @@ public extension String {
     
     /// returns true if the type defined in this string is a collection (array or dictionary) type in Swift
     var isCollectionType: Bool {
-        first == "[" &&  unwrapped.last == "]"
+        first == "[" && unwrapped.last == "]"
     }
 
     /// returns true if the type defined in this string has a trailing `?`

@@ -16,7 +16,6 @@ extension WrappedVariable {
             : (self.isArray && self.isCustomType ? self.customTypeArrayConvert
                 : (self.isEnum || (self.isCustomType && !self.isTypeAlias) || self.isCustomInternalEnumType ? self.complexConvert
                     : "\(self.name): self.\(self.name)")) : ""
-
     }
 
     /// conversion string of complex types

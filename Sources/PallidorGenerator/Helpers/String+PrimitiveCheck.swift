@@ -18,7 +18,7 @@ extension String {
     
     /// returns true if the type defined in this string is primitive and no collection
     var isPrimitiveAndNoCollection: Bool {
-        !isCollectionType && isPrimitive 
+        !isCollectionType && isPrimitive
     }
     
     /// removes a leading `_` from the string if one exists

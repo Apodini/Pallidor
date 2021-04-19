@@ -23,7 +23,7 @@ enum DictionaryResolver {
             return "[\(ArrayResolver.resolveArrayItemType(schema: items))]"
          case .reference:
             guard let name = try? ReferenceResolver.resolveName(schema: schema) else {
-                fatalError("Root level array must have an identifier.")
+                fatalError("Dictionary value types must have an identifier.")
             }
             return name
          default:

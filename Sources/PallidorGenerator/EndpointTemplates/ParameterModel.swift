@@ -91,7 +91,6 @@ struct ParameterModel: CustomStringConvertible {
 }
 
 extension ParameterModel {
-    
     var isPath: Bool {
         if case .path = location {
             return true
@@ -122,7 +121,6 @@ extension ParameterModel {
 }
 
 extension Array where Element == ParameterModel {
-    
     func filtered(_ isIncluded: (Element) -> Bool) -> Self {
         filter(isIncluded).sorted(by: { $0.name < $1.name })
     }

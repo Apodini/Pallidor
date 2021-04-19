@@ -1,7 +1,6 @@
 import Foundation
 
 public extension Array where Element: Equatable {
-    
     /// `contains(_:)` for optionals
     func contains(_ element: Element?) -> Bool {
         guard let element = element else { return false }

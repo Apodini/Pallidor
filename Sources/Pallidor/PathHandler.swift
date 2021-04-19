@@ -26,7 +26,6 @@ struct PathHandler {
             try? fileManager.removeItem(atPath: packagePath)
         }
         #endif
-        
     }
     
     /// Creates the directory structure for the Swift Package to be generated

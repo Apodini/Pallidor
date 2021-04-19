@@ -16,7 +16,6 @@ protocol CodeTemplate {
 }
 
 extension CodeTemplate {
- 
     /// writes the rendered source code string representation to disk
     /// - Parameter modifiable: modifiable
     func write(_ modifiable: Modifiable, to path: Path) throws -> URL? {
