@@ -86,7 +86,7 @@ let package = Package(
         
         .testTarget(
             name: "PallidorGeneratorTests",
-            dependencies: ["PallidorGenerator", "OpenAPIKit"],
+            dependencies: ["PallidorGenerator", "PallidorUtils", "OpenAPIKit"],
             resources: [
                 .process("Resources/petstore.md"),
                 .process("Resources/petstore_unmodified.md"),

@@ -76,7 +76,7 @@ enum PropertyResolver {
             return AttributeModel(
                 name: name,
                 type: try ReferenceResolver.resolveName(schema: schema),
-                isRequired: schema.required,
+                isRequired: false, // TODO is not correct
                 detail: nil
             )
         case .array(let general, let arrayContext):
@@ -94,15 +94,16 @@ enum PropertyResolver {
         case .all(of: _):
             throw ResolvementError.notSupported(msg: "All Of not implemented: " + name)
         case .object(let general, let objectContext):
-            guard (objectContext.additionalProperties?.b) != nil  else {
+            guard let schema = objectContext.additionalProperties?.b else {
                 throw ResolvementError.nestedObjectError(msg: "Nested attribute found in: " + name)
             }
             return AttributeModel(
                 name: name,
-                type: "[String:String]",
+                type: "[String:\(DictionaryResolver.resolveValueItem(schema: schema))]",
                 isRequired: general.required,
                 detail: general.description
             )
+            
         case .fragment:
             throw ResolvementError.notSupported(msg: "Fragment not implemented: " + name)
         case .any(of: _, core: _):

@@ -24,7 +24,7 @@ extension WrappedStruct {
         self.localName = rename
 
         for method in methods {
-            method.modify(change: change)
+            method.accept(change: change)
         }
     }
 

@@ -94,7 +94,7 @@ class MethodTests: XCTestCase {
             fatalError("Initialization of SUT failed.")
         }
         
-        current.modify(change: main.migrationGuide.changes[0])
+        current.accept(change: main.migrationGuide.changes[0])
       
         let result = APITemplate().render(current)
 

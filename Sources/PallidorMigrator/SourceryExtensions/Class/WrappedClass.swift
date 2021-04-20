@@ -116,7 +116,7 @@ class WrappedClass: ModifiableFile {
     /// list of enums inside this class
     var nestedEnums: [WrappedEnum]?
 
-    func modify(change: Change) {
+    func accept(change: Change) {
         modified = true
         switch change.changeType {
         case .add: handleAddedProperty(change.typed(AddChange.self))

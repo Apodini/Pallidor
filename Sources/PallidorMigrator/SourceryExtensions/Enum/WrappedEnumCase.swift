@@ -49,7 +49,7 @@ class WrappedEnumCase: Modifiable {
 
     var annotation: Annotation?
 
-    func modify(change: Change) {
+    func accept(change: Change) {
         self.modified = true
         switch change.changeType {
         case .delete:

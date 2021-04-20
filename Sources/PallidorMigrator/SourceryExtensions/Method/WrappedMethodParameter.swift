@@ -18,7 +18,7 @@ class WrappedMethodParameter: Modifiable {
 
     var modified: Bool = false
 
-    func modify(change: Change) {
+    func accept(change: Change) {
         self.modified = true
         switch change.changeType {
         case .add: handleAddChange(change.typed(AddChange.self))

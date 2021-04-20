@@ -45,7 +45,7 @@ class WrappedStruct: ModifiableFile {
 }
 
 extension WrappedStruct {
-    func modify(change: Change) {
+    func accept(change: Change) {
         self.modified = true
 
         switch change.changeType {
@@ -67,15 +67,7 @@ extension WrappedStruct {
             }
         }
 
-        delegateChangeToMethods(change)
-    }
-
-    fileprivate func delegateChangeToMethods(_ change: Change) {
-        for method in methods {
-            if case .method(let target) = change.object, target.operationId == method.id {
-                method.modify(change: change)
-            }
-        }
+        methods.accept(change: change)
     }
 }
 

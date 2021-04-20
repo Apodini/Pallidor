@@ -111,7 +111,7 @@ extension WrappedEnum {
                                     change.fallbackValue!.id!.lowerFirst) // swiftlint:disable:this force_unwrapping
                                                 || $0.name == change.fallbackValue!.id // swiftlint:disable:this force_unwrapping
             }) {
-                targetCase.modify(change: change)
+                targetCase.accept(change: change)
             }
         case .signature:
             self.annotation = .unavailable(msg: "Enum was removed in API version xxx")

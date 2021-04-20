@@ -39,7 +39,7 @@ class ErrorEnumTests: XCTestCase {
         let changes = enumDeletedCase.compareCases(enumFacade)
         
         for change in changes {
-            enumFacade.modify(change: change)
+            enumFacade.accept(change: change)
         }
         
         let result = ErrorEnumTemplate().render(enumFacade)
@@ -69,7 +69,7 @@ class ErrorEnumTests: XCTestCase {
         let changes = enumAddedCases.compareCases(enumFacade)
         
         for change in changes {
-            enumFacade.modify(change: change)
+            enumFacade.accept(change: change)
         }
         
         let result = ErrorEnumTemplate().render(enumFacade)

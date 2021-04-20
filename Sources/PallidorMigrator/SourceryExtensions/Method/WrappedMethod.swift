@@ -19,7 +19,7 @@ class WrappedMethod: Modifiable {
     /// true if a parameter was replaced by a different type
     var paramsRequireJSContext = false
 
-    func modify(change: Change) {
+    func accept(change: Change) {
         self.modified = true
 
         switch change.changeType {
@@ -128,5 +128,13 @@ class WrappedMethod: Modifiable {
                 .map({\(type)($0)!})
                 """
             )
+    }
+}
+
+extension Array where Element == WrappedMethod {
+    func accept(change: Change) {
+        if case let .method(target) = change.object {
+            first { $0.id == target.operationId }?.accept(change: change)
+        }
     }
 }

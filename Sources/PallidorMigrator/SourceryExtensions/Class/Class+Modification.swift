@@ -16,7 +16,7 @@ extension WrappedClass {
 
         _ = self.variables.filter { variable -> Bool in
             if addedIds.contains(variable.name) {
-                variable.modify(change: addChange)
+                variable.accept(change: addChange)
                 return false
             }
             return true
@@ -55,7 +55,7 @@ extension WrappedClass {
                 isPrimitive: deletedProperty.type.isPrimitiveType)
         )
 
-        property.modify(change: delChange)
+        property.accept(change: delChange)
 
         self.variables.append(property)
     }
@@ -76,7 +76,7 @@ extension WrappedClass {
         }
 
         for targetEnum in enums {
-            targetEnum.modify(change: delChange)
+            targetEnum.accept(change: delChange)
         }
     }
 
@@ -91,7 +91,7 @@ extension WrappedClass {
             fatalError("No replacement provided for replacing model.")
         }
 
-        replacement.modify(change: replaceChange)
+        replacement.accept(change: replaceChange)
     }
 
     /// handle renaming a property
@@ -105,7 +105,7 @@ extension WrappedClass {
             fatalError("Renamed model not provided.")
         }
 
-        renamed.modify(change: renameChange)
+        renamed.accept(change: renameChange)
     }
 
     /// handle renaming a model
@@ -159,12 +159,12 @@ extension WrappedClass {
 
         if let enums = nestedEnums {
             for targetEnum in enums {
-                targetEnum.modify(change: replaceChange)
+                targetEnum.accept(change: replaceChange)
             }
         }
 
         for property in self.variables {
-            property.modify(change: replaceChange)
+            property.accept(change: replaceChange)
         }
 
         self.facadeFrom = { () in

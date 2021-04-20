@@ -28,7 +28,7 @@ class Migration: Migrating {
             throw RuleError.notSupported(msg: "Unsupported rule: \(executeOn.id) modified by \(change.changeType)")
         }
         if !executed {
-            executeOn.modify(change: change)
+            executeOn.accept(change: change)
             executed = true
         }
     }

@@ -117,7 +117,7 @@ class MigrationGuide: Decodable {
         }
 
         if let modifiable = modifiable {
-            modifiable.modify(change: change)
+            modifiable.accept(change: change)
         }
     }
 }

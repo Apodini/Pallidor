@@ -28,7 +28,7 @@ class ErrorFacade: Facade {
                 fatalError("Could not detect error enum.")
             }
             for targetCase in newErrorEnum.compareCases(facadeErrorEnum) {
-                facadeErrorEnum.modify(change: targetCase)
+                facadeErrorEnum.accept(change: targetCase)
             }
             guard let url = try template.write(facadeErrorEnum, to: path) else {
                 fatalError("Attempted to write empty Error Enum to file.")

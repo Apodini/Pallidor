@@ -117,7 +117,7 @@ class WrappedEnum: ModifiableFile {
         )
     }
     
-    func modify(change: Change) {
+    func accept(change: Change) {
         self.modified = true
         switch change.changeType {
         case .add:

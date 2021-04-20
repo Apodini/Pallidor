@@ -24,7 +24,7 @@ extension WrappedMethod {
                 // must provide renamed object due to migration guide constraints
                 // swiftlint:disable:next force_unwrapping
                 let renamedParam = self.parameters.first(where: { $0.name == change.renamed!.id })!
-                renamedParam.modify(change: change)
+                renamedParam.accept(change: change)
             default:
                 fatalError("Target not supported for RenameChange of method.")
             }
@@ -62,7 +62,7 @@ extension WrappedMethod {
             if change.target == .contentBody {
                 deletedParam.name = "element"
             }
-            deletedParam.modify(change: change)
+            deletedParam.accept(change: change)
             guard let insertIndex = self.parameters
                 .firstIndex(where: { $0.name > deletedParam.name
                                 || $0.name == "element"
@@ -101,13 +101,13 @@ extension WrappedMethod {
                 guard let addedParameter = self.parameters.first(where: { $0.id == param.id }) else {
                     fatalError("Added parameter of migration guide was not found in source code.")
                 }
-                addedParameter.modify(change: change)
+                addedParameter.accept(change: change)
             }
         case .contentBody:
             guard let body = self.parameters.first(where: { $0.name == "element" }) else {
                 fatalError("No element for content body found in library layer.")
             }
-            body.modify(change: change)
+            body.accept(change: change)
         default:
             fatalError("Target type not supported for adding to method.")
         }
@@ -127,7 +127,7 @@ extension WrappedMethod {
                 fatalError("Replaced value is malformed. Must be parameter.")
             }
             let original = createMethodParameter(param: param)
-            original.modify(change: change)
+            original.accept(change: change)
             self.parameters[replaceIndex] = original
             self.paramsRequireJSContext = true
         case .returnValue:
@@ -149,7 +149,7 @@ extension WrappedMethod {
             guard let element = self.parameters.first(where: { $0.name == "element" }) else {
                 fatalError("Content-body parameter 'element' was not found.")
             }
-            element.modify(change: change)
+            element.accept(change: change)
             self.paramsRequireJSContext = true
         case .signature:
             replaceMethod(change: change)
@@ -165,7 +165,7 @@ extension WrappedMethod {
         guard let changeMethod = codeStore.method(method.operationId) else {
             fatalError("Changed method could not be found in previous facade.")
         }
-        changeMethod.modify(change: change)
+        changeMethod.accept(change: change)
         if let changeEndpoint = codeStore.endpoint(method.definedIn, scope: .current) {
             changeEndpoint.specialImports.insert("import JavaScriptCore")
             changeEndpoint.methods.append(changeMethod)
@@ -205,7 +205,7 @@ extension WrappedMethod {
             guard let rChange = returnTypeChange else {
                 fatalError("Return type change is malformed.")
             }
-            methodToModify.modify(change: rChange)
+            methodToModify.accept(change: rChange)
             if codeStore.method(methodToModify.shortName, scope: .current) == nil {
                 guard let endpoint = codeStore.endpoint(targetMethod.definedIn, scope: .current) else {
                     fatalError("Endpoint could not be found in library layer: \(targetMethod.definedIn)")

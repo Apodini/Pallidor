@@ -18,6 +18,7 @@ enum ObjectResolver {
     /// - Returns: resolved object model
     static func resolve(name: String, context: JSONSchemaContext, schema: JSONSchema.ObjectContext) -> ObjectModel {
         let objModel = ObjectModel(name: name, attributes: [], detail: context.description)
+        #warning("isRequired for each attribute should be set out of `schema.requiredProperties`. Needs adjustment in test cases")
         objModel.attributes = schema.properties.map { attributeName, attributeSchema -> AttributeModel in
             guard let attribute = try? PropertyResolver.resolve(name: attributeName, schema: attributeSchema) else {
                 fatalError("Attribute could not be resolved for schema: \(name)")
