@@ -63,7 +63,6 @@ public struct PallidorMigrator {
             modifiables: codeStore.models(),
             targetDirectory: modelDirectory,
             migrationSet: migrationSet
-            
         )
         let enumFacade = Facade(
             EnumTemplate.self,

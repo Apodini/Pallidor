@@ -27,7 +27,7 @@ enum DictionaryResolver {
             }
             return name
          default:
-             return ""
+             return "String"
          }
      }
 }

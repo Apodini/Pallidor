@@ -191,5 +191,4 @@ fileprivate extension WrappedEnum {
                 })
         }
     }
-    
 }

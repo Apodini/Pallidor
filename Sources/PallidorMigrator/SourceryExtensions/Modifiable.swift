@@ -8,7 +8,7 @@
 import Foundation
 
 /// Protocol all source code types (structs, enums, etc.) must conform to
-protocol Modifiable: class {
+protocol Modifiable: AnyObject {
     /// identifier of source code type
     var id: String { get }
     /// true if migration affected this modifiable
@@ -28,7 +28,6 @@ protocol ModifiableFile: Modifiable {
 }
 
 extension ModifiableFile {
-    
     /// Accepts the changes of `migrationSet`
     /// - Parameter migrationSet: set of changes
     /// - Throws: error if any of the changes is not supported for migration
@@ -36,4 +35,3 @@ extension ModifiableFile {
         try migrationSet.activate(for: self)
     }
 }
-

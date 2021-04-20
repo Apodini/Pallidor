@@ -14,7 +14,7 @@ class ErrorFacade: Facade {
         super.init(ErrorEnumTemplate.self, modifiables: modifiables, targetDirectory: targetDirectory, migrationSet: nil)
     }
     
-    /// Compares error `APIErrors` enums, applies changes if any, persists the files and returns back the path urls of each file
+    /// Compares `APIErrors` enum cases, applies changes if any, persists the files and returns back the path urls of each file
     /// - Throws: error if writing fails
     /// - Returns: List of file URLs
     override func persist() throws -> [URL] {
@@ -43,4 +43,3 @@ class ErrorFacade: Facade {
         return [url]
     }
 }
-
