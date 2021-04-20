@@ -7,26 +7,22 @@
 
 import Foundation
 import PathKit
-import SourceryFramework
 
-/// Used to write modified error enum templates to swift files
-struct ErrorFacade: Facade {
-    var migrationSet: MigrationSet?
-
-    /// here the modifiables array contains only two values: _APIError & APIError
-    var modifiables: [Modifiable]
-    var targetDirectory: Path
-
-    /// Persists error enums to files
+/// Not handled via migration guide, but through local comparison of enums
+class ErrorFacade: Facade {
+    init(modifiables: [ModifiableFile], targetDirectory: Path) {
+        super.init(ErrorEnumTemplate.self, modifiables: modifiables, targetDirectory: targetDirectory, migrationSet: nil)
+    }
+    
+    /// Compares error `APIErrors` enums, applies changes if any, persists the files and returns back the path urls of each file
     /// - Throws: error if writing fails
-    /// - Returns: `[URL]` of file URLs
-    func persist() throws -> [URL] {
-        let template = ErrorEnumTemplate()
-
-        guard let newErrorEnum = modifiables[0] as? WrappedEnum else {
+    /// - Returns: List of file URLs
+    override func persist() throws -> [URL] {
+        guard let newErrorEnum = modifiables.first as? WrappedEnum else {
             fatalError("Could not detect enum.")
         }
 
+        let path = targetDirectory + Path("APIErrors.swift")
         if modifiables.count == 2 {
             guard let facadeErrorEnum = modifiables[1] as? WrappedEnum else {
                 fatalError("Could not detect error enum.")
@@ -34,22 +30,17 @@ struct ErrorFacade: Facade {
             for targetCase in newErrorEnum.compareCases(facadeErrorEnum) {
                 facadeErrorEnum.modify(change: targetCase)
             }
-            guard let result = try? template.write(
-                    facadeErrorEnum,
-                    to: targetDirectory + Path("APIErrors.swift")
-            ) else {
-                fatalError("Could not write ErrorEnum to file.")
+            guard let url = try template.write(facadeErrorEnum, to: path) else {
+                fatalError("Attempted to write empty Error Enum to file.")
             }
-            return [result]
+            return [url]
         }
         
-        guard let result = try? template.write(
-                newErrorEnum,
-                to: targetDirectory + Path("APIErrors.swift")
-        ) else {
-            fatalError("Could not write new Error Enum to file.")
+        guard let url = try template.write(newErrorEnum, to: path) else {
+            fatalError("Attempted to write empty Error Enum to file.")
         }
 
-        return [result]
+        return [url]
     }
 }
+

@@ -9,8 +9,12 @@ import Foundation
 import SourceryRuntime
 
 /// Wraps class type of Sourcery
-class WrappedClass: Modifiable {
+class WrappedClass: ModifiableFile {
+    /// ModifiableFile protocol
+    var id: String { localName }
+    var modified: Bool = false
     var annotation: Annotation?
+    var fileName: String { localName }
 
     internal init(
         inheritedTypes: [String],
@@ -107,11 +111,7 @@ class WrappedClass: Modifiable {
         }
         """
     }
-
-    /// Modifiable protocol
-    var id: String { self.localName }
-    var modified: Bool = false
-    /// true if class contains a replaced property
+    
     var replacedProperty = false
     /// list of enums inside this class
     var nestedEnums: [WrappedEnum]?
@@ -119,28 +119,11 @@ class WrappedClass: Modifiable {
     func modify(change: Change) {
         modified = true
         switch change.changeType {
-        case .add:
-            guard let change = change as? AddChange else {
-                fatalError("Change is malformed: AddChange")
-            }
-            handleAddedProperty(change)
-        case .delete:
-            guard let change = change as? DeleteChange else {
-                fatalError("Change is malformed: DeleteChange")
-            }
-            handleDeleted(change)
-        case .replace:
-            guard let change = change as? ReplaceChange else {
-                fatalError("Change is malformed: ReplaceChange")
-            }
-            handleReplaced(change)
-        case .rename:
-            guard let change = change as? RenameChange else {
-                fatalError("Change is malformed: RenameChange")
-            }
-            handleRenamed(change)
-        case .nil:
-            fatalError("No change type detected.")
+        case .add: handleAddedProperty(change.typed(AddChange.self))
+        case .delete: handleDeleted(change.typed(DeleteChange.self))
+        case .replace: handleReplaced(change.typed(ReplaceChange.self))
+        case .rename: handleRenamed(change.typed(RenameChange.self))
+        case .nil: fatalError("No change type detected.")
         }
     }
 

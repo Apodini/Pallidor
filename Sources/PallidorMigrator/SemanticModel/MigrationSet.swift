@@ -23,36 +23,25 @@ class MigrationSet {
     /// - Parameter modifiable: the modifiable which is about to be changed
     /// - Throws: error if change type could not be detected
     /// - Returns: the migrated modifiable
-    // method requires that the current complexity to identify
-    // all change types and their respective targets.
-    // swiftlint:disable:next cyclomatic_complexity
-    func activate(for modifiable: Modifiable?) throws -> Modifiable {
-        guard let modifiable = modifiable else {
-            fatalError("Tried to activate a migration without providing a modifiable.")
-        }
-        var migration: Migrating
+    func activate(for modifiable: ModifiableFile) throws {
         for change in guide.changes {
             switch change.object {
             case .endpoint(let endpoint):
                 if endpoint.route == modifiable.id {
-                    migration = createMigration(change: change, target: modifiable)
-                    migrations.append(migration)
+                    migrations.append(createMigration(change: change, target: modifiable))
                 }
             case .method(let method):
                 if method.definedIn == modifiable.id {
-                    migration = createMigration(change: change, target: modifiable)
-                    migrations.append(migration)
+                    migrations.append(createMigration(change: change, target: modifiable))
                 }
             case .model(let model):
                 if model.id == modifiable.id {
-                    migration = createMigration(change: change, target: modifiable)
-                    migrations.append(migration)
+                    migrations.append(createMigration(change: change, target: modifiable))
                 }
 
             case .enum(let enumModel):
                 if enumModel.id == modifiable.id {
-                    migration = createMigration(change: change, target: modifiable)
-                    migrations.append(migration)
+                    migrations.append(createMigration(change: change, target: modifiable))
                 }
             }
         }
@@ -60,8 +49,6 @@ class MigrationSet {
         for mig in migrations {
             try mig.execute()
         }
-
-        return modifiable
     }
     
     /// creates the migration required to adapt the modifiable
@@ -84,7 +71,7 @@ class MigrationSet {
             if case .method(let method) = change.object, case .signature = change.target, method.definedIn != target.id {
                 guard let target = CodeStore
                         .getInstance()
-                        .getMethod(method.operationId)
+                        .method(method.operationId)
                 else {
                     fatalError("Target replacement method was not found.")
                 }
@@ -99,12 +86,14 @@ class MigrationSet {
     fileprivate func createDeleteMigration(_ change: Change, _ target: Modifiable) -> Migrating {
         if case .enum(let targetEnum) = change.object, let enumId = targetEnum.id {
             if case .case = change.target {
-                guard let facade = CodeStore.getInstance().getEnum(enumId) else {
+                guard let facade = CodeStore.getInstance().enum(enumId) else {
                     fatalError("Enum was not found in previous facade.")
                 }
-                guard let target = target as? WrappedEnum, let change = change as? DeleteChange else {
-                    fatalError("Target is no enum or change type is malformed.")
+                guard let target = target as? WrappedEnum else {
+                    fatalError("Target is no enum.")
                 }
+                
+                let change = change.typed(DeleteChange.self)
                 // Change must specify a fallback value due to migration guide constraints.
                 // swiftlint:disable:next force_unwrapping
                 target.cases.append(facade.cases.first(where: { $0.name == change.fallbackValue!.id! })!)

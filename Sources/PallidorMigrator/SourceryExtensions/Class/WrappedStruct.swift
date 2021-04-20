@@ -9,15 +9,42 @@ import Foundation
 import SourceryRuntime
 
 /// Wraps struct types of Sourcery
-class WrappedStruct: Modifiable {
+class WrappedStruct: ModifiableFile {
+    /// ModifiableFile protocol
     var annotation: Annotation?
-
     var id: String {
         "/\(localName.replacingOccurrences(of: "API", with: "").replacingOccurrences(of: "_", with: "").lowercased())"
     }
 
     var modified: Bool = false
+    var fileName: String { localName.removePrefix }
 
+    /// contains additional imports besides Foundation if necessary
+    var specialImports = Set<String>()
+    /// name of struct
+    var localName: String
+    /// variables of struct
+    var variables: [WrappedVariable]
+    /// methods of struct
+    var methods: [WrappedMethod]
+    
+    // MARK: - Initializers
+    internal init(localName: String, variables: [WrappedVariable], methods: [WrappedMethod]) {
+        self.localName = localName
+        self.variables = variables
+        self.methods = methods
+    }
+
+    convenience init(from: SourceryRuntime.Struct) {
+        self.init(
+            localName: from.localName.removePrefix,
+            variables: from.variables.map { WrappedVariable(from: $0) },
+            methods: from.methods.map { WrappedMethod(from: $0) }
+        )
+    }
+}
+
+extension WrappedStruct {
     func modify(change: Change) {
         self.modified = true
 
@@ -25,16 +52,12 @@ class WrappedStruct: Modifiable {
         case .replace:
             specialImports.insert("import JavaScriptCore")
         case .rename:
-            guard let change = change as? RenameChange else {
-                fatalError("Change is malformed: RenameChange")
-            }
+            let change = change.typed(RenameChange.self)
             if case .signature = change.target, case .endpoint = change.object {
                 handleEndpointRenameChange(change)
             }
         case .delete:
-            guard let change = change as? DeleteChange else {
-                fatalError("Change is malformed: DeleteChange")
-            }
+            let change = change.typed(DeleteChange.self)
             if case .signature = change.target, case .endpoint = change.object {
                 handleEndpointDeletedChange(change)
             }
@@ -54,29 +77,6 @@ class WrappedStruct: Modifiable {
             }
         }
     }
-
-    internal init(localName: String, variables: [WrappedVariable], methods: [WrappedMethod]) {
-        self.localName = localName
-        self.variables = variables
-        self.methods = methods
-    }
-
-    convenience init(from: SourceryRuntime.Struct) {
-        self.init(
-            localName: from.localName.removePrefix,
-            variables: from.variables.map { WrappedVariable(from: $0) },
-            methods: from.methods.map { WrappedMethod(from: $0) }
-        )
-    }
-
-    /// contains additional imports besides Foundation if necessary
-    var specialImports = Set<String>()
-    /// name of struct
-    var localName: String
-    /// variables of struct
-    var variables: [WrappedVariable]
-    /// methods of struct
-    var methods: [WrappedMethod]
 }
 
 extension WrappedStruct: NSCopying {

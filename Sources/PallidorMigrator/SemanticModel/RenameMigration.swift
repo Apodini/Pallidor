@@ -13,9 +13,6 @@ final class RenameMigration: Migration {
         super.init(solvable: solvable, executeOn: executeOn, change: change)
     }
     convenience init(solvable: Bool, executeOn: Modifiable, change: Changing) {
-        guard let change = change as? RenameChange else {
-            fatalError("Change malformed: RenameChange")
-        }
-        self.init(solvable: solvable, executeOn: executeOn, change: change)
+        self.init(solvable: solvable, executeOn: executeOn, change: change.typed(RenameChange.self))
     }
 }

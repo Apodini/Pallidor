@@ -45,7 +45,7 @@ class MethodParameterTests: XCTestCase {
         let fp = try! FileParser(contents: readResource(Resources.PetEndpointReplaceParameter32.rawValue))
         // swiftlint:disable:next force_try
         let code = try! fp.parse()
-        guard let current = WrappedTypes(types: code.types).getModifiable() else {
+        guard let current = WrappedTypes(types: code.types).modifiableFile else {
             fatalError("Could not retrieve current modifiable.")
         }
         
@@ -53,7 +53,7 @@ class MethodParameterTests: XCTestCase {
         let fp2 = try! FileParser(contents: readResource(Resources.PetEndpointFacadeReplacedMethod.rawValue))
         // swiftlint:disable:next force_try
         let code2 = try! fp2.parse()
-        guard let facade = WrappedTypes(types: code2.types).getModifiable() else {
+        guard let facade = WrappedTypes(types: code2.types).modifiableFile else {
             fatalError("Could not retrieve previous modifiable.")
         }
         
@@ -66,7 +66,7 @@ class MethodParameterTests: XCTestCase {
         
         guard let migratedModifiable = CodeStore
                 .getInstance()
-                .getEndpoint("/pet", searchInCurrent: true) else {
+                .endpoint("/pet", scope: .current) else {
             fatalError("Migration failed.")
         }
         
@@ -106,7 +106,7 @@ class MethodParameterTests: XCTestCase {
         let fp = try! FileParser(contents: readResource(Resources.PetEndpointReplaceParameterMN.rawValue))
         // swiftlint:disable:next force_try
         let code = try! fp.parse()
-        guard let current = WrappedTypes(types: code.types).getModifiable() else {
+        guard let current = WrappedTypes(types: code.types).modifiableFile else {
             fatalError("Could not retrieve current modifiable.")
         }
         
@@ -114,7 +114,7 @@ class MethodParameterTests: XCTestCase {
         let fp2 = try! FileParser(contents: readResource(Resources.PetEndpointFacadeReplacedMethod.rawValue))
         // swiftlint:disable:next force_try
         let code2 = try! fp2.parse()
-        guard let facade = WrappedTypes(types: code2.types).getModifiable() else {
+        guard let facade = WrappedTypes(types: code2.types).modifiableFile else {
             fatalError("Could not retrieve previous modifiable.")
         }
         
@@ -127,7 +127,7 @@ class MethodParameterTests: XCTestCase {
         
         guard let migratedModifiable = CodeStore
                 .getInstance()
-                .getEndpoint("/pet", searchInCurrent: true) else {
+                .endpoint("/pet", scope: .current) else {
             fatalError("Migration failed.")
         }
         
@@ -167,7 +167,7 @@ class MethodParameterTests: XCTestCase {
         let fp = try! FileParser(contents: readResource(Resources.PetEndpointReplaceParameterMN.rawValue))
         // swiftlint:disable:next force_try
         let code = try! fp.parse()
-        guard let current = WrappedTypes(types: code.types).getModifiable() else {
+        guard let current = WrappedTypes(types: code.types).modifiableFile else {
             fatalError("Could not retrieve current modifiable.")
         }
         
@@ -175,7 +175,7 @@ class MethodParameterTests: XCTestCase {
         let fp2 = try! FileParser(contents: readResource(Resources.PetEndpointFacadeReplacedMethod.rawValue))
         // swiftlint:disable:next force_try
         let code2 = try! fp2.parse()
-        guard let facade = WrappedTypes(types: code2.types).getModifiable() else {
+        guard let facade = WrappedTypes(types: code2.types).modifiableFile else {
             fatalError("Could not retrieve previous modifiable.")
         }
         
@@ -188,7 +188,7 @@ class MethodParameterTests: XCTestCase {
         
         guard let migratedModifiable = CodeStore
                 .getInstance()
-                .getEndpoint("/pet", searchInCurrent: true) else {
+                .endpoint("/pet", scope: .current) else {
             fatalError("Migration failed.")
         }
         

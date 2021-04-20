@@ -54,46 +54,52 @@ public struct PallidorMigrator {
         guard let codeStore = self.codeStore else {
             fatalError("Code Store could not be initialized.")
         }
-
-        var filePaths = [URL]()
+        
         let modelDirectory = targetDirectory + Path("Models")
         let apiDirectory = targetDirectory + Path("APIs")
 
-        let modelFacade = ModelFacade(
-            modifiables: codeStore.getModels(),
+        let modelFacade = Facade(
+            ModelTemplate.self,
+            modifiables: codeStore.models(),
             targetDirectory: modelDirectory,
-            migrationSet: self.migrationSet
+            migrationSet: migrationSet
+            
         )
-        let enumFacade = EnumFacade(
-            modifiables: codeStore.getEnums(),
+        let enumFacade = Facade(
+            EnumTemplate.self,
+            modifiables: codeStore.enums(),
             targetDirectory: modelDirectory,
-            migrationSet: self.migrationSet
+            migrationSet: migrationSet
         )
-        let apiFacade = APIFacade(
-            modifiables: codeStore.getEndpoints(),
+        let apiFacade = Facade(
+            APITemplate.self,
+            modifiables: codeStore.endpoints(),
             targetDirectory: apiDirectory,
             migrationSet: self.migrationSet
         )
-        var errorFacade: ErrorFacade
-
+        
+        let errorEnums: [ModifiableFile]
+        
         if codeStore.hasFacade {
-            guard let newErrors = codeStore.getEnum("OpenAPIError", searchInCurrent: true),
-                  let previousErrors = codeStore.getEnum("OpenAPIError") else {
+            guard let newErrors = codeStore.enum("OpenAPIError", scope: .current),
+                  let previousErrors = codeStore.enum("OpenAPIError") else {
                 fatalError("New or previous errors could not be retrieved.")
             }
-            errorFacade = ErrorFacade(modifiables: [newErrors, previousErrors], targetDirectory: targetDirectory)
+            errorEnums = [newErrors, previousErrors]
         } else {
-            guard let newErrors = codeStore.getEnum("OpenAPIError", searchInCurrent: true) else {
+            guard let newErrors = codeStore.enum("OpenAPIError", scope: .current) else {
                 fatalError("Previous errors could not be retrieved.")
             }
-            errorFacade = ErrorFacade(modifiables: [newErrors], targetDirectory: targetDirectory)
+            errorEnums = [newErrors]
         }
+        
+        let errorFacade = ErrorFacade(modifiables: errorEnums, targetDirectory: targetDirectory)
 
-        filePaths.append(contentsOf: try modelFacade.persist())
-        filePaths.append(contentsOf: try apiFacade.persist())
-        filePaths.append(contentsOf: try enumFacade.persist())
-        filePaths.append(contentsOf: try errorFacade.persist())
-
-        return filePaths
+        return [
+            try modelFacade.persist(),
+            try apiFacade.persist(),
+            try enumFacade.persist(),
+            try errorFacade.persist()
+        ].flatMap { $0 }
     }
 }

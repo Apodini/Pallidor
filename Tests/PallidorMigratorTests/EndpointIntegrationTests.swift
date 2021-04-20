@@ -60,7 +60,7 @@ class EndpointIntegrationTests: XCTestCase {
         let fp = try! FileParser(contents: readResource(Resources.PetEndpointRenamedAndReplacedAndDeletedMethod.rawValue))
         // swiftlint:disable:next force_try
         let code = try! fp.parse()
-        guard let current = WrappedTypes(types: code.types).getModifiable() else {
+        guard let current = WrappedTypes(types: code.types).modifiableFile else {
             fatalError("Could not retrieve current modifiable.")
         }
         
@@ -70,7 +70,7 @@ class EndpointIntegrationTests: XCTestCase {
         let code2 = try! fp2.parse()
         let facade = WrappedTypes(types: code2.types)
         
-        guard let modifiable = facade.getModifiable() else {
+        guard let modifiable = facade.modifiableFile else {
             fatalError("Could not retrieve previous modifiable.")
         }
         
@@ -82,9 +82,9 @@ class EndpointIntegrationTests: XCTestCase {
                 migrationGuidePath: nil,
                 migrationGuideContent: renameEndpointAndReplaceAndDeleteMethodChange
             )
-            let modified = try sut.migrationSet.activate(for: current)
+            try current.accept(sut.migrationSet)
             
-            let result = APITemplate().render(modified)
+            let result = APITemplate().render(current)
             
             XCTAssertEqual(
                 result,
@@ -133,7 +133,7 @@ class EndpointIntegrationTests: XCTestCase {
         let fp = try! FileParser(contents: readResource(Resources.PetEndpointRenamedAndReplacedMethod.rawValue))
         // swiftlint:disable:next force_try
         let code = try! fp.parse()
-        guard let current = WrappedTypes(types: code.types).getModifiable() else {
+        guard let current = WrappedTypes(types: code.types).modifiableFile else {
             fatalError("Could not retrieve current modifiable.")
         }
         
@@ -143,7 +143,7 @@ class EndpointIntegrationTests: XCTestCase {
         let code2 = try! fp2.parse()
         let facade = WrappedTypes(types: code2.types)
         
-        guard let modifiable = facade.getModifiable() else {
+        guard let modifiable = facade.modifiableFile else {
             fatalError("Could not retrieve previous modifiable.")
         }
         
@@ -156,9 +156,9 @@ class EndpointIntegrationTests: XCTestCase {
                 migrationGuideContent: renameEndpointAndReplaceMethodChange
             )
             
-            let modified = try sut.migrationSet.activate(for: current)
+            try current.accept(sut.migrationSet)
             
-            let result = APITemplate().render(modified)
+            let result = APITemplate().render(current)
             
             XCTAssertEqual(
                 result,
@@ -202,7 +202,7 @@ class EndpointIntegrationTests: XCTestCase {
         // swiftlint:disable:next force_try
         let code = try! fp.parse()
         
-        guard let current = WrappedTypes(types: code.types).getModifiable() else {
+        guard let current = WrappedTypes(types: code.types).modifiableFile else {
             fatalError("Could not retrieve current modifiable.")
         }
         
@@ -212,7 +212,7 @@ class EndpointIntegrationTests: XCTestCase {
         let code2 = try! fp2.parse()
         let facade = WrappedTypes(types: code2.types)
         
-        guard let modifiable = facade.getModifiable() else {
+        guard let modifiable = facade.modifiableFile else {
             fatalError("Could not retrieve previous modifiable.")
         }
         
@@ -225,9 +225,9 @@ class EndpointIntegrationTests: XCTestCase {
                 migrationGuideContent: renameEndpointAndDeletedMethodChange
             )
             
-            let modified = try sut.migrationSet.activate(for: current)
+            try current.accept(sut.migrationSet)
             
-            let result = APITemplate().render(modified)
+            let result = APITemplate().render(current)
             
             XCTAssertEqual(
                 result,

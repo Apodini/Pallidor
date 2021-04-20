@@ -11,21 +11,32 @@ import PathKit
 
 /// Location of storing the parsed source code (API & previous Facade)
 public class CodeStore {
+    /// Scope of layers
+    enum Scope {
+        case current
+        case previous
+    }
+    
     private static var instance: CodeStore?
+    
+    private static var _instance: CodeStore { // swiftlint:disable:this identifier_name
+        guard let instance = instance else {
+            fatalError("Code store was not properly initialized.")
+        }
+        return instance
+    }
 
     /// parsed source code located in facade folders
-    var previousFacade: [Modifiable]?
+    var previousFacade: [ModifiableFile]?
     /// parsed source code located in API folders
-    var currentAPI: [Modifiable] = [Modifiable]()
+    var currentAPI: [ModifiableFile] = []
 
     /// true after initial setup
     var hasFacade: Bool {
-        // nil check before executing
-        // swiftlint:disable:next force_unwrapping
-        previousFacade != nil && previousFacade!.isEmpty
+        previousFacade != nil && previousFacade?.isEmpty == true
     }
 
-    private init(previousFacade: [Modifiable], currentAPI: [Modifiable]) {
+    private init(previousFacade: [ModifiableFile], currentAPI: [ModifiableFile]) {
         self.previousFacade = previousFacade
         self.currentAPI = currentAPI
     }
@@ -46,7 +57,7 @@ public class CodeStore {
         CodeStore.instance = nil
     }
 
-    fileprivate func importEndpoints(_ apiPaths: [String]?, _ apiDirectory: Path, _ modifiables: inout [Modifiable]) {
+    fileprivate func importEndpoints(_ apiPaths: [String]?, _ apiDirectory: Path, _ modifiables: inout [ModifiableFile]) {
         guard let apiPaths = apiPaths else {
             fatalError("No paths to endpoints provided.")
         }
@@ -57,8 +68,8 @@ public class CodeStore {
                 let content = try path.read(.utf8)
                 let fileparser = try FileParser(contents: content, path: path)
                 let code = try fileparser.parse()
-                guard let types = WrappedTypes(types: code.types).getModifiable() else {
-                    fatalError("Modifiable could not be retrieved.")
+                guard let types = WrappedTypes(types: code.types).modifiableFile else {
+                    fatalError("Modifiable file could not be retrieved.")
                 }
                 modifiables.append(types)
             }
@@ -67,15 +78,15 @@ public class CodeStore {
         }
     }
     
-    fileprivate func importModels(_ mPaths: [String], _ modelDirectory: Path, _ modifiables: inout [Modifiable]) {
+    fileprivate func importModels(_ mPaths: [String], _ modelDirectory: Path, _ modifiables: inout [ModifiableFile]) {
         do {
             for modelPath in mPaths {
                 let path = modelDirectory + Path(modelPath)
                 let content = try path.read(.utf8)
                 let fileparser = try FileParser(contents: content, path: path)
                 let code = try fileparser.parse()
-                guard let types = WrappedTypes(types: code.types).getModifiable() else {
-                    fatalError("Modifiable could not be retrieved.")
+                guard let types = WrappedTypes(types: code.types).modifiableFile else {
+                    fatalError("Modifiable file could not be retrieved.")
                 }
                 
                 modifiables.append(types)
@@ -90,7 +101,7 @@ public class CodeStore {
     ///   - modelPath: path to models
     ///   - apiPath: path to endpoints
     /// - Returns: List of parsed source code items
-    private func getCode(modelPath: Path, apiPath: Path) -> [Modifiable]? {
+    private func getCode(modelPath: Path, apiPath: Path) -> [ModifiableFile]? {
         let modelDirectory = modelPath
         let apiDirectory = apiPath
 
@@ -107,7 +118,7 @@ public class CodeStore {
             return nil
         }
 
-        var modifiables = [Modifiable]()
+        var modifiables: [ModifiableFile] = []
         
         importModels(mPaths, modelDirectory, &modifiables)
 
@@ -118,8 +129,8 @@ public class CodeStore {
                 if let content = try? errorPath.read(.utf8) {
                     let fileparser = try FileParser(contents: content, path: errorPath)
                     let code = try fileparser.parse()
-                    guard let types = WrappedTypes(types: code.types).getModifiable() else {
-                        fatalError("Modifiable could not be retrieved.")
+                    guard let types = WrappedTypes(types: code.types).modifiableFile else {
+                        fatalError("Modifiable file could not be retrieved.")
                     }
                     modifiables.append(types)
                 }
@@ -135,9 +146,9 @@ public class CodeStore {
     /// - Parameters:
     ///   - previous: parsed source code items  of previous facade
     ///   - current: parsed source code items of current API
-    static func initInstance(previous: [Modifiable], current: [Modifiable]) {
-        if CodeStore.instance == nil {
-            CodeStore.instance = CodeStore(previousFacade: previous, currentAPI: current)
+    static func initInstance(previous: [ModifiableFile], current: [ModifiableFile]) {
+        if instance == nil {
+            instance = CodeStore(previousFacade: previous, currentAPI: current)
         }
     }
 
@@ -145,20 +156,16 @@ public class CodeStore {
     /// - Parameter targetDirectory: path to source code files
     /// - Returns: initialized CodeStore
     static func initInstance(targetDirectory: Path) -> CodeStore {
-        if CodeStore.instance == nil {
-            CodeStore.instance = CodeStore(targetDirectory: targetDirectory)
+        if instance == nil {
+            instance = CodeStore(targetDirectory: targetDirectory)
         }
-        // nil check before executing
-        // swiftlint:disable:next force_unwrapping
-        return CodeStore.instance!
+        
+        return _instance
     }
 
     /// Singleton getter
     /// - Returns: returns singleton instance of CodeStore
     static func getInstance() -> CodeStore {
-        guard let instance = CodeStore.instance else {
-            fatalError("Code store was not properly initialized.")
-        }
-        return instance
+        _instance
     }
 }

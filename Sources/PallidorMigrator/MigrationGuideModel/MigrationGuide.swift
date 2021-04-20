@@ -78,7 +78,7 @@ class MigrationGuide: Decodable {
         case .endpoint(let endpoint):
             if case .signature = change.target {
                 let codeStore = CodeStore.getInstance()
-                guard let endpointMod = codeStore.getEndpoint(endpoint.route) else {
+                guard let endpointMod = codeStore.endpoint(endpoint.route) else {
                     fatalError("Deleted endpoint \(endpoint.route) was not found in previous facade.")
                 }
                 modifiable = endpointMod
@@ -87,7 +87,7 @@ class MigrationGuide: Decodable {
         case .model(let model):
             if case .signature = change.target {
                 let codeStore = CodeStore.getInstance()
-                guard let modelMod = codeStore.getModel(model.name) else {
+                guard let modelMod = codeStore.model(model.name) else {
                     fatalError("Deleted model \(model.name) was not found in previous facade.")
                 }
                 modifiable = modelMod
@@ -96,7 +96,7 @@ class MigrationGuide: Decodable {
         case .enum(let enumModel):
             if case .signature = change.target {
                 let codeStore = CodeStore.getInstance()
-                guard let enumMod = codeStore.getEnum(enumModel.enumName) else {
+                guard let enumMod = codeStore.enum(enumModel.enumName) else {
                     fatalError("Deleted enum \(enumModel.enumName) was not found in previous facade.")
                 }
                 modifiable = enumMod
@@ -105,8 +105,8 @@ class MigrationGuide: Decodable {
         case .method(let method):
             if case .signature = change.target {
                 let codeStore = CodeStore.getInstance()
-                modifiable = codeStore.getMethod(method.operationId)
-                guard let endpoint = codeStore.getEndpoint(method.definedIn, searchInCurrent: true) else {
+                modifiable = codeStore.method(method.operationId)
+                guard let endpoint = codeStore.endpoint(method.definedIn, scope: .current) else {
                     fatalError("Deleted endpoint \(method.definedIn) was not found in previous facade.")
                 }
                 guard let wrappedMethod = modifiable as? WrappedMethod else {

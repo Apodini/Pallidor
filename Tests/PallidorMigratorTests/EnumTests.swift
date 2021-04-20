@@ -51,7 +51,7 @@ class EnumTests: XCTestCase {
         // swiftlint:disable:next force_try
         let code = try! fp.parse()
         let types = WrappedTypes(types: code.types)
-        guard let facade = types.getModifiable() else {
+        guard let facade = types.modifiableFile else {
             fatalError("Could not retrieve previous modifiable.")
         }
         
@@ -92,7 +92,7 @@ class EnumTests: XCTestCase {
         // swiftlint:disable:next force_try
         let code = try! fp.parse()
         let types = WrappedTypes(types: code.types)
-        guard let facade = types.getModifiable() else {
+        guard let facade = types.modifiableFile else {
             fatalError("Could not retrieve previous modifiable.")
         }
         
@@ -106,7 +106,7 @@ class EnumTests: XCTestCase {
 
         guard let migrationResult = CodeStore
                 .getInstance()
-                .getEnum(facade.id, searchInCurrent: true) else {
+                .enum(facade.id, scope: .current) else {
             fatalError("Migration failed.")
         }
         let result = EnumTemplate().render(migrationResult)

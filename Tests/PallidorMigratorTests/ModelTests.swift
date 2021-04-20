@@ -47,7 +47,7 @@ class ModelTests: XCTestCase {
         let code = try! fp.parse()
         let types = WrappedTypes(types: code.types)
         
-        guard let facade = types.getModifiable() else {
+        guard let facade = types.modifiableFile else {
             fatalError("Could not retrieve previous modifiable.")
         }
         
@@ -59,7 +59,7 @@ class ModelTests: XCTestCase {
         )
         
         guard let migrationResult = CodeStore.getInstance()
-                .getModel(facade.id, searchInCurrent: true) else {
+                .model(facade.id, scope: .current) else {
             fatalError("Could not retrieve migrated modifiable.")
         }
 

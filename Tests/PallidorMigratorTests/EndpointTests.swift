@@ -49,7 +49,7 @@ class EndpointTests: XCTestCase {
         let fp = try! FileParser(contents: readResource(Resources.PetEndpointFacadeAddMethod.rawValue))
         // swiftlint:disable:next force_try
         let code = try! fp.parse()
-        guard let facade = WrappedTypes(types: code.types).getModifiable() else {
+        guard let facade = WrappedTypes(types: code.types).modifiableFile else {
             fatalError("Could not retrieve previous modifiable.")
         }
         
@@ -89,7 +89,7 @@ class EndpointTests: XCTestCase {
         let fp = try! FileParser(contents: readResource(Resources.PetEndpointFacade.rawValue))
         // swiftlint:disable:next force_try
         let code = try! fp.parse()
-        guard let facade = WrappedTypes(types: code.types).getModifiable() else {
+        guard let facade = WrappedTypes(types: code.types).modifiableFile else {
             fatalError("Could not retrieve previous modifiable.")
         }
         
@@ -103,7 +103,7 @@ class EndpointTests: XCTestCase {
         
         guard let migrationResult = CodeStore
                 .getInstance()
-                .getEndpoint(facade.id, searchInCurrent: true) else {
+                .endpoint(facade.id, scope: .current) else {
             fatalError("Migration failed.")
         }
         

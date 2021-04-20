@@ -64,21 +64,10 @@ class Change: Changing {
     }
 
     func validate() throws {
-        switch object {
-        case .model:
-            switch target {
-            case .parameter:
-                throw ObjectTypeDecodingError.unsupported(msg: "Change object `Model` cannot target `Parameter`")
-            default:
-                return
-            }
-        case .method:
-            switch target {
-            default:
-                return
-            }
-        default:
-            return
+        switch (object, target) {
+        case (.model, .parameter):
+            throw ObjectTypeDecodingError.unsupported(msg: "Change object `Model` cannot target `Parameter`")
+        default: return
         }
     }
 }

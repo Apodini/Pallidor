@@ -76,7 +76,7 @@ enum PropertyResolver {
             return AttributeModel(
                 name: name,
                 type: try ReferenceResolver.resolveName(schema: schema),
-                isRequired: false,
+                isRequired: schema.required,
                 detail: nil
             )
         case .array(let general, let arrayContext):

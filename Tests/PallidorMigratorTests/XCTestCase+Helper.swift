@@ -24,19 +24,17 @@ extension XCTestCase {
             fatalError("Failed to initialize SUT.")
         }
        
-        // swiftlint:disable:next force_try
+        // swiftlint:disable force_try
         let fileParser = try! FileParser(contents: target)
-        // swiftlint:disable:next force_try
         let code = try! fileParser.parse()
-        guard let types = WrappedTypes(types: code.types).getModifiable() else {
+        guard let types = WrappedTypes(types: code.types).modifiableFile else {
             fatalError("Could not retrieve types.")
         }
         
-        guard let result = try? sut.migrationSet.activate(for: types) else {
-            fatalError("Migration failed.")
-        }
+        try! types.accept(sut.migrationSet)
+        // swiftlint:enable force_try
         
-        return result
+        return types
     }
     
     func readResource(_ resource: String) -> String {

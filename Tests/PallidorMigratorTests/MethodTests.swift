@@ -73,7 +73,7 @@ class MethodTests: XCTestCase {
         let fp = try! FileParser(contents: readResource(Resources.PetEndpointFacade.rawValue))
         // swiftlint:disable:next force_try
         let code = try! fp.parse()
-        guard let facade = WrappedTypes(types: code.types).getModifiable() else {
+        guard let facade = WrappedTypes(types: code.types).modifiableFile else {
             fatalError("Could not retrieve previous modifiable.")
         }
         
@@ -81,7 +81,7 @@ class MethodTests: XCTestCase {
         let fp2 = try! FileParser(contents: readResource(Resources.PetEndpointDeletedMethod.rawValue))
         // swiftlint:disable:next force_try
         let code2 = try! fp2.parse()
-        guard let current = WrappedTypes(types: code2.types).getModifiable() else {
+        guard let current = WrappedTypes(types: code2.types).modifiableFile else {
             fatalError("Could not retrieve current modifiable.")
         }
         
@@ -136,7 +136,7 @@ class MethodTests: XCTestCase {
         let fp = try! FileParser(contents: readResource(Resources.PetEndpointFacadeReplacedMethod.rawValue))
         // swiftlint:disable:next force_try
         let code = try! fp.parse()
-        guard let facade = WrappedTypes(types: code.types).getModifiable() else {
+        guard let facade = WrappedTypes(types: code.types).modifiableFile else {
             fatalError("Could not retrieve previous modifiable.")
         }
         
@@ -144,7 +144,7 @@ class MethodTests: XCTestCase {
         let fp2 = try! FileParser(contents: readResource(Resources.PetEndpointReplacedMethod.rawValue))
         // swiftlint:disable:next force_try
         let code2 = try! fp2.parse()
-        guard let current = WrappedTypes(types: code2.types).getModifiable() else {
+        guard let current = WrappedTypes(types: code2.types).modifiableFile else {
             fatalError("Could not retrieve current modifiable.")
         }
         
@@ -152,7 +152,7 @@ class MethodTests: XCTestCase {
         let fp3 = try! FileParser(contents: readResource(Resources.UserEndpointReplacedMethod.rawValue))
         // swiftlint:disable:next force_try
         let code3 = try! fp3.parse()
-        guard let current2 = WrappedTypes(types: code3.types).getModifiable() else {
+        guard let current2 = WrappedTypes(types: code3.types).modifiableFile else {
             fatalError("Could not retrieve current modifiable.")
         }
         
@@ -160,7 +160,7 @@ class MethodTests: XCTestCase {
         
         let store = CodeStore.getInstance()
         
-        guard let modAPI = store.getEndpoint("/pet", searchInCurrent: true) else {
+        guard let modAPI = store.endpoint("/pet", scope: .current) else {
             fatalError("Could not retrieve endpoint.")
         }
         
@@ -207,7 +207,7 @@ class MethodTests: XCTestCase {
         let fp = try! FileParser(contents: readResource(Resources.PetEndpointReplacedMethod.rawValue))
         // swiftlint:disable:next force_try
         let code = try! fp.parse()
-        guard let current = WrappedTypes(types: code.types).getModifiable() else {
+        guard let current = WrappedTypes(types: code.types).modifiableFile else {
             fatalError("Could not retrieve current modifiable.")
         }
         
@@ -215,7 +215,7 @@ class MethodTests: XCTestCase {
         let fp2 = try! FileParser(contents: readResource(Resources.PetEndpointFacadeReplacedMethod.rawValue))
         // swiftlint:disable:next force_try
         let code2 = try! fp2.parse()
-        guard let facade = WrappedTypes(types: code2.types).getModifiable() else {
+        guard let facade = WrappedTypes(types: code2.types).modifiableFile else {
             fatalError("Could not retrieve previous modifiable.")
         }
         
@@ -228,7 +228,7 @@ class MethodTests: XCTestCase {
         
         guard let endpoint = CodeStore
                 .getInstance()
-                .getEndpoint("/pet", searchInCurrent: true) else {
+                .endpoint("/pet", scope: .current) else {
             fatalError("Could not retrieve endpoint.")
         }
         

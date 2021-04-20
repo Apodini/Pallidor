@@ -13,7 +13,7 @@ extension WrappedStruct {
     internal func handleEndpointRenameChange(_ change: RenameChange) {
         let rename = Endpoint.endpointName(from: change.originalId)
 
-        if let facadeEndpoint = CodeStore.getInstance().getEndpoint(change.originalId) {
+        if let facadeEndpoint = CodeStore.getInstance().endpoint(change.originalId) {
             guard let renamed = facadeEndpoint.copy() as? WrappedStruct else {
                 fatalError("Endpoint cloning failed.")
             }

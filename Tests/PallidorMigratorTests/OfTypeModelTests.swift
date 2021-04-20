@@ -112,7 +112,7 @@ class OfTypeModelTests: XCTestCase {
         // swiftlint:disable:next force_try
         let code = try! fp.parse()
         let types = WrappedTypes(types: code.types)
-        guard let facade = types.getModifiable() else {
+        guard let facade = types.modifiableFile else {
             fatalError("Could not retrieve previous modifiable.")
         }
         
@@ -123,7 +123,7 @@ class OfTypeModelTests: XCTestCase {
             target: readResource(Resources.ModelPlaceholder.rawValue)
         )
         
-        guard let migrationResult = CodeStore.getInstance().getModel(facade.id) else {
+        guard let migrationResult = CodeStore.getInstance().model(facade.id) else {
             fatalError("Migration failed.")
         }
         let result = ModelTemplate().render(migrationResult)

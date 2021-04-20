@@ -21,28 +21,11 @@ class WrappedMethodParameter: Modifiable {
     func modify(change: Change) {
         self.modified = true
         switch change.changeType {
-        case .add:
-            guard let change = change as? AddChange else {
-                fatalError("Change is malformed: AddChange")
-            }
-            handleAddChange(change)
-        case .replace:
-            guard let change = change as? ReplaceChange else {
-                fatalError("Change is malformed: ReplaceChange")
-            }
-            handleReplacementChange(change)
-        case .rename:
-            guard let change = change as? RenameChange else {
-                fatalError("Change is malformed: RenameChange")
-            }
-            handleRenameChange(change)
-        case .delete:
-            guard let change = change as? DeleteChange else {
-                fatalError("Change is malformed: DeleteChange")
-            }
-            handleDeleteChange(change)
-        case .nil:
-           fatalError("Change type not supported for parameters.")
+        case .add: handleAddChange(change.typed(AddChange.self))
+        case .replace: handleReplacementChange(change.typed(ReplaceChange.self))
+        case .rename: handleRenameChange(change.typed(RenameChange.self))
+        case .delete: handleDeleteChange(change.typed(DeleteChange.self))
+        case .nil: fatalError("Change type not supported for parameters.")
         }
     }
 

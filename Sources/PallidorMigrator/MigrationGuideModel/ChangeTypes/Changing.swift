@@ -24,3 +24,16 @@ protocol Changing: Decodable {
     /// validation method to determine if change can be executed
     func validate() throws
 }
+
+extension Changing {
+    /// Used to cast to a certain change type
+    /// - Parameter type: Type of change
+    /// - Note: Results in a fatal error if `self` casting to `C` fails.
+    /// Throughout the project used safely after ensurance of the respective `changeType` property
+    func typed<C: Changing>(_ type: C.Type) -> C {
+        guard let typed = self as? C else {
+            fatalError("Change \(C.self) is malformed")
+        }
+        return typed
+    }
+}

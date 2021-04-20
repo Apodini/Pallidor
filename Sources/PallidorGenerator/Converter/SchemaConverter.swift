@@ -42,9 +42,7 @@ public struct SchemaConverter: Converting {
     /// - Parameter name: name of schema
     /// - Returns: schema object
     func getSchema(name: String) -> Schema? {
-        // nil checked
-        // swiftlint:disable:next force_unwrapping
-        schemas.first(where: { $0 != nil && $0!.name == name })
+        schemas.first(where: { $0.name == name })
     }
     
     mutating func parse() {

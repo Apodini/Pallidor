@@ -13,9 +13,6 @@ final class ReplaceMigration: Migration {
         super.init(solvable: solvable, executeOn: executeOn, change: change)
     }
     convenience init(solvable: Bool, executeOn: Modifiable, change: Changing) {
-        guard let change = change as? ReplaceChange else {
-            fatalError("Change malformed: ReplaceChange")
-        }
-        self.init(solvable: solvable, executeOn: executeOn, change: change)
+        self.init(solvable: solvable, executeOn: executeOn, change: change.typed(ReplaceChange.self))
     }
 }

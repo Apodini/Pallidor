@@ -23,28 +23,11 @@ class WrappedMethod: Modifiable {
         self.modified = true
 
         switch change.changeType {
-        case .add:
-            guard let change = change as? AddChange else {
-                fatalError("Change is malformed: AddChange")
-            }
-            handleAddChange(change: change)
-        case .rename:
-            guard let change = change as? RenameChange else {
-                fatalError("Change is malformed: RenameChange")
-            }
-            handleRenameChange(change: change)
-        case .replace:
-            guard let change = change as? ReplaceChange else {
-                fatalError("Change is malformed: ReplaceChange")
-            }
-            handleReplaceChange(change: change)
-        case .delete:
-            guard let change = change as? DeleteChange else {
-                fatalError("Change is malformed: DeleteChange")
-            }
-            handleDeleteChange(change: change)
-        case .nil:
-            fatalError("Change type malformed.")
+        case .add: handleAddChange(change: change.typed(AddChange.self))
+        case .rename: handleRenameChange(change: change.typed(RenameChange.self))
+        case .replace: handleReplaceChange(change: change.typed(ReplaceChange.self))
+        case .delete: handleDeleteChange(change: change.typed(DeleteChange.self))
+        case .nil: fatalError("Change type malformed.")
         }
     }
 
