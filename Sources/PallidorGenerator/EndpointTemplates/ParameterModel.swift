@@ -124,10 +124,6 @@ extension Array where Element == ParameterModel {
     func filtered(_ isIncluded: (Element) -> Bool) -> Self {
         filter(isIncluded).sorted(by: { $0.name < $1.name })
     }
-    
-    var assertDescription: String {
-        isEmpty ? "" : "NetworkManager.assertPathParameters(\(map { $0.name }.joined(separator: ", ")))\n"
-    }
 }
 
 extension ParameterModel {

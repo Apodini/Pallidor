@@ -107,6 +107,10 @@ extension OperationModel: CustomStringConvertible {
             """
     }
     
+    var pathParamsAssertDescription: String {
+        return pathParams.isEmpty ? "" : "NetworkManager.assertPathParameters(\(pathParams.map { $0.name }.joined(separator: ", ")))\n"
+    }
+    
     /// mapping for failures of method
     var failureTryMap: String {
             """

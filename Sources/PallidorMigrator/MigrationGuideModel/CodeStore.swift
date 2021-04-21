@@ -105,10 +105,10 @@ public class CodeStore {
         let modelDirectory = modelPath
         let apiDirectory = apiPath
 
-        let modelPaths = try? FileManager.default
+        let modelPaths = try? FileManager
             .swiftFilesInDirectory(atPath: modelDirectory.string + "/")
             .sorted(by: { $0 == "_APIAliases.swift" || $0 == "APIAliases.swift" || $0 < $1 })
-        let apiPaths = try? FileManager.default.swiftFilesInDirectory(atPath: apiDirectory.string + "/")
+        let apiPaths = try? FileManager.swiftFilesInDirectory(atPath: apiDirectory.string + "/")
         let errorPaths = [
             modelPath.parent() + Path("_APIErrors.swift"),
             modelPath.parent() + Path("APIErrors.swift")
