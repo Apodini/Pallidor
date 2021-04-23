@@ -18,6 +18,7 @@ enum PrimitiveType: String, RawRepresentable {
     
     /// Checks whether the passed string matches the raw value of any of the supported primitive types
     static func check(type: String) -> Bool {
-        PrimitiveType(rawValue: type) != nil
+        let trimmed = type.trimmingCharacters(in: .whitespaces)
+        return PrimitiveType(rawValue: trimmed) != nil
     }
 }
