@@ -15,7 +15,7 @@ Responses:
 */
 static func addPet(element: _Pet, authorization: HTTPAuthorization = NetworkManager.authorization!, contentType: String? = NetworkManager.defaultContentType) -> AnyPublisher<_Pet, Error> {
 let path = NetworkManager.basePath! + "/pet"
-    
+
 
 
     return NetworkManager.postElement(element, authorization: authorization, on: URL(string: path)!, contentType: contentType)
@@ -44,7 +44,8 @@ Responses:
 */
 static func deletePet(api_key: String?, petId: Int64, authorization: HTTPAuthorization = NetworkManager.authorization!, contentType: String? = NetworkManager.defaultContentType) -> AnyPublisher<String, Error> {
 var path = NetworkManager.basePath! + "/pet/{petId}"
-    path = path.replacingOccurrences(of: "{petId}", with: petId.description)
+NetworkManager.assertPathParameters(petId)
+path = path.replacingOccurrences(of: "{petId}", with: petId.description)
 
 var customHeaders = [String : String]()
 customHeaders["api_key"] = api_key?.description ?? ""
@@ -74,7 +75,7 @@ Responses:
 */
 static func findPetsByStatus(status: String? = "available", authorization: HTTPAuthorization = NetworkManager.authorization!, contentType: String? = NetworkManager.defaultContentType) -> AnyPublisher<[_Pet], Error> {
 var path = NetworkManager.basePath! + "/pet/findByStatus"
-    
+
 path += "?\(status != nil ? "&status=\(status?.description ?? "")" : "")"
 
     return NetworkManager.getElement(on: URL(string: path)!, authorization: authorization, contentType: contentType)
@@ -104,7 +105,7 @@ Responses:
 */
 static func findPetsByTags(tags: [String]?, authorization: HTTPAuthorization = NetworkManager.authorization!, contentType: String? = NetworkManager.defaultContentType) -> AnyPublisher<[_Pet], Error> {
 var path = NetworkManager.basePath! + "/pet/findByTags"
-    
+
 path += "?\(tags != nil ? "&tags=\(tags?.joined(separator: "&") ?? "")" : "")"
 
     return NetworkManager.getElement(on: URL(string: path)!, authorization: authorization, contentType: contentType)
@@ -135,7 +136,8 @@ Responses:
 */
 static func getPetById(petId: Int64, authorization: HTTPAuthorization = NetworkManager.authorization!, contentType: String? = NetworkManager.defaultContentType) -> AnyPublisher<_Pet, Error> {
 var path = NetworkManager.basePath! + "/pet/{petId}"
-    path = path.replacingOccurrences(of: "{petId}", with: petId.description)
+NetworkManager.assertPathParameters(petId)
+path = path.replacingOccurrences(of: "{petId}", with: petId.description)
 
 
     return NetworkManager.getElement(on: URL(string: path)!, authorization: authorization, contentType: contentType)
@@ -172,7 +174,7 @@ Responses:
 */
 static func updatePet(element: _Pet, authorization: HTTPAuthorization = NetworkManager.authorization!, contentType: String? = NetworkManager.defaultContentType) -> AnyPublisher<_Pet, Error> {
 let path = NetworkManager.basePath! + "/pet"
-    
+
 
 
     return NetworkManager.putElement(element, authorization: authorization, on: URL(string: path)!, contentType: contentType)
@@ -207,7 +209,8 @@ Responses:
 */
 static func updatePetWithForm(name: String, petId: Int64, status: String, authorization: HTTPAuthorization = NetworkManager.authorization!, contentType: String? = NetworkManager.defaultContentType) -> AnyPublisher<String, Error> {
 var path = NetworkManager.basePath! + "/pet/{petId}"
-    path = path.replacingOccurrences(of: "{petId}", with: petId.description)
+NetworkManager.assertPathParameters(petId)
+path = path.replacingOccurrences(of: "{petId}", with: petId.description)
 path += "?name=\(name.description)&status=\(status.description)"
 
     return NetworkManager.postElement(authorization: authorization, on: URL(string: path)!, contentType: contentType)
@@ -236,7 +239,8 @@ Responses:
 */
 static func uploadFile(additionalMetadata: String?, petId: Int64, element: String?, authorization: HTTPAuthorization = NetworkManager.authorization!, contentType: String? = "application/octet-stream") -> AnyPublisher<_ApiResponse, Error> {
 var path = NetworkManager.basePath! + "/pet/{petId}/uploadImage"
-    path = path.replacingOccurrences(of: "{petId}", with: petId.description)
+NetworkManager.assertPathParameters(petId)
+path = path.replacingOccurrences(of: "{petId}", with: petId.description)
 path += "?\(additionalMetadata != nil ? "&additionalMetadata=\(additionalMetadata?.description ?? "")" : "")"
 
     return NetworkManager.postElement(element, authorization: authorization, on: URL(string: path)!, contentType: contentType)

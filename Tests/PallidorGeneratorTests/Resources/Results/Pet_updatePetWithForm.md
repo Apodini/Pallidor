@@ -6,7 +6,8 @@ Responses:
 */
 static func updatePetWithForm(name: String, petId: Int64, status: String, authorization: HTTPAuthorization = NetworkManager.authorization!, contentType: String? = NetworkManager.defaultContentType) -> AnyPublisher<String, Error> {
 var path = NetworkManager.basePath! + "/pet/{petId}"
-    path = path.replacingOccurrences(of: "{petId}", with: petId.description)
+NetworkManager.assertPathParameters(petId)
+path = path.replacingOccurrences(of: "{petId}", with: petId.description)
 path += "?name=\(name.description)&status=\(status.description)"
 
     return NetworkManager.postElement(authorization: authorization, on: URL(string: path)!, contentType: contentType)

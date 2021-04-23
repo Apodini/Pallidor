@@ -10,7 +10,7 @@ class APITests: XCTestCase {
         // Is initialized by `initSUT` statement
         // swiftlint:disable:next force_unwrapping
         if let test = sut!.getOperation("getPassengerFlights", in: "Flightschedules") {
-            XCTAssertEqual(test.description, readResult(.LH_GetPassengerFlights))
+            XCTResourceHandlerAssertEqual(test.description, .output(.LH_GetPassengerFlights))
         } else {
             XCTFail("Library could not be generated.")
         }
@@ -21,7 +21,7 @@ class APITests: XCTestCase {
         // Is initialized by `initSUT` statement
         // swiftlint:disable:next force_unwrapping
         if let test = sut!.getOperation("addPet", in: "Pet") {
-            XCTAssertEqual(test.description, readResult(.Pet_addPet))
+            XCTResourceHandlerAssertEqual(test.description, .output(.Pet_addPet))
         } else {
             XCTFail("Library could not be generated.")
         }
@@ -50,7 +50,7 @@ class APITests: XCTestCase {
         // Is initialized by `initSUT` statement
         // swiftlint:disable:next force_unwrapping
         if let test = sut!.getOperation("updatePetWithForm", in: "Pet") {
-            XCTAssertEqual(test.description, readResult(.Pet_updatePetWithForm))
+            XCTResourceHandlerAssertEqual(test.description, .output(.Pet_updatePetWithForm))
         } else {
             XCTFail("Library could not be generated.")
         }
@@ -61,7 +61,7 @@ class APITests: XCTestCase {
         // Is initialized by `initSUT` statement
         // swiftlint:disable:next force_unwrapping
         if let test = sut!.getEndpoint("Pet") {
-            XCTAssertEqual(test.description, readResult(.Pet_Endpoint))
+            XCTResourceHandlerAssertEqual(test.description, .output(.Pet_Endpoint))
         } else {
             XCTFail("Library could not be generated.")
         }
@@ -72,7 +72,7 @@ class APITests: XCTestCase {
         // Is initialized by `initSUT` statement
         // swiftlint:disable:next force_unwrapping
         if let test = sut!.getOperation("updatePet", in: "Pet") {
-            XCTAssertEqual(test.description, readResult(.Pet_updatePetChangedHTTPMethod))
+            XCTResourceHandlerAssertEqual(test.description, .output(.Pet_updatePetChangedHTTPMethod))
         } else {
             XCTFail("Library could not be generated.")
         }
@@ -83,7 +83,7 @@ class APITests: XCTestCase {
         // Is initialized by `initSUT` statement
         // swiftlint:disable:next force_unwrapping
         if let test = sut!.getOperation("getPetById", in: "Pet") {
-            XCTAssertEqual(test.description, readResult(.Pet_getPetByIdMinMax))
+            XCTResourceHandlerAssertEqual(test.description, .output(.Pet_getPetByIdMinMax))
         } else {
             XCTFail("Library could not be generated.")
         }
@@ -91,7 +91,7 @@ class APITests: XCTestCase {
     
     func testParseOAIErrorEnum() {
         initSUT(resource: .petstore_unmodified)
-        XCTAssertEqual(OpenAPIErrorModel().description, readResult(.OpenAPIErrorModel))
+        XCTResourceHandlerAssertEqual(OpenAPIErrorModel().description, .output(.OpenAPIErrorModel))
     }
     
     private func initSUT(resource: Resources) {

@@ -12,7 +12,7 @@ Responses:
 */
 static func getPassengerFlights(aircraftTypes: [String]?, airlines: [String], daysOfOperation: String, destination: String?, endDate: String, flightNumberRanges: String?, origin: String?, startDate: String, timeMode: String, authorization: HTTPAuthorization = NetworkManager.authorization!, contentType: String? = NetworkManager.defaultContentType) -> AnyPublisher<[_FlightAggregate], Error> {
 var path = NetworkManager.basePath! + "/flightschedules/passenger"
-    
+
 path += "?\(aircraftTypes != nil ? "&aircraftTypes=\(aircraftTypes?.joined(separator: "&") ?? "")" : "")&airlines=\(airlines.joined(separator: "&"))&daysOfOperation=\(daysOfOperation.description)\(destination != nil ? "&destination=\(destination?.description ?? "")" : "")&endDate=\(endDate.description)\(flightNumberRanges != nil ? "&flightNumberRanges=\(flightNumberRanges?.description ?? "")" : "")\(origin != nil ? "&origin=\(origin?.description ?? "")" : "")&startDate=\(startDate.description)&timeMode=\(timeMode.description)"
 
     return NetworkManager.getElement(on: URL(string: path)!, authorization: authorization, contentType: contentType)

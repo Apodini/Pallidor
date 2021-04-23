@@ -108,7 +108,7 @@ extension OperationModel: CustomStringConvertible {
     }
     
     var pathParamsAssertDescription: String {
-        return pathParams.isEmpty ? "" : "NetworkManager.assertPathParameters(\(pathParams.map { $0.name }.joined(separator: ", ")))\n"
+        pathParams.isEmpty ? "" : "NetworkManager.assertPathParameters(\(pathParams.map { $0.name }.joined(separator: ", ")))\n"
     }
     
     /// mapping for failures of method
@@ -203,7 +203,7 @@ authorization: HTTPAuthorization\(
             \(comment)
             static func \(operationId)\(isGeneric ? "<T : Codable>" : "")(\(parametersString.skipEmptyJoined(separator: ", "))) -> AnyPublisher<\(isGeneric ? "\(successType)<T>" : successType), Error> {
             \(!parameters.isEmpty ? "var" : "let") path = NetworkManager.basePath! + "\(path.rawValue)"
-                \(pathParams.map { $0.opDescription }.joined(separator: "\n"))
+            \(pathParamsAssertDescription)\(pathParams.map { $0.opDescription }.joined(separator: "\n"))
             \(!queryParams.isEmpty ? "path += \"?\((queryParams.first?.required == true) ? "\(queryParams.map { $0.opDescription }.joined().dropFirst())\"" : "\(queryParams.map { $0.opDescription }.joined())\"")" : "")
             \(!headerParams.isEmpty ? "var customHeaders = [String : String]()\n\(headerParams.map { $0.opDescription }.joined(separator: "\n"))" : "")
                 \(parameterGuards.isEmpty ? "" : "\(parameterGuards)\n")\(operationDescription)

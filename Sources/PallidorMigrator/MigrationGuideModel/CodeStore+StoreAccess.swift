@@ -108,5 +108,4 @@ fileprivate extension CodeStore {
     func modifiable<M: ModifiableFile>(with id: String, _ type: M.Type = M.self, scope: Scope = .previous) -> M? {
         modifiables(M.self, scope: scope).first { $0.id == id }
     }
-    
 }

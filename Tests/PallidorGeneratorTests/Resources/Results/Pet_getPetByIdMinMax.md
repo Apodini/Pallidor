@@ -8,7 +8,8 @@ Responses:
 */
 static func getPetById(petId: Int64, authorization: HTTPAuthorization = NetworkManager.authorization!, contentType: String? = NetworkManager.defaultContentType) -> AnyPublisher<_Pet, Error> {
 var path = NetworkManager.basePath! + "/pet/{petId}"
-    path = path.replacingOccurrences(of: "{petId}", with: petId.description)
+NetworkManager.assertPathParameters(petId)
+path = path.replacingOccurrences(of: "{petId}", with: petId.description)
 
 
         assert(petId >= 1 && petId <= 100, "petId exceeds its limits")

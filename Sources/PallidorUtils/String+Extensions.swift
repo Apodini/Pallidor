@@ -1,4 +1,3 @@
-
 import Foundation
 
 public extension String {
@@ -14,5 +13,4 @@ public extension String {
             fatalError("Found non-equal line in \(function)", file: file, line: line)
         }
     }
-    
 }

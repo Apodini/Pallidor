@@ -8,7 +8,7 @@ Responses:
 */
 static func addPet(element: _Pet, authorization: HTTPAuthorization = NetworkManager.authorization!, contentType: String? = NetworkManager.defaultContentType) -> AnyPublisher<_Pet, Error> {
 let path = NetworkManager.basePath! + "/pet"
-    
+
 
 
     return NetworkManager.postElement(element, authorization: authorization, on: URL(string: path)!, contentType: contentType)
