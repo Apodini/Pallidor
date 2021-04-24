@@ -8,6 +8,10 @@
 import Foundation
 
 extension WrappedMethod {
+    fileprivate var codeStore: CodeStore {
+        CodeStore.instance
+    }
+    
     /// handle renaming a method
     /// - Parameter change: RenameChange affecting this method
     func handleRenameChange(change: RenameChange) {
@@ -67,7 +71,7 @@ extension WrappedMethod {
                 .firstIndex(where: { $0.name > deletedParam.name
                                 || $0.name == "element"
                                 || $0.name == "authorization" }) else {
-                fatalError("Deleted parameter was not found in previos facade.")
+                fatalError("Deleted parameter was not found in previous facade.")
             }
             self.parameters.insert(deletedParam, at: insertIndex)
         case .signature:
@@ -161,7 +165,6 @@ extension WrappedMethod {
     }
 
     fileprivate func replaceMethodInOtherEndpoint(_ method: Method, _ change: ReplaceChange) {
-        let codeStore = CodeStore.getInstance()
         guard let changeMethod = codeStore.method(method.operationId) else {
             fatalError("Changed method could not be found in previous facade.")
         }
@@ -179,7 +182,6 @@ extension WrappedMethod {
         _ change: ReplaceChange,
         _ targetMethod: (Method)
     ) {
-        let codeStore = CodeStore.getInstance()
         if replacementMethod.returnTypeName.actualName
             .replacingOccurrences(of: "_", with: "") != methodToModify.returnTypeName.actualName {
             let returnTypeChangeData = """
@@ -220,14 +222,13 @@ extension WrappedMethod {
         _ change: ReplaceChange,
         _ ownRoute: String
     ) {
-        let codeStore = CodeStore.getInstance()
         guard case let .method(targetMethod) = change.object else {
             fatalError("Only methods can be targeted for replacing methods.")
         }
         var methodToModify: WrappedMethod
 
         if targetMethod.operationId == self.shortName {
-            guard let facadeMethod = codeStore.method(method.operationId, scope: .previous) else {
+            guard let facadeMethod = codeStore.method(method.operationId, scope: .previousFacade) else {
                 fatalError("Method to modify could not be found.")
             }
             methodToModify = facadeMethod

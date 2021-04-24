@@ -9,10 +9,6 @@ import SourceryFramework
 @testable import PallidorMigrator
 
 class MethodIntegrationTests: XCTestCase {
-    override func tearDown() {
-        CodeStore.clear()
-        super.tearDown()
-    }
     
     let renameMethodAndReplaceAndDeleteParameterChange = """
    {

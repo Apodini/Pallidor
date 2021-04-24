@@ -9,11 +9,6 @@ import SourceryFramework
 @testable import PallidorMigrator
 
 class EndpointIntegrationTests: XCTestCase {
-    override func tearDown() {
-        CodeStore.clear()
-        super.tearDown()
-    }
-    
     let renameEndpointAndReplaceAndDeleteMethodChange = """
    {
        "summary" : "Here would be a nice summary what changed between versions",
@@ -74,18 +69,11 @@ class EndpointIntegrationTests: XCTestCase {
             fatalError("Could not retrieve previous modifiable.")
         }
         
-        CodeStore.initInstance(previous: [modifiable], current: [current])
+        CodeStore.inject(previous: [modifiable], current: [current])
         
         do {
-            let sut = try PallidorMigrator(
-                targetDirectory: "",
-                migrationGuidePath: nil,
-                migrationGuideContent: renameEndpointAndReplaceAndDeleteMethodChange
-            )
-            try current.accept(sut.migrationSet)
-            
+            try current.accept(.migrationSet(from: renameEndpointAndReplaceAndDeleteMethodChange))
             let result = APITemplate().render(current)
-            
             XCTAssertEqual(
                 result,
                 readResource(Resources.ResultPetEndpointFacadeRenamedAndReplacedAndDeletedMethod.rawValue)
@@ -147,16 +135,10 @@ class EndpointIntegrationTests: XCTestCase {
             fatalError("Could not retrieve previous modifiable.")
         }
         
-        CodeStore.initInstance(previous: [modifiable], current: [current])
+        CodeStore.inject(previous: [modifiable], current: [current])
         
         do {
-            let sut = try PallidorMigrator(
-                targetDirectory: "",
-                migrationGuidePath: nil,
-                migrationGuideContent: renameEndpointAndReplaceMethodChange
-            )
-            
-            try current.accept(sut.migrationSet)
+            try current.accept(.migrationSet(from: renameEndpointAndReplaceMethodChange))
             
             let result = APITemplate().render(current)
             
@@ -216,17 +198,10 @@ class EndpointIntegrationTests: XCTestCase {
             fatalError("Could not retrieve previous modifiable.")
         }
         
-        CodeStore.initInstance(previous: [modifiable], current: [current])
+        CodeStore.inject(previous: [modifiable], current: [current])
         
         do {
-            let sut = try PallidorMigrator(
-                targetDirectory: "",
-                migrationGuidePath: nil,
-                migrationGuideContent: renameEndpointAndDeletedMethodChange
-            )
-            
-            try current.accept(sut.migrationSet)
-            
+            try current.accept(.migrationSet(from: renameEndpointAndDeletedMethodChange))
             let result = APITemplate().render(current)
             
             XCTAssertEqual(
@@ -267,8 +242,6 @@ class EndpointIntegrationTests: XCTestCase {
    """
     
     func testRenamedEndpointAndRenamedMethod() {
-        CodeStore.initInstance(previous: [], current: [])
-
         let modified = getMigrationResult(
             migration: renameEndpointAndRenameMethodChange,
             target: readResource(Resources.PetEndpointRenamedAndRenamedMethod.rawValue)
@@ -338,8 +311,6 @@ class EndpointIntegrationTests: XCTestCase {
    """
     
     func testRenamedEndpointAndRenameMethodAndReplaceAndDeleteParameterChange() {
-        CodeStore.initInstance(previous: [], current: [])
-
         let modified = getMigrationResult(
             migration: renamedEndpointAndRenameMethodAndReplaceAndDeleteParameterChange,
             target: readResource(Resources
@@ -410,8 +381,6 @@ class EndpointIntegrationTests: XCTestCase {
    """
     
     func testRenamedEndpointAndRenameMethodAndAddAndDeleteParameterChange() {
-        CodeStore.initInstance(previous: [], current: [])
-
         let modified = getMigrationResult(
             migration: renamedEndpointAndRenameMethodAndAddAndDeleteParameterChange,
             target: readResource(Resources
@@ -496,8 +465,6 @@ class EndpointIntegrationTests: XCTestCase {
    """
     
     func testRenamedEndpointAndRenameMethodAndReplaceAndDeleteParameterAndReplaceReturnValueChange() {
-        CodeStore.initInstance(previous: [], current: [])
-
         let modified = getMigrationResult(
             migration: renamedEndpointAndRenameMethodAndReplaceAndDeleteParameterAndReplaceReturnValueChange,
             target:
@@ -593,8 +560,6 @@ class EndpointIntegrationTests: XCTestCase {
    """
     
     func testRenamedEndpointAndRenameMethodAndChangedParametersAndReplaceReturnValueChange() {
-        CodeStore.initInstance(previous: [], current: [])
-
         let modified = getMigrationResult(
             migration: renamedEndpointAndRenameMethodAndChangedParametersAndReplaceReturnValueChange,
             target: readResource(Resources

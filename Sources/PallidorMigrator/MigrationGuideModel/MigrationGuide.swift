@@ -73,11 +73,11 @@ class MigrationGuide: Decodable {
     // all change types and their respective targets.
     // swiftlint:disable:next cyclomatic_complexity
     private func addDeleted(change: DeleteChange) {
+        let codeStore = CodeStore.instance
         var modifiable: Modifiable?
         switch change.object {
         case .endpoint(let endpoint):
             if case .signature = change.target {
-                let codeStore = CodeStore.getInstance()
                 guard let endpointMod = codeStore.endpoint(endpoint.route) else {
                     fatalError("Deleted endpoint \(endpoint.route) was not found in previous facade.")
                 }
@@ -86,7 +86,6 @@ class MigrationGuide: Decodable {
             }
         case .model(let model):
             if case .signature = change.target {
-                let codeStore = CodeStore.getInstance()
                 guard let modelMod = codeStore.model(model.name) else {
                     fatalError("Deleted model \(model.name) was not found in previous facade.")
                 }
@@ -95,7 +94,6 @@ class MigrationGuide: Decodable {
             }
         case .enum(let enumModel):
             if case .signature = change.target {
-                let codeStore = CodeStore.getInstance()
                 guard let enumMod = codeStore.enum(enumModel.enumName) else {
                     fatalError("Deleted enum \(enumModel.enumName) was not found in previous facade.")
                 }
@@ -104,7 +102,6 @@ class MigrationGuide: Decodable {
             }
         case .method(let method):
             if case .signature = change.target {
-                let codeStore = CodeStore.getInstance()
                 modifiable = codeStore.method(method.operationId)
                 guard let endpoint = codeStore.endpoint(method.definedIn, scope: .current) else {
                     fatalError("Deleted endpoint \(method.definedIn) was not found in previous facade.")
@@ -128,3 +125,15 @@ extension MigrationGuide {
         MigrationSet(guide: self)
     }
 }
+
+extension MigrationGuide {
+    static func guide(with content: String) throws -> MigrationGuide {
+        let data = content.data(using: .utf8) ?? Data()
+        return try JSONDecoder().decode(MigrationGuide.self, from: data)
+    }
+    
+    static func guide(from path: String) throws -> MigrationGuide {
+        try JSONDecoder().decode(Self.self, from: try Data(contentsOf: URL(fileURLWithPath: path)))
+    }
+}
+

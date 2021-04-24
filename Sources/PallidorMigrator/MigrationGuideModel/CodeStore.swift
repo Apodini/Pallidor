@@ -14,47 +14,39 @@ public class CodeStore {
     /// Scope of layers
     enum Scope {
         case current
-        case previous
+        case previousFacade
     }
     
-    private static var instance: CodeStore?
+    /// Singleton of code store instance, by default empty
+    public static var instance = CodeStore()
     
-    private static var _instance: CodeStore { // swiftlint:disable:this identifier_name
-        guard let instance = instance else {
-            fatalError("Code store was not properly initialized.")
-        }
-        return instance
-    }
-
     /// parsed source code located in facade folders
-    var previousFacade: [ModifiableFile]?
+    var previousFacade: [ModifiableFile]
     /// parsed source code located in API folders
-    var currentAPI: [ModifiableFile] = []
+    var currentAPI: [ModifiableFile]
 
-    /// true after initial setup
+    /// Returns whether the previous facade contains files
     var hasFacade: Bool {
-        previousFacade != nil && previousFacade?.isEmpty == true
+        !previousFacade.isEmpty
+    }
+    
+    private init() {
+        previousFacade = []
+        currentAPI = []
     }
 
-    private init(previousFacade: [ModifiableFile], currentAPI: [ModifiableFile]) {
-        self.previousFacade = previousFacade
-        self.currentAPI = currentAPI
-    }
-
-    private init(targetDirectory: Path) {
+    /// Collects source code form Models and APIs folders, and the respective error enums
+    /// - Parameter targetDirectory: path to source code files
+    func collect(at targetDirectory: Path) {
         guard let currentAPI = getCode(
-                modelPath: targetDirectory + Path("Models"),
-                apiPath: targetDirectory + Path("APIs")
+            modelPath: targetDirectory + Path("Models"),
+            apiPath: targetDirectory + Path("APIs")
         ) else {
             fatalError("Current API must be present.")
         }
+        
         self.currentAPI = currentAPI
-        self.previousFacade = getCode(modelPath: targetDirectory + Path("PersistentModels"), apiPath: targetDirectory + Path("PersistentAPIs"))
-    }
-
-    /// required for UnitTests to reset the code store after each test
-    static func clear() {
-        CodeStore.instance = nil
+        self.previousFacade = getCode(modelPath: targetDirectory + Path("PersistentModels"), apiPath: targetDirectory + Path("PersistentAPIs")) ?? []
     }
 
     fileprivate func importEndpoints(_ apiPaths: [String]?, _ apiDirectory: Path, _ modifiables: inout [ModifiableFile]) {
@@ -104,26 +96,26 @@ public class CodeStore {
     private func getCode(modelPath: Path, apiPath: Path) -> [ModifiableFile]? {
         let modelDirectory = modelPath
         let apiDirectory = apiPath
-
-        let modelPaths = try? FileManager
+        
+        let modelPaths = FileManager
             .swiftFilesInDirectory(atPath: modelDirectory.string + "/")
             .sorted(by: { $0 == "_APIAliases.swift" || $0 == "APIAliases.swift" || $0 < $1 })
-        let apiPaths = try? FileManager.swiftFilesInDirectory(atPath: apiDirectory.string + "/")
+        let apiPaths = FileManager.swiftFilesInDirectory(atPath: apiDirectory.string + "/")
         let errorPaths = [
             modelPath.parent() + Path("_APIErrors.swift"),
             modelPath.parent() + Path("APIErrors.swift")
         ]
-
-        guard let mPaths = modelPaths, !mPaths.isEmpty else {
+        
+        guard !modelPaths.isEmpty else {
             return nil
         }
-
+        
         var modifiables: [ModifiableFile] = []
         
-        importModels(mPaths, modelDirectory, &modifiables)
+        importModels(modelPaths, modelDirectory, &modifiables)
 
         importEndpoints(apiPaths, apiDirectory, &modifiables)
-
+        
         do {
             for errorPath in errorPaths {
                 if let content = try? errorPath.read(.utf8) {
@@ -138,34 +130,7 @@ public class CodeStore {
         } catch {
             fatalError("Error enum could not be loaded.")
         }
-
-        return modifiables
-    }
-
-    /// Initializer for test cases
-    /// - Parameters:
-    ///   - previous: parsed source code items  of previous facade
-    ///   - current: parsed source code items of current API
-    static func initInstance(previous: [ModifiableFile], current: [ModifiableFile]) {
-        if instance == nil {
-            instance = CodeStore(previousFacade: previous, currentAPI: current)
-        }
-    }
-
-    /// Initializer for executable
-    /// - Parameter targetDirectory: path to source code files
-    /// - Returns: initialized CodeStore
-    static func initInstance(targetDirectory: Path) -> CodeStore {
-        if instance == nil {
-            instance = CodeStore(targetDirectory: targetDirectory)
-        }
         
-        return _instance
-    }
-
-    /// Singleton getter
-    /// - Returns: returns singleton instance of CodeStore
-    static func getInstance() -> CodeStore {
-        _instance
+        return modifiables
     }
 }

@@ -9,11 +9,6 @@ import SourceryFramework
 @testable import PallidorMigrator
 
 class MethodTests: XCTestCase {
-    override func tearDown() {
-        CodeStore.clear()
-        super.tearDown()
-    }
-    
     let renameMethodChange = """
    {
        "summary" : "Here would be a nice summary what changed between versions",
@@ -68,33 +63,24 @@ class MethodTests: XCTestCase {
    }
    """
     
-    func testDeletedMethod() {
-        // swiftlint:disable:next force_try
-        let fp = try! FileParser(contents: readResource(Resources.PetEndpointFacade.rawValue))
-        // swiftlint:disable:next force_try
-        let code = try! fp.parse()
+    func testDeletedMethod() throws {
+        let fp = try FileParser(contents: readResource(Resources.PetEndpointFacade.rawValue))
+        
+        let code = try fp.parse()
         guard let facade = WrappedTypes(types: code.types).modifiableFile else {
             fatalError("Could not retrieve previous modifiable.")
         }
         
-        // swiftlint:disable:next force_try
-        let fp2 = try! FileParser(contents: readResource(Resources.PetEndpointDeletedMethod.rawValue))
-        // swiftlint:disable:next force_try
-        let code2 = try! fp2.parse()
+        let fp2 = try FileParser(contents: readResource(Resources.PetEndpointDeletedMethod.rawValue))
+        let code2 = try fp2.parse()
         guard let current = WrappedTypes(types: code2.types).modifiableFile else {
             fatalError("Could not retrieve current modifiable.")
         }
         
-        CodeStore.initInstance(previous: [facade], current: [current])
+        CodeStore.inject(previous: [facade], current: [current])
         
-        guard let main = try? PallidorMigrator(
-                targetDirectory: "",
-                migrationGuidePath: nil,
-                migrationGuideContent: deleteMethodChange) else {
-            fatalError("Initialization of SUT failed.")
-        }
-        
-        current.accept(change: main.migrationGuide.changes[0])
+        let migrationGuide = try MigrationGuide.guide(with: deleteMethodChange)
+        current.accept(change: migrationGuide.changes[0])
       
         let result = APITemplate().render(current)
 
@@ -156,9 +142,9 @@ class MethodTests: XCTestCase {
             fatalError("Could not retrieve current modifiable.")
         }
         
-        CodeStore.initInstance(previous: [facade], current: [current, current2])
+        CodeStore.inject(previous: [facade], current: [current, current2])
         
-        let store = CodeStore.getInstance()
+        let store = CodeStore.instance
         
         guard let modAPI = store.endpoint("/pet", scope: .current) else {
             fatalError("Could not retrieve endpoint.")
@@ -219,16 +205,14 @@ class MethodTests: XCTestCase {
             fatalError("Could not retrieve previous modifiable.")
         }
         
-        CodeStore.initInstance(previous: [facade], current: [current])
+        CodeStore.inject(previous: [facade], current: [current])
         
         _ = getMigrationResult(
             migration: replaceMethodInSameEndpointChange,
             target: readResource(Resources.PetEndpointReplacedMethod.rawValue)
         )
         
-        guard let endpoint = CodeStore
-                .getInstance()
-                .endpoint("/pet", scope: .current) else {
+        guard let endpoint = CodeStore.instance.endpoint("/pet", scope: .current) else {
             fatalError("Could not retrieve endpoint.")
         }
         

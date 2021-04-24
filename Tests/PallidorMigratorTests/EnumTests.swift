@@ -8,11 +8,6 @@ import SourceryFramework
 @testable import PallidorMigrator
 
 class EnumTests: XCTestCase {
-    override func tearDown() {
-        CodeStore.clear()
-        super.tearDown()
-    }
-    
     func testNoChangeEnum() {
         let migrationResult = getMigrationResult(
             migration: noChange,
@@ -55,7 +50,7 @@ class EnumTests: XCTestCase {
             fatalError("Could not retrieve previous modifiable.")
         }
         
-        CodeStore.initInstance(previous: [facade], current: [])
+        CodeStore.inject(previous: [facade], current: [])
         
         let migrationResult = getMigrationResult(
             migration: deleteEnumCaseChange,
@@ -96,7 +91,7 @@ class EnumTests: XCTestCase {
             fatalError("Could not retrieve previous modifiable.")
         }
         
-        CodeStore.initInstance(previous: [facade], current: [])
+        CodeStore.inject(previous: [facade], current: [])
         
         // irrelevant result
         _ = getMigrationResult(
@@ -104,9 +99,7 @@ class EnumTests: XCTestCase {
             target: readResource(Resources.EnumPlaceholder.rawValue)
         )
 
-        guard let migrationResult = CodeStore
-                .getInstance()
-                .enum(facade.id, scope: .current) else {
+        guard let migrationResult = CodeStore.instance.enum(facade.id, scope: .current) else {
             fatalError("Migration failed.")
         }
         let result = EnumTemplate().render(migrationResult)

@@ -5,12 +5,16 @@ import PathKit
 
 /// Entry point for PallidorMigrator package
 public struct PallidorMigrator {
-    let decoder = JSONDecoder()
-
-    var codeStore: CodeStore?
+    /// Errors thrown from PallidorMigrator initializer
+    private enum PallidorMigratorError: Error {
+        case invalidPath(String)
+        case noMigrationGuide(String)
+    }
+    
+    var codeStore = CodeStore.instance /** remove singleton, inject codestore instead*/
+    
     var targetDirectory: Path
     var migrationGuide: MigrationGuide
-    var migrationSet: MigrationSet
 
     /// Entry for PallidorMigrator package
     /// - Parameters:
@@ -25,39 +29,34 @@ public struct PallidorMigrator {
     ) throws {
         self.targetDirectory = Path(targetDirectory)
 
-        if migrationGuidePath == nil, migrationGuideContent == nil {
-            fatalError("must specify migrationGuidePath or content")
+        guard self.targetDirectory.isDirectory else {
+            throw PallidorMigratorError.invalidPath("Encountered invalid path \(targetDirectory). The path must be a directory")
         }
-
-        if self.targetDirectory.exists {
-            self.codeStore = CodeStore.initInstance(targetDirectory: self.targetDirectory)
+        
+        if let migrationGuideContent = migrationGuideContent {
+            migrationGuide = try .guide(with: migrationGuideContent)
+            return
         }
-
+        
         if let migrationGuidePath = migrationGuidePath {
-            let content = try Data(contentsOf: URL(fileURLWithPath: migrationGuidePath))
-            self.migrationGuide = try decoder.decode(MigrationGuide.self, from: content)
-        } else {
-            guard let migrationGuideContent = migrationGuideContent,
-                  let data = migrationGuideContent.data(using: .utf8) else {
-                fatalError("migration guide content malformed")
-            }
-            self.migrationGuide = try decoder.decode(MigrationGuide.self, from: data)
+            migrationGuide = try .guide(from: migrationGuidePath)
+            return
         }
-
-        self.migrationSet = self.migrationGuide.migrationSet
+        
+        throw PallidorMigratorError.noMigrationGuide("Must specify migrationGuidePath or content")
     }
 
     /// Creates the facade layer of the Swift Package.
     /// - Throws: Error if facade layer generation fails
     /// - Returns: List of URLs of files of facade layer
     public func buildFacade() throws -> [URL] {
-        guard let codeStore = self.codeStore else {
-            fatalError("Code Store could not be initialized.")
-        }
+        codeStore.collect(at: targetDirectory)
         
         let modelDirectory = targetDirectory + Path("Models")
         let apiDirectory = targetDirectory + Path("APIs")
 
+        let migrationSet = migrationGuide.migrationSet
+        
         let modelFacade = Facade(
             ModelTemplate.self,
             modifiables: codeStore.models(),
@@ -74,7 +73,7 @@ public struct PallidorMigrator {
             APITemplate.self,
             modifiables: codeStore.endpoints(),
             targetDirectory: apiDirectory,
-            migrationSet: self.migrationSet
+            migrationSet: migrationSet
         )
         
         let errorEnums: [ModifiableFile]

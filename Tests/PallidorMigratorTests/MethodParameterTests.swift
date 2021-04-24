@@ -9,10 +9,6 @@ import SourceryFramework
 @testable import PallidorMigrator
 
 class MethodParameterTests: XCTestCase {
-    override func tearDown() {
-        CodeStore.clear()
-        super.tearDown()
-    }
     
     let replaceMNParameterChange = """
    {
@@ -57,16 +53,14 @@ class MethodParameterTests: XCTestCase {
             fatalError("Could not retrieve previous modifiable.")
         }
         
-        CodeStore.initInstance(previous: [facade], current: [current])
+        CodeStore.inject(previous: [facade], current: [current])
         
         _ = getMigrationResult(
             migration: replaceMNParameterChange,
             target: readResource(Resources.PetEndpointReplaceParameter32.rawValue)
         )
         
-        guard let migratedModifiable = CodeStore
-                .getInstance()
-                .endpoint("/pet", scope: .current) else {
+        guard let migratedModifiable = CodeStore.instance.endpoint("/pet", scope: .current) else {
             fatalError("Migration failed.")
         }
         
@@ -118,16 +112,14 @@ class MethodParameterTests: XCTestCase {
             fatalError("Could not retrieve previous modifiable.")
         }
         
-        CodeStore.initInstance(previous: [facade], current: [current])
+        CodeStore.inject(previous: [facade], current: [current])
         
         _ = getMigrationResult(
             migration: replaceM1ParameterChange,
             target: readResource(Resources.PetEndpointReplaceParameterMN.rawValue)
         )
         
-        guard let migratedModifiable = CodeStore
-                .getInstance()
-                .endpoint("/pet", scope: .current) else {
+        guard let migratedModifiable = CodeStore.instance.endpoint("/pet", scope: .current) else {
             fatalError("Migration failed.")
         }
         
@@ -179,7 +171,7 @@ class MethodParameterTests: XCTestCase {
             fatalError("Could not retrieve previous modifiable.")
         }
         
-        CodeStore.initInstance(previous: [facade], current: [current])
+        CodeStore.inject(previous: [facade], current: [current])
         
         _ = getMigrationResult(
             migration: replace1NParameterChange,
@@ -187,7 +179,7 @@ class MethodParameterTests: XCTestCase {
         )
         
         guard let migratedModifiable = CodeStore
-                .getInstance()
+                .instance
                 .endpoint("/pet", scope: .current) else {
             fatalError("Migration failed.")
         }

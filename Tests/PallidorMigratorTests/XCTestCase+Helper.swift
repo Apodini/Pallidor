@@ -17,13 +17,6 @@ extension XCTestCase {
    """ }
     
     func getMigrationResult(migration: String, target: String) -> Modifiable {
-        guard let sut = try? PallidorMigrator(
-                targetDirectory: "",
-                migrationGuidePath: nil,
-                migrationGuideContent: migration) else {
-            fatalError("Failed to initialize SUT.")
-        }
-       
         // swiftlint:disable force_try
         let fileParser = try! FileParser(contents: target)
         let code = try! fileParser.parse()
@@ -31,7 +24,7 @@ extension XCTestCase {
             fatalError("Could not retrieve types.")
         }
         
-        try! types.accept(sut.migrationSet)
+        try! types.accept(.migrationSet(from: migration))
         // swiftlint:enable force_try
         
         return types
@@ -50,5 +43,21 @@ extension XCTestCase {
         }
         
         return ""
+    }
+}
+
+extension MigrationSet {
+    static func migrationSet(from migrationGuideContent: String) -> MigrationSet {
+        guard let migrationGuide = try? MigrationGuide.guide(with: migrationGuideContent) else {
+            fatalError("Migration guide is malformed")
+        }
+        return migrationGuide.migrationSet
+    }
+}
+
+extension CodeStore {
+    static func inject(previous: [ModifiableFile], current: [ModifiableFile]) {
+        instance.previousFacade = previous
+        instance.currentAPI = current
     }
 }

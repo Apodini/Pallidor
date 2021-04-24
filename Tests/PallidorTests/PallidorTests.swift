@@ -2,19 +2,17 @@ import XCTest
 import Foundation
 import PallidorGenerator
 import PallidorMigrator
+import PathKit
 
 
 final class PallidorTests: XCTestCase {
-    func testGenerator() throws {
-        let specification = try readResource("openapi")
-        let generator = try PallidorGenerator(specification: specification)
-        XCTAssertNotNil(generator)
+    func testGeneratorInitialization() throws {
+        XCTAssertNoThrow(try PallidorGenerator(specification: try readResource("openapi")))
     }
     
-    func testMigrator() throws {
-        let migrationguide = try readResource("migrationguide")
-        let migrator = try PallidorMigrator(targetDirectory: "", migrationGuideContent: migrationguide)
-        XCTAssertNotNil(migrator)
+    func testMigratorInitialization() throws {
+        // PallidorMigrator normally throws if targetDirectory does not exist, therefore #file
+        XCTAssertNoThrow(try PallidorMigrator(targetDirectory: Path(#file).parent().string, migrationGuideContent: try readResource("migrationguide")))
     }
 
     fileprivate func readResource(_ resource: String) throws -> String {

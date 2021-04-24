@@ -9,11 +9,6 @@ import SourceryFramework
 @testable import PallidorMigrator
 
 class ModelTests: XCTestCase {
-    override func tearDown() {
-        CodeStore.clear()
-        super.tearDown()
-    }
-    
     func testNoChangeToPetModel() {
         let migrationResult = getMigrationResult(migration: noChange, target: readResource(Resources.ModelPet.rawValue))
         let result = ModelTemplate().render(migrationResult)
@@ -51,15 +46,14 @@ class ModelTests: XCTestCase {
             fatalError("Could not retrieve previous modifiable.")
         }
         
-        CodeStore.initInstance(previous: [facade], current: [])
+        CodeStore.inject(previous: [facade], current: [])
         
         _ = getMigrationResult(
             migration: deleteModelChange,
             target: readResource(Resources.ModelPlaceholder.rawValue)
         )
         
-        guard let migrationResult = CodeStore.getInstance()
-                .model(facade.id, scope: .current) else {
+        guard let migrationResult = CodeStore.instance.model(facade.id, scope: .current) else {
             fatalError("Could not retrieve migrated modifiable.")
         }
 

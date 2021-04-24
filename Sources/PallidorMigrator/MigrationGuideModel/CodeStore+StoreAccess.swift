@@ -19,11 +19,8 @@ extension CodeStore {
     /// - Parameters:
     ///   - modifiable: modifiable to insert
     ///   - scope: where the modifiable file should be inserted
-    func insert(modifiable: ModifiableFile, in scope: Scope = .previous) {
-        guard assertAccess(scope) else {
-            fatalError("Tried to insert modifiable in previous facade which is nil.")
-        }
-        scope == .current ? currentAPI.append(modifiable) : previousFacade?.append(modifiable)
+    func insert(modifiable: ModifiableFile, in scope: Scope = .previousFacade) {
+        scope == .current ? currentAPI.append(modifiable) : previousFacade.append(modifiable)
     }
 
     /// Retrieves a method by `id`
@@ -31,7 +28,7 @@ extension CodeStore {
     ///   - id: identifier of method (e.g. name)
     ///   - scope: where the method should be retrieved from
     /// - Returns: Method if available
-    func method(_ id: String, scope: Scope = .previous) -> WrappedMethod? {
+    func method(_ id: String, scope: Scope = .previousFacade) -> WrappedMethod? {
         endpoints(scope: scope)
             .flatMap { $0.methods }
             .first { $0.id == id }
@@ -42,7 +39,7 @@ extension CodeStore {
     ///   - id: identifier of model (e.g. name)
     ///   - scope: where the model should be retrieved from
     /// - Returns: Model if available
-    func model(_ id: String, scope: Scope = .previous) -> WrappedClass? {
+    func model(_ id: String, scope: Scope = .previousFacade) -> WrappedClass? {
         models(scope: scope).first { $0.id == id }
     }
 
@@ -51,7 +48,7 @@ extension CodeStore {
     ///   - id: identifier of enum (e.g. name)
     ///   - scope: where the enum should be retrieved from
     /// - Returns: Enum if available
-    func `enum`(_ id: String, scope: Scope = .previous) -> WrappedEnum? {
+    func `enum`(_ id: String, scope: Scope = .previousFacade) -> WrappedEnum? {
         modifiable(with: id, WrappedEnum.self, scope: scope)
     }
 
@@ -60,7 +57,7 @@ extension CodeStore {
     ///   - id: identifier of endpoint (e.g. top level route)
     ///   - scope: where the endpoint should be retrieved from
     /// - Returns: Endpoint if available
-    func endpoint(_ id: String, scope: Scope = .previous) -> WrappedStruct? {
+    func endpoint(_ id: String, scope: Scope = .previousFacade) -> WrappedStruct? {
         endpoints(scope: scope).first { $0.id == id }
     }
 
@@ -87,25 +84,17 @@ extension CodeStore {
 }
 
 fileprivate extension CodeStore {
-    /// Asserts access to search for modifiables
-    func assertAccess(_ scope: Scope) -> Bool {
-        scope == .current || previousFacade != nil
-    }
-    
     /// Retrieves modifiable files of a certain type
     /// - Parameters:
     ///   - type: type of modifiables
     ///   - scope: where the modifiables should be retrieved from
     /// - Returns: list of modifiables
     func modifiables<M: ModifiableFile>(_ type: M.Type = M.self, scope: Scope = .current) -> [M] {
-        guard assertAccess(scope) else {
-            fatalError("Tried to search in previous facade which is not initialized.")
-        }
-        return (scope == .current ? currentAPI : previousFacade)?
+        return (scope == .current ? currentAPI : previousFacade)
             .filter { $0 is M } as? [M] ?? []
     }
     
-    func modifiable<M: ModifiableFile>(with id: String, _ type: M.Type = M.self, scope: Scope = .previous) -> M? {
+    func modifiable<M: ModifiableFile>(with id: String, _ type: M.Type = M.self, scope: Scope = .previousFacade) -> M? {
         modifiables(M.self, scope: scope).first { $0.id == id }
     }
 }

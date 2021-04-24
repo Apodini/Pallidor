@@ -69,10 +69,7 @@ class MigrationSet {
         case .replace:
             // solvable has to be checked on constraint conditions (aka. remove endpoint not supported)
             if case .method(let method) = change.object, case .signature = change.target, method.definedIn != target.id {
-                guard let target = CodeStore
-                        .getInstance()
-                        .method(method.operationId)
-                else {
+                guard let target = CodeStore.instance.method(method.operationId) else {
                     fatalError("Target replacement method was not found.")
                 }
                 return ReplaceMigration(solvable: true, executeOn: target, change: change)
@@ -86,7 +83,7 @@ class MigrationSet {
     fileprivate func createDeleteMigration(_ change: Change, _ target: Modifiable) -> Migrating {
         if case .enum(let targetEnum) = change.object, let enumId = targetEnum.id {
             if case .case = change.target {
-                guard let facade = CodeStore.getInstance().enum(enumId) else {
+                guard let facade = CodeStore.instance.enum(enumId) else {
                     fatalError("Enum was not found in previous facade.")
                 }
                 guard let target = target as? WrappedEnum else {

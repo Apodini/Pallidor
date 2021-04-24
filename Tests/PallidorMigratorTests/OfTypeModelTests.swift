@@ -8,11 +8,6 @@ import SourceryFramework
 @testable import PallidorMigrator
 
 class OfTypeModelTests: XCTestCase {
-    override func tearDown() {
-        CodeStore.clear()
-        super.tearDown()
-    }
-    
     func testOfTypeModelNoChange() {
         let migrationResult = getMigrationResult(
             migration: noChange,
@@ -116,14 +111,14 @@ class OfTypeModelTests: XCTestCase {
             fatalError("Could not retrieve previous modifiable.")
         }
         
-        CodeStore.initInstance(previous: [facade], current: [])
+        CodeStore.inject(previous: [facade], current: [])
     
         _ = getMigrationResult(
             migration: deleteOfTypeChange,
             target: readResource(Resources.ModelPlaceholder.rawValue)
         )
         
-        guard let migrationResult = CodeStore.getInstance().model(facade.id) else {
+        guard let migrationResult = CodeStore.instance.model(facade.id) else {
             fatalError("Migration failed.")
         }
         let result = ModelTemplate().render(migrationResult)

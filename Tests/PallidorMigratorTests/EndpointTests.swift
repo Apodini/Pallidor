@@ -8,12 +8,7 @@ import XCTest
 import SourceryFramework
 @testable import PallidorMigrator
 
-class EndpointTests: XCTestCase {
-    override func tearDown() {
-        CodeStore.clear()
-        super.tearDown()
-    }
-    
+class EndpointTests: XCTestCase {    
     let renameEndpointChange = """
    {
        "summary" : "Here would be a nice summary what changed between versions",
@@ -34,7 +29,6 @@ class EndpointTests: XCTestCase {
    """
     
     func testEndpointRenamed() {
-        CodeStore.initInstance(previous: [], current: [])
         let migrationResult = getMigrationResult(
             migration: renameEndpointChange,
             target: readResource(Resources.PetEndpointRenamed.rawValue)
@@ -53,7 +47,7 @@ class EndpointTests: XCTestCase {
             fatalError("Could not retrieve previous modifiable.")
         }
         
-        CodeStore.initInstance(previous: [facade], current: [])
+        CodeStore.inject(previous: [facade], current: [])
         let migrationResult = getMigrationResult(
             migration: renameEndpointChange,
             target: readResource(Resources.PetEndpointRenamed.rawValue)
@@ -93,7 +87,7 @@ class EndpointTests: XCTestCase {
             fatalError("Could not retrieve previous modifiable.")
         }
         
-        CodeStore.initInstance(previous: [facade], current: [])
+        CodeStore.inject(previous: [facade], current: [])
         
         /// irrelevant for deleted migration
         _ = getMigrationResult(
@@ -101,9 +95,7 @@ class EndpointTests: XCTestCase {
             target: readResource(Resources.EndpointPlaceholder.rawValue)
         )
         
-        guard let migrationResult = CodeStore
-                .getInstance()
-                .endpoint(facade.id, scope: .current) else {
+        guard let migrationResult = CodeStore.instance.endpoint(facade.id, scope: .current) else {
             fatalError("Migration failed.")
         }
         

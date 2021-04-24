@@ -9,11 +9,6 @@ import SourceryFramework
 @testable import PallidorMigrator
 
 class ModelIntegrationTests: XCTestCase {
-    override func tearDown() {
-        CodeStore.clear()
-        super.tearDown()
-    }
-    
     let deletedAndAddedProperty = """
     {
         "summary" : "Here would be a nice summary what changed between versions",
