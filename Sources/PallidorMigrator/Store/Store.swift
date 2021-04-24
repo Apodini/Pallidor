@@ -1,14 +1,19 @@
-//
-//  CodeStore+StoreAccess.swift
-//
-//  Created by Andre Weinkoetz on 10/10/20.
-//  Copyright © 2020 TUM LS1. All rights reserved.
-//
-
 import Foundation
+import PathKit
 
-/// extension of CodeStore for CodeStore content manipulation & access
-extension CodeStore {
+protocol Store: AnyObject {
+    /// parsed source code located in facade folders
+    var previousFacade: [ModifiableFile] { get set }
+    /// parsed source code located in API folders
+    var currentAPI: [ModifiableFile] { get set }
+    
+    /// Collects source code from Models and APIs folders, and the respective error enums
+    /// - Parameter targetDirectory: path to source code files
+    func collect(at targetDirectory: Path)
+}
+
+/// Default implementations for code accessing and manipulation
+extension Store {
     /// inserts a new modifiable into the current api list (for getting deleted source code out of facade into current api)
     /// - Parameter modifiable: deleted source code from facade
     func insertDeleted(modifiable: ModifiableFile) {
@@ -61,7 +66,7 @@ extension CodeStore {
         endpoints(scope: scope).first { $0.id == id }
     }
 
-    /// Retrieves all enums from CodeStore, except of OpenAPIError ones
+    /// Retrieves all enums from Store, except of OpenAPIError ones
     /// - Parameter scope: where the enums should be retrieved from
     /// - Returns: List of all enums
     func enums(scope: Scope = .current) -> [WrappedEnum] {
@@ -83,14 +88,14 @@ extension CodeStore {
     }
 }
 
-fileprivate extension CodeStore {
+fileprivate extension Store {
     /// Retrieves modifiable files of a certain type
     /// - Parameters:
     ///   - type: type of modifiables
     ///   - scope: where the modifiables should be retrieved from
     /// - Returns: list of modifiables
     func modifiables<M: ModifiableFile>(_ type: M.Type = M.self, scope: Scope = .current) -> [M] {
-        return (scope == .current ? currentAPI : previousFacade)
+        (scope == .current ? currentAPI : previousFacade)
             .filter { $0 is M } as? [M] ?? []
     }
     

@@ -11,8 +11,7 @@ public struct PallidorMigrator {
         case noMigrationGuide(String)
     }
     
-    var codeStore = CodeStore.instance /** remove singleton, inject codestore instead*/
-    
+    var store: Store
     var targetDirectory: Path
     var migrationGuide: MigrationGuide
 
@@ -28,18 +27,19 @@ public struct PallidorMigrator {
         migrationGuideContent: String? = nil
     ) throws {
         self.targetDirectory = Path(targetDirectory)
+        store = CodeStore()
 
         guard self.targetDirectory.isDirectory else {
             throw PallidorMigratorError.invalidPath("Encountered invalid path \(targetDirectory). The path must be a directory")
         }
         
         if let migrationGuideContent = migrationGuideContent {
-            migrationGuide = try .guide(with: migrationGuideContent)
+            migrationGuide = try MigrationGuide.guide(with: migrationGuideContent).handled(in: store)
             return
         }
         
         if let migrationGuidePath = migrationGuidePath {
-            migrationGuide = try .guide(from: migrationGuidePath)
+            migrationGuide = try MigrationGuide.guide(from: migrationGuidePath).handled(in: store)
             return
         }
         
@@ -50,7 +50,7 @@ public struct PallidorMigrator {
     /// - Throws: Error if facade layer generation fails
     /// - Returns: List of URLs of files of facade layer
     public func buildFacade() throws -> [URL] {
-        codeStore.collect(at: targetDirectory)
+        store.collect(at: targetDirectory)
         
         let modelDirectory = targetDirectory + Path("Models")
         let apiDirectory = targetDirectory + Path("APIs")
@@ -59,25 +59,25 @@ public struct PallidorMigrator {
         
         let modelFacade = Facade(
             ModelTemplate.self,
-            modifiables: codeStore.models(),
+            modifiables: store.models(),
             targetDirectory: modelDirectory,
             migrationSet: migrationSet
         )
         let enumFacade = Facade(
             EnumTemplate.self,
-            modifiables: codeStore.enums(),
+            modifiables: store.enums(),
             targetDirectory: modelDirectory,
             migrationSet: migrationSet
         )
         let apiFacade = Facade(
             APITemplate.self,
-            modifiables: codeStore.endpoints(),
+            modifiables: store.endpoints(),
             targetDirectory: apiDirectory,
             migrationSet: migrationSet
         )
         
         // error enum for .current scope is always rendered through MetaModelConverter of PallidorGenerator
-        let errorEnums = Scope.allCases.compactMap { codeStore.enum("OpenAPIError", scope: $0) }
+        let errorEnums = Scope.allCases.compactMap { store.enum("OpenAPIError", scope: $0) }
         let errorFacade = ErrorFacade(modifiables: errorEnums, targetDirectory: targetDirectory)
 
         return [

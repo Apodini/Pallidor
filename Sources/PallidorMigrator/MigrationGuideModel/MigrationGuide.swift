@@ -21,6 +21,9 @@ class MigrationGuide: Decodable {
     var versionFrom: SemanticVersion
     /// current version
     var versionTo: SemanticVersion
+    
+    /// The store that is handling the migration guide. Property set via `handled(in:)`
+    private(set) var store: Store?
 
     private enum CodingKeys: String, CodingKey {
         case summary
@@ -54,7 +57,6 @@ class MigrationGuide: Decodable {
             }
             if let value = try? changesContainer.decode(DeleteChange.self) {
                 self.changes.append(value)
-                addDeleted(change: value)
                 continue
             }
             if let value = try? changesContainer.decode(ReplaceChange.self) {
@@ -66,6 +68,19 @@ class MigrationGuide: Decodable {
             }
         }
     }
+    
+    /// Migration guides can only be initialized via `init(from decoder: Decoder)` throughout the project
+    /// This method *must* be called right after init or latest right before passing the `migrationSet` property,
+    /// in order to inject the store to each modifiable
+    func handled(in store: Store) -> MigrationGuide {
+        self.store = store
+        changes
+            .filter { $0.changeType == .delete }
+            .map { $0.typed(DeleteChange.self) }
+            .forEach { addDeleted(change: $0) }
+        
+        return self
+    }
 
     /// Identifies deleted items and prepares the facade for their deletion
     /// - Parameter change: change in which sth. was deleted
@@ -73,37 +88,36 @@ class MigrationGuide: Decodable {
     // all change types and their respective targets.
     // swiftlint:disable:next cyclomatic_complexity
     private func addDeleted(change: DeleteChange) {
-        let codeStore = CodeStore.instance
         var modifiable: Modifiable?
         switch change.object {
         case .endpoint(let endpoint):
             if case .signature = change.target {
-                guard let endpointMod = codeStore.endpoint(endpoint.route) else {
+                guard let endpointMod = store?.endpoint(endpoint.route) else {
                     fatalError("Deleted endpoint \(endpoint.route) was not found in previous facade.")
                 }
                 modifiable = endpointMod
-                codeStore.insertDeleted(modifiable: endpointMod)
+                store?.insertDeleted(modifiable: endpointMod)
             }
         case .model(let model):
             if case .signature = change.target {
-                guard let modelMod = codeStore.model(model.name) else {
+                guard let modelMod = store?.model(model.name) else {
                     fatalError("Deleted model \(model.name) was not found in previous facade.")
                 }
                 modifiable = modelMod
-                codeStore.insertDeleted(modifiable: modelMod)
+                store?.insertDeleted(modifiable: modelMod)
             }
         case .enum(let enumModel):
             if case .signature = change.target {
-                guard let enumMod = codeStore.enum(enumModel.enumName) else {
+                guard let enumMod = store?.enum(enumModel.enumName) else {
                     fatalError("Deleted enum \(enumModel.enumName) was not found in previous facade.")
                 }
                 modifiable = enumMod
-                codeStore.insertDeleted(modifiable: enumMod)
+                store?.insertDeleted(modifiable: enumMod)
             }
         case .method(let method):
             if case .signature = change.target {
-                modifiable = codeStore.method(method.operationId)
-                guard let endpoint = codeStore.endpoint(method.definedIn, scope: .current) else {
+                modifiable = store?.method(method.operationId)
+                guard let endpoint = store?.endpoint(method.definedIn, scope: .current) else {
                     fatalError("Deleted endpoint \(method.definedIn) was not found in previous facade.")
                 }
                 guard let wrappedMethod = modifiable as? WrappedMethod else {
@@ -129,11 +143,10 @@ extension MigrationGuide {
 extension MigrationGuide {
     static func guide(with content: String) throws -> MigrationGuide {
         let data = content.data(using: .utf8) ?? Data()
-        return try JSONDecoder().decode(MigrationGuide.self, from: data)
+        return try JSONDecoder().decode(Self.self, from: data)
     }
     
     static func guide(from path: String) throws -> MigrationGuide {
         try JSONDecoder().decode(Self.self, from: try Data(contentsOf: URL(fileURLWithPath: path)))
     }
 }
-

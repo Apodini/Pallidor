@@ -19,6 +19,8 @@ class WrappedStruct: ModifiableFile {
     var modified: Bool = false
     var fileName: String { localName.removePrefix }
 
+    var store: Store? { didSet { methods.forEach { $0.store = store } } }
+    
     /// contains additional imports besides Foundation if necessary
     var specialImports = Set<String>()
     /// name of struct

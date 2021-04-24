@@ -111,14 +111,14 @@ class OfTypeModelTests: XCTestCase {
             fatalError("Could not retrieve previous modifiable.")
         }
         
-        CodeStore.inject(previous: [facade], current: [])
+        TestCodeStore.inject(previous: [facade], current: [])
     
         _ = getMigrationResult(
             migration: deleteOfTypeChange,
             target: readResource(Resources.ModelPlaceholder.rawValue)
         )
         
-        guard let migrationResult = CodeStore.instance.model(facade.id) else {
+        guard let migrationResult = TestCodeStore.instance.model(facade.id) else {
             fatalError("Migration failed.")
         }
         let result = ModelTemplate().render(migrationResult)

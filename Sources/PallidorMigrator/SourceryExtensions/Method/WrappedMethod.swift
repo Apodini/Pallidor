@@ -16,6 +16,8 @@ class WrappedMethod: Modifiable {
 
     var modified: Bool = false
 
+    var store: Store?
+    
     /// true if a parameter was replaced by a different type
     var paramsRequireJSContext = false
 

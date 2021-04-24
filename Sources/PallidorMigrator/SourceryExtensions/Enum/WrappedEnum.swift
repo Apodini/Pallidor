@@ -34,6 +34,8 @@ class WrappedEnum: ModifiableFile {
     /// list of enum cases
     var cases: [WrappedEnumCase]
     
+    var store: Store?
+    
     /// Default enum representation for internal enums
     lazy var defaultInternal : () -> String = {
         """

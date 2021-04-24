@@ -19,11 +19,11 @@ enum Scope: CaseIterable {
     }
     
     var modelsPath: Path {
-        return Path("\(folderPrefix)Models")
+        Path("\(folderPrefix)Models")
     }
     
     var apisPath: Path {
-        return Path("\(folderPrefix)APIs")
+        Path("\(folderPrefix)APIs")
     }
     
     var errorEnumFileName: String {
@@ -32,17 +32,14 @@ enum Scope: CaseIterable {
 }
 
 /// Location of storing the parsed source code (API & previous Facade)
-public class CodeStore {
-    
-    /// Singleton of code store instance, by default empty
-    public static var instance = CodeStore()
-    
+class CodeStore: Store {
     /// parsed source code located in facade folders
     var previousFacade: [ModifiableFile]
     /// parsed source code located in API folders
     var currentAPI: [ModifiableFile]
 
-    private init() {
+    /// Initializes the code store with empty layers
+    init() {
         previousFacade = []
         currentAPI = []
     }
@@ -92,6 +89,7 @@ public class CodeStore {
                 guard let types = WrappedTypes(types: code.types).modifiableFile else {
                     fatalError("Modifiable file could not be retrieved.")
                 }
+                
                 scope == .current ? currentAPI.append(types) : previousFacade.append(types)
             }
         } catch {

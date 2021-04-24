@@ -77,9 +77,9 @@ class MethodTests: XCTestCase {
             fatalError("Could not retrieve current modifiable.")
         }
         
-        CodeStore.inject(previous: [facade], current: [current])
+        TestCodeStore.inject(previous: [facade], current: [current])
         
-        let migrationGuide = try MigrationGuide.guide(with: deleteMethodChange)
+        let migrationGuide = try MigrationGuide.guide(with: deleteMethodChange).handled(in: TestCodeStore.instance)
         current.accept(change: migrationGuide.changes[0])
       
         let result = APITemplate().render(current)
@@ -142,9 +142,9 @@ class MethodTests: XCTestCase {
             fatalError("Could not retrieve current modifiable.")
         }
         
-        CodeStore.inject(previous: [facade], current: [current, current2])
+        TestCodeStore.inject(previous: [facade], current: [current, current2])
         
-        let store = CodeStore.instance
+        let store = TestCodeStore.instance
         
         guard let modAPI = store.endpoint("/pet", scope: .current) else {
             fatalError("Could not retrieve endpoint.")
@@ -205,14 +205,14 @@ class MethodTests: XCTestCase {
             fatalError("Could not retrieve previous modifiable.")
         }
         
-        CodeStore.inject(previous: [facade], current: [current])
+        TestCodeStore.inject(previous: [facade], current: [current])
         
         _ = getMigrationResult(
             migration: replaceMethodInSameEndpointChange,
             target: readResource(Resources.PetEndpointReplacedMethod.rawValue)
         )
         
-        guard let endpoint = CodeStore.instance.endpoint("/pet", scope: .current) else {
+        guard let endpoint = TestCodeStore.instance.endpoint("/pet", scope: .current) else {
             fatalError("Could not retrieve endpoint.")
         }
         

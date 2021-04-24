@@ -69,7 +69,7 @@ class EndpointIntegrationTests: XCTestCase {
             fatalError("Could not retrieve previous modifiable.")
         }
         
-        CodeStore.inject(previous: [modifiable], current: [current])
+        TestCodeStore.inject(previous: [modifiable], current: [current])
         
         do {
             try current.accept(.migrationSet(from: renameEndpointAndReplaceAndDeleteMethodChange))
@@ -135,7 +135,7 @@ class EndpointIntegrationTests: XCTestCase {
             fatalError("Could not retrieve previous modifiable.")
         }
         
-        CodeStore.inject(previous: [modifiable], current: [current])
+        TestCodeStore.inject(previous: [modifiable], current: [current])
         
         do {
             try current.accept(.migrationSet(from: renameEndpointAndReplaceMethodChange))
@@ -198,7 +198,7 @@ class EndpointIntegrationTests: XCTestCase {
             fatalError("Could not retrieve previous modifiable.")
         }
         
-        CodeStore.inject(previous: [modifiable], current: [current])
+        TestCodeStore.inject(previous: [modifiable], current: [current])
         
         do {
             try current.accept(.migrationSet(from: renameEndpointAndDeletedMethodChange))

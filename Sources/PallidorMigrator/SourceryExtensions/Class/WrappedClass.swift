@@ -15,6 +15,7 @@ class WrappedClass: ModifiableFile {
     var modified: Bool = false
     var annotation: Annotation?
     var fileName: String { localName }
+    var store: Store? { didSet { methods.forEach { $0.store = store } } }
 
     internal init(
         inheritedTypes: [String],

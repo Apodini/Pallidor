@@ -8,10 +8,6 @@
 import Foundation
 
 extension WrappedMethod {
-    fileprivate var codeStore: CodeStore {
-        CodeStore.instance
-    }
-    
     /// handle renaming a method
     /// - Parameter change: RenameChange affecting this method
     func handleRenameChange(change: RenameChange) {
@@ -165,11 +161,11 @@ extension WrappedMethod {
     }
 
     fileprivate func replaceMethodInOtherEndpoint(_ method: Method, _ change: ReplaceChange) {
-        guard let changeMethod = codeStore.method(method.operationId) else {
+        guard let changeMethod = store?.method(method.operationId) else {
             fatalError("Changed method could not be found in previous facade.")
         }
         changeMethod.accept(change: change)
-        if let changeEndpoint = codeStore.endpoint(method.definedIn, scope: .current) {
+        if let changeEndpoint = store?.endpoint(method.definedIn, scope: .current) {
             changeEndpoint.specialImports.insert("import JavaScriptCore")
             changeEndpoint.methods.append(changeMethod)
         }
@@ -208,8 +204,8 @@ extension WrappedMethod {
                 fatalError("Return type change is malformed.")
             }
             methodToModify.accept(change: rChange)
-            if codeStore.method(methodToModify.shortName, scope: .current) == nil {
-                guard let endpoint = codeStore.endpoint(targetMethod.definedIn, scope: .current) else {
+            if store?.method(methodToModify.shortName, scope: .current) == nil {
+                guard let endpoint = store?.endpoint(targetMethod.definedIn, scope: .current) else {
                     fatalError("Endpoint could not be found in library layer: \(targetMethod.definedIn)")
                 }
                 endpoint.methods.append(methodToModify)
@@ -228,11 +224,11 @@ extension WrappedMethod {
         var methodToModify: WrappedMethod
 
         if targetMethod.operationId == self.shortName {
-            guard let facadeMethod = codeStore.method(method.operationId, scope: .previousFacade) else {
+            guard let facadeMethod = store?.method(method.operationId, scope: .previousFacade) else {
                 fatalError("Method to modify could not be found.")
             }
             methodToModify = facadeMethod
-            guard let changeEndpoint = codeStore.endpoint(targetMethod.definedIn, scope: .current) else {
+            guard let changeEndpoint = store?.endpoint(targetMethod.definedIn, scope: .current) else {
                 fatalError("Endpoint could not be found: \(targetMethod.definedIn)")
             }
             changeEndpoint.specialImports.insert("import JavaScriptCore")
@@ -241,7 +237,7 @@ extension WrappedMethod {
             methodToModify = self
         }
 
-        guard let replacementMethod = codeStore.method(targetMethod.operationId, scope: .current) else {
+        guard let replacementMethod = store?.method(targetMethod.operationId, scope: .current) else {
             fatalError("Replacement method was not found in library layer.")
         }
 

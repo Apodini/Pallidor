@@ -46,14 +46,14 @@ class ModelTests: XCTestCase {
             fatalError("Could not retrieve previous modifiable.")
         }
         
-        CodeStore.inject(previous: [facade], current: [])
+        TestCodeStore.inject(previous: [facade], current: [])
         
         _ = getMigrationResult(
             migration: deleteModelChange,
             target: readResource(Resources.ModelPlaceholder.rawValue)
         )
         
-        guard let migrationResult = CodeStore.instance.model(facade.id, scope: .current) else {
+        guard let migrationResult = TestCodeStore.instance.model(facade.id, scope: .current) else {
             fatalError("Could not retrieve migrated modifiable.")
         }
 

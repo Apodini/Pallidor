@@ -26,7 +26,11 @@ protocol Modifiable: AnyObject {
 protocol ModifiableFile: Modifiable {
     var fileName: String { get }
     
-    /// Accepts the changes of `migrationSet`
+    /// The store where this `ModifiableFile` is being handled. Property set through `accept(_:)`
+    /// After setting the property, this `ModifiableFile` passes the reference to `Modifiable` properties that need access to the `Store`
+    var store: Store? { get set }
+    
+    /// Accepts the changes of `migrationSet`. The modifiables additionally gets the `Store` injected from the migration set
     /// - Parameter migrationSet: set of changes
     /// - Throws: error if any of the changes is not supported for migration
     func accept(_ migrationSet: MigrationSet) throws
@@ -34,6 +38,7 @@ protocol ModifiableFile: Modifiable {
 
 extension ModifiableFile {
     func accept(_ migrationSet: MigrationSet) throws {
+        self.store = migrationSet.store
         try migrationSet.activate(for: self)
     }
 }

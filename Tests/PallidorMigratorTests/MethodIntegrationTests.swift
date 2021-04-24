@@ -9,7 +9,6 @@ import SourceryFramework
 @testable import PallidorMigrator
 
 class MethodIntegrationTests: XCTestCase {
-    
     let renameMethodAndReplaceAndDeleteParameterChange = """
    {
        "summary" : "Here would be a nice summary what changed between versions",

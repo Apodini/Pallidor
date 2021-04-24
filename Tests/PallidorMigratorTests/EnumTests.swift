@@ -50,7 +50,7 @@ class EnumTests: XCTestCase {
             fatalError("Could not retrieve previous modifiable.")
         }
         
-        CodeStore.inject(previous: [facade], current: [])
+        TestCodeStore.inject(previous: [facade], current: [])
         
         let migrationResult = getMigrationResult(
             migration: deleteEnumCaseChange,
@@ -91,7 +91,7 @@ class EnumTests: XCTestCase {
             fatalError("Could not retrieve previous modifiable.")
         }
         
-        CodeStore.inject(previous: [facade], current: [])
+        TestCodeStore.inject(previous: [facade], current: [])
         
         // irrelevant result
         _ = getMigrationResult(
@@ -99,7 +99,7 @@ class EnumTests: XCTestCase {
             target: readResource(Resources.EnumPlaceholder.rawValue)
         )
 
-        guard let migrationResult = CodeStore.instance.enum(facade.id, scope: .current) else {
+        guard let migrationResult = TestCodeStore.instance.enum(facade.id, scope: .current) else {
             fatalError("Migration failed.")
         }
         let result = EnumTemplate().render(migrationResult)
