@@ -9,13 +9,30 @@ import Foundation
 import SourceryFramework
 import PathKit
 
+/// Scope of layers
+enum Scope: CaseIterable {
+    case current
+    case previousFacade
+    
+    private var folderPrefix: String {
+        self == .current ? "" : "Persistent"
+    }
+    
+    var modelsPath: Path {
+        return Path("\(folderPrefix)Models")
+    }
+    
+    var apisPath: Path {
+        return Path("\(folderPrefix)APIs")
+    }
+    
+    var errorEnumFileName: String {
+        "\(self == .current ? "_" : "")APIErrors.swift"
+    }
+}
+
 /// Location of storing the parsed source code (API & previous Facade)
 public class CodeStore {
-    /// Scope of layers
-    enum Scope {
-        case current
-        case previousFacade
-    }
     
     /// Singleton of code store instance, by default empty
     public static var instance = CodeStore()
@@ -25,11 +42,6 @@ public class CodeStore {
     /// parsed source code located in API folders
     var currentAPI: [ModifiableFile]
 
-    /// Returns whether the previous facade contains files
-    var hasFacade: Bool {
-        !previousFacade.isEmpty
-    }
-    
     private init() {
         previousFacade = []
         currentAPI = []
@@ -38,99 +50,52 @@ public class CodeStore {
     /// Collects source code form Models and APIs folders, and the respective error enums
     /// - Parameter targetDirectory: path to source code files
     func collect(at targetDirectory: Path) {
-        guard let currentAPI = getCode(
-            modelPath: targetDirectory + Path("Models"),
-            apiPath: targetDirectory + Path("APIs")
-        ) else {
-            fatalError("Current API must be present.")
-        }
+        Scope.allCases.forEach { collectCode(for: $0, in: targetDirectory) }
         
-        self.currentAPI = currentAPI
-        self.previousFacade = getCode(modelPath: targetDirectory + Path("PersistentModels"), apiPath: targetDirectory + Path("PersistentAPIs")) ?? []
-    }
-
-    fileprivate func importEndpoints(_ apiPaths: [String]?, _ apiDirectory: Path, _ modifiables: inout [ModifiableFile]) {
-        guard let apiPaths = apiPaths else {
-            fatalError("No paths to endpoints provided.")
-        }
-        
-        do {
-            for endpointPath in apiPaths {
-                let path = apiDirectory + Path(endpointPath)
-                let content = try path.read(.utf8)
-                let fileparser = try FileParser(contents: content, path: path)
-                let code = try fileparser.parse()
-                guard let types = WrappedTypes(types: code.types).modifiableFile else {
-                    fatalError("Modifiable file could not be retrieved.")
-                }
-                modifiables.append(types)
-            }
-        } catch {
-            fatalError("Endpoints could not be loaded.")
-        }
-    }
-    
-    fileprivate func importModels(_ mPaths: [String], _ modelDirectory: Path, _ modifiables: inout [ModifiableFile]) {
-        do {
-            for modelPath in mPaths {
-                let path = modelDirectory + Path(modelPath)
-                let content = try path.read(.utf8)
-                let fileparser = try FileParser(contents: content, path: path)
-                let code = try fileparser.parse()
-                guard let types = WrappedTypes(types: code.types).modifiableFile else {
-                    fatalError("Modifiable file could not be retrieved.")
-                }
-                
-                modifiables.append(types)
-            }
-        } catch {
-            fatalError("Models could not be loaded.")
-        }
+        assert(!currentAPI.isEmpty, "Current API must be present")
     }
     
     /// Reads and parses the source code inside of target directories
     /// - Parameters:
-    ///   - modelPath: path to models
-    ///   - apiPath: path to endpoints
-    /// - Returns: List of parsed source code items
-    private func getCode(modelPath: Path, apiPath: Path) -> [ModifiableFile]? {
-        let modelDirectory = modelPath
-        let apiDirectory = apiPath
+    ///   - scope: scope where the code should be read from
+    ///   - targetDirectory: path of target directory
+    private func collectCode(for scope: Scope, in targetDirectory: Path) {
+        let modelsDirectory = targetDirectory + scope.modelsPath
+        let apisDirectory = targetDirectory + scope.apisPath
+        let errorEnumFileName = scope.errorEnumFileName
         
-        let modelPaths = FileManager
-            .swiftFilesInDirectory(atPath: modelDirectory.string + "/")
+        let modelFileNames = FileManager
+            .swiftFilesInDirectory(atPath: modelsDirectory.string + "/")
             .sorted(by: { $0 == "_APIAliases.swift" || $0 == "APIAliases.swift" || $0 < $1 })
-        let apiPaths = FileManager.swiftFilesInDirectory(atPath: apiDirectory.string + "/")
-        let errorPaths = [
-            modelPath.parent() + Path("_APIErrors.swift"),
-            modelPath.parent() + Path("APIErrors.swift")
-        ]
         
-        guard !modelPaths.isEmpty else {
-            return nil
-        }
+        let apiFileNames = FileManager.swiftFilesInDirectory(atPath: apisDirectory.string + "/")
         
-        var modifiables: [ModifiableFile] = []
+        importModifiableFiles(with: modelFileNames, from: modelsDirectory, for: scope)
         
-        importModels(modelPaths, modelDirectory, &modifiables)
-
-        importEndpoints(apiPaths, apiDirectory, &modifiables)
+        importModifiableFiles(with: apiFileNames, from: apisDirectory, for: scope)
         
+        importModifiableFiles(with: [errorEnumFileName], from: targetDirectory, for: scope)
+    }
+    
+    /// Reads and parses the source code inside of target directories and stores it in the CodeStore
+    /// - Parameters:
+    ///   - fileNames: swift file names
+    ///   - directory: path of directory
+    ///   - scope: scope where the code should be read from
+    private func importModifiableFiles(with fileNames: [String], from directory: Path, for scope: Scope) {
         do {
-            for errorPath in errorPaths {
-                if let content = try? errorPath.read(.utf8) {
-                    let fileparser = try FileParser(contents: content, path: errorPath)
-                    let code = try fileparser.parse()
-                    guard let types = WrappedTypes(types: code.types).modifiableFile else {
-                        fatalError("Modifiable file could not be retrieved.")
-                    }
-                    modifiables.append(types)
+            for file in fileNames {
+                let absolutePath = directory + Path(file)
+                let content = try absolutePath.read(.utf8)
+                let fileparser = try FileParser(contents: content, path: absolutePath)
+                let code = try fileparser.parse()
+                guard let types = WrappedTypes(types: code.types).modifiableFile else {
+                    fatalError("Modifiable file could not be retrieved.")
                 }
+                scope == .current ? currentAPI.append(types) : previousFacade.append(types)
             }
         } catch {
-            fatalError("Error enum could not be loaded.")
+            fatalError("Endpoints could not be loaded.")
         }
-        
-        return modifiables
     }
 }

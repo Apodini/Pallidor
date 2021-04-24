@@ -76,21 +76,8 @@ public struct PallidorMigrator {
             migrationSet: migrationSet
         )
         
-        let errorEnums: [ModifiableFile]
-        
-        if codeStore.hasFacade {
-            guard let newErrors = codeStore.enum("OpenAPIError", scope: .current),
-                  let previousErrors = codeStore.enum("OpenAPIError") else {
-                fatalError("New or previous errors could not be retrieved.")
-            }
-            errorEnums = [newErrors, previousErrors]
-        } else {
-            guard let newErrors = codeStore.enum("OpenAPIError", scope: .current) else {
-                fatalError("Previous errors could not be retrieved.")
-            }
-            errorEnums = [newErrors]
-        }
-        
+        // error enum for .current scope is always rendered through MetaModelConverter of PallidorGenerator
+        let errorEnums = Scope.allCases.compactMap { codeStore.enum("OpenAPIError", scope: $0) }
         let errorFacade = ErrorFacade(modifiables: errorEnums, targetDirectory: targetDirectory)
 
         return [
