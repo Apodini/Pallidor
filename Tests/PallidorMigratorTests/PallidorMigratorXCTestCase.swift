@@ -162,7 +162,7 @@ class PallidorMigratorXCTestCase: XCTestCase, ResourceHandler {
     }
     
     /// AssertEqual used throughout the target
-    func XCTMigratorAssertEqual(_ expression: String, _ container: Container, overrideResource: Bool = true) {
+    func XCTMigratorAssertEqual(_ expression: String, _ container: Container, overrideResource: Bool = false) {
         let instance = container.instance
         do {
             let instanceContent = try instance.content()
