@@ -8,7 +8,7 @@ class SchemaTests: XCTestCase {
     func testParseDefaultSchema() {
         initSUT(resource: .petstore)
         if let test = sut?.getSchema(name: "Pet") {
-            XCTAssertEqual(test.description, readResult(.Pet))
+            XCTGeneratorAssertEqual(test.description, .results(.Pet))
         } else {
             XCTFail("Library could not be generated.")
         }
@@ -17,7 +17,7 @@ class SchemaTests: XCTestCase {
     func testParseComplexSchema() {
         initSUT(resource: .lufthansa)
         if let test = sut?.getSchema(name: "FlightAggregate") {
-            XCTAssertEqual(test.description, readResult(.FlightAggregate))
+            XCTGeneratorAssertEqual(test.description, .results(.FlightAggregate))
         } else {
             XCTFail("Library could not be generated.")
         }
@@ -26,7 +26,7 @@ class SchemaTests: XCTestCase {
     func testParseDefaultEnum() {
         initSUT(resource: .lufthansa)
         if let test = sut?.getSchema(name: "MessageLevel") {
-            XCTAssertEqual(test.description, readResult(.MessageLevel))
+            XCTGeneratorAssertEqual(test.description, .results(.MessageLevel))
         } else {
             XCTFail("Library could not be generated.")
         }
@@ -35,7 +35,7 @@ class SchemaTests: XCTestCase {
     func testParseResolvedTypeAliasSchema() {
         initSUT(resource: .lufthansa)
         if let test = sut?.getSchema(name: "PeriodOfOperation") {
-            XCTAssertEqual(test.description, readResult(.PeriodOfOperation))
+            XCTGeneratorAssertEqual(test.description, .results(.PeriodOfOperation))
         } else {
             XCTFail("Library could not be generated.")
         }
@@ -44,7 +44,7 @@ class SchemaTests: XCTestCase {
     func testParseOneOfSchema() {
         initSUT(resource: .wines)
         if let test = sut?.getSchema(name: "PaymentInstallmentSchedule") {
-            XCTAssertEqual(test.description, readResult(.PaymentInstallmentSchedule))
+            XCTGeneratorAssertEqual(test.description, .results(.PaymentInstallmentSchedule))
         } else {
             XCTFail("Library could not be generated.")
         }
@@ -53,7 +53,7 @@ class SchemaTests: XCTestCase {
     func testParseAnyOfSchema() {
         initSUT(resource: .wines_any)
         if let test = sut?.getSchema(name: "PaymentInstallmentSchedule") {
-            XCTAssertEqual(test.description, readResult(.PaymentInstallmentSchedule_Any))
+            XCTGeneratorAssertEqual(test.description, .results(.PaymentInstallmentSchedule_Any))
         } else {
             XCTFail("Library could not be generated.")
         }
@@ -65,14 +65,13 @@ class SchemaTests: XCTestCase {
         }
         TypeAliases.parse(resolvedDoc: apiSpec)
         sut = SchemaConverter(apiSpec)
-        // Is initialized in previous statement
-        // swiftlint:disable:next force_unwrapping
-        sut!.parse()
+        
+        sut?.parse()
     }
     
     override func tearDown() {
-        TypeAliases.store = [String: String]()
-        OpenAPIErrorModel.errorTypes = Set<String>()
+        TypeAliases.store.removeAll()
+        OpenAPIErrorModel.errorTypes.removeAll()
         super.tearDown()
     }
     

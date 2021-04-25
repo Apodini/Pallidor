@@ -65,4 +65,20 @@ extension XCTestCase: ResourceHandler {
         
         return nil
     }
+    
+    /// AssertEqual used throughout the target
+    func XCTGeneratorAssertEqual(_ expression: String, _ container: Container, overrideResource: Bool = false) {
+        let instance = container.instance
+        do {
+            let instanceContent = try instance.content()
+            
+            if expression != instanceContent, overrideResource {
+                write(content: expression, for: container)
+            }
+            
+            XCTAssertEqual(expression, instanceContent)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+    }
 }

@@ -8,7 +8,7 @@ class APITests: XCTestCase {
     func testParseTypeAliasResultMethod() {
         initSUT(resource: .lufthansa)
         if let test = sut?.getOperation("getPassengerFlights", in: "Flightschedules") {
-            XCTResourceHandlerAssertEqual(test.description, .results(.LH_GetPassengerFlights))
+            XCTGeneratorAssertEqual(test.description, .results(.LH_GetPassengerFlights))
         } else {
             XCTFail("Library could not be generated.")
         }
@@ -17,7 +17,7 @@ class APITests: XCTestCase {
     func testParseDefaultResultMethod() {
         initSUT(resource: .petstore)
         if let test = sut?.getOperation("addPet", in: "Pet") {
-            XCTResourceHandlerAssertEqual(test.description, .results(.Pet_addPet))
+            XCTGeneratorAssertEqual(test.description, .results(.Pet_addPet))
         } else {
             XCTFail("Library could not be generated.")
         }
@@ -42,7 +42,7 @@ class APITests: XCTestCase {
     func testParseSimpleResultMethod() {
         initSUT(resource: .petstore)
         if let test = sut?.getOperation("updatePetWithForm", in: "Pet") {
-            XCTResourceHandlerAssertEqual(test.description, .results(.Pet_updatePetWithForm))
+            XCTGeneratorAssertEqual(test.description, .results(.Pet_updatePetWithForm))
         } else {
             XCTFail("Library could not be generated.")
         }
@@ -51,7 +51,7 @@ class APITests: XCTestCase {
     func testParseSimpleEndpointMethod() {
         initSUT(resource: .petstore)
         if let test = sut?.getEndpoint("Pet") {
-            XCTResourceHandlerAssertEqual(test.description, .results(.Pet_Endpoint))
+            XCTGeneratorAssertEqual(test.description, .results(.Pet_Endpoint))
         } else {
             XCTFail("Library could not be generated.")
         }
@@ -60,7 +60,7 @@ class APITests: XCTestCase {
     func testParseSimpleEndpointMethodChangedHTTPMethod() {
         initSUT(resource: .petstore_httpMethodChanged)
         if let test = sut?.getOperation("updatePet", in: "Pet") {
-            XCTResourceHandlerAssertEqual(test.description, .results(.Pet_updatePetChangedHTTPMethod))
+            XCTGeneratorAssertEqual(test.description, .results(.Pet_updatePetChangedHTTPMethod))
         } else {
             XCTFail("Library could not be generated.")
         }
@@ -69,7 +69,7 @@ class APITests: XCTestCase {
     func testParseSimpleEndpointMinMaxMethod() {
         initSUT(resource: .petstore_minMax)
         if let test = sut?.getOperation("getPetById", in: "Pet") {
-            XCTResourceHandlerAssertEqual(test.description, .results(.Pet_getPetByIdMinMax))
+            XCTGeneratorAssertEqual(test.description, .results(.Pet_getPetByIdMinMax))
         } else {
             XCTFail("Library could not be generated.")
         }
@@ -77,7 +77,7 @@ class APITests: XCTestCase {
     
     func testParseOAIErrorEnum() {
         initSUT(resource: .petstore_unmodified)
-        XCTResourceHandlerAssertEqual(OpenAPIErrorModel().description, .results(.OpenAPIErrorModel))
+        XCTGeneratorAssertEqual(OpenAPIErrorModel().description, .results(.OpenAPIErrorModel))
     }
     
     private func initSUT(resource: Resources) {
@@ -90,8 +90,8 @@ class APITests: XCTestCase {
     }
     
     override func tearDown() {
-        TypeAliases.store = [String: String]()
-        OpenAPIErrorModel.errorTypes = Set<String>()
+        TypeAliases.store.removeAll()
+        OpenAPIErrorModel.errorTypes.removeAll()
         super.tearDown()
     }
     
