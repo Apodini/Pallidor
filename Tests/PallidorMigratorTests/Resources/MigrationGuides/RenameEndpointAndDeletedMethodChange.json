@@ -1,0 +1,24 @@
+{
+    "summary" : "Here would be a nice summary what changed between versions",
+    "api-spec": "OpenAPI",
+    "api-type": "REST",
+    "from-version" : "0.0.1b",
+    "to-version" : "0.0.2",
+    "changes" : [
+        {
+            "object" : {
+                "route" : "/pets"
+            },
+            "target" : "Signature",
+            "original-id" : "/pet"
+        },
+        {
+            "object":{
+               "operation-id":"updatePet",
+               "defined-in":"/pets"
+            },
+            "target" : "Signature",
+            "fallback-value": { }
+        }
+    ]
+}

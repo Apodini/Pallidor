@@ -7,148 +7,46 @@
 import XCTest
 @testable import PallidorMigrator
 
-class EndpointTests: XCTestCase {
-    let renameEndpointChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "object" : {
-                   "route" : "/pets"
-               },
-               "target" : "Signature",
-               "original-id" : "/pet"
-           }
-       ]
-   }
-   """
-    
+class EndpointTests: PallidorMigratorXCTestCase {
     func testEndpointRenamed() {
-        let migrationResult = getMigrationResult(
-            migration: renameEndpointChange,
-            target: readResource(Resources.PetEndpointRenamed.rawValue)
-        )
+        let migrationResult = migration(.RenameEndpointChange, target: .PetEndpointRenamed)
         let result = APITemplate().render(migrationResult)
         
-        XCTAssertEqual(result, readResource(Resources.ResultPetEndpointFacadeRenamed.rawValue))
+        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeRenamed))
     }
         
     func testRenamedAndAddMethod() {
-        let facade = modifiableFile(from: readResource(Resources.PetEndpointFacadeAddMethod.rawValue))
-        
+        let facade = modifiable(.PetEndpointFacadeAddMethod)
         TestCodeStore.inject(previous: [facade], current: [])
-        let migrationResult = getMigrationResult(
-            migration: renameEndpointChange,
-            target: readResource(Resources.PetEndpointRenamed.rawValue)
-        )
+        let migrationResult = migration(.RenameEndpointChange, target: .PetEndpointRenamed)
+        
         let result = APITemplate().render(migrationResult)
         
-        XCTAssertEqual(result, readResource(Resources.ResultPetEndpointFacadeRenamed.rawValue))
+        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeRenamed))
     }
     
-    let deleteEndpointChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "object" : {
-                   "route" : "/pet"
-               },
-               "target" : "Signature",
-               "fallback-value" : {
-                   "name" : "/pet"
-               }
-           }
-       ]
-   }
-   """
-    
     func testDeleted() {
-        let facade = resource(.PetEndpointFacade)
+        let facade = modifiable(.PetEndpointFacade)
         TestCodeStore.inject(previous: [facade], current: [])
         
         /// irrelevant for deleted migration
-        _ = getMigrationResult(
-            migration: deleteEndpointChange,
-            target: readResource(Resources.EndpointPlaceholder.rawValue)
-        )
-        
+        _ = migration(.DeleteEndpointChange, target: .EndpointPlaceholder)
         guard let migrationResult = TestCodeStore.instance.endpoint(facade.id, scope: .currentAPI) else {
             fatalError("Migration failed.")
         }
         
         let result = APITemplate().render(migrationResult)
 
-        XCTAssertEqual(result, readResource(Resources.ResultPetEndpointFacadeDeleted.rawValue))
+        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeDeleted))
     }
-    
-    let renameMethodAndChangeContentBodyChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "reason": "Security issue related change",
-               "object" : {
-                   "operation-id" : "updateMyPet",
-                   "defined-in" : "/pet"
-               },
-               "target" : "Signature",
-               "original-id" : "updatePet"
-           },
-            {
-                "object" : {
-                   "operation-id" : "updatePet",
-                   "defined-in" : "/pet"
-                },
-                "target" : "Content-Body",
-                "replacement-id" : "_",
-                "type" : "Order",
-                "custom-convert" : "function conversion(placeholder) { return placeholder }",
-                "custom-revert" : "function conversion(placeholder) { return placeholder }",
-                "replaced" : {
-                        "name" : "_",
-                        "type" : "Pet",
-                        "required" : true
-                }
-            }
-       ]
-
-   }
-   """
     
     /// method `updatePet()` is renamed to `updateMyPet()`
     /// parameter changed, return value remain the same
     func testRenameMethodAndChangeContentBodyChange() {
-        let migrationResult = getMigrationResult(
-            migration: renameMethodAndChangeContentBodyChange,
-            target: readResource(Resources.PetEndpointRenamedMethodAndContentBody.rawValue)
-        )
+        let migrationResult = migration(.RenameMethodAndChangeContentBodyChange, target: .PetEndpointRenamedMethodAndContentBody)
         let result = APITemplate().render(migrationResult)
-        
-        XCTAssertEqual(result, readResource(
-                        Resources.ResultPetEndpointFacadeRenamedMethodAndContentBody.rawValue)
+        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeRenamedMethodAndContentBody)
         )
-    }
-
-    enum Resources: String {
-        case PetEndpointRenamed, PetEndpointFacade, EndpointPlaceholder, PetEndpointRenamedMethodAndContentBody, PetEndpointFacadeAddMethod
-        case ResultPetEndpointFacadeRenamed, ResultPetEndpointFacadeDeleted, ResultPetEndpointFacadeRenamedMethodAndContentBody
-    }
-    
-    func resource(_ resource: Resources) -> ModifiableFile {
-        modifiableFile(from: readResource(resource.rawValue))
     }
     
     static var allTests = [

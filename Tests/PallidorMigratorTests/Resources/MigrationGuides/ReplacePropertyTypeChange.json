@@ -1,0 +1,24 @@
+{
+    "summary" : "Here would be a nice summary what changed between versions",
+    "api-spec": "OpenAPI",
+    "api-type": "REST",
+    "from-version" : "0.0.1b",
+    "to-version" : "0.0.2",
+    "changes" : [
+        {
+            "object" : {
+                "name" : "Customer"
+            },
+            "target" : "Property",
+            "replacement-id" : "addresses",
+            "type" : "[NewAddress]",
+            "custom-convert" : "function conversion(address) { return { 'city' : address.city, 'street' : address.street, 'universe' : '42' } }",
+            "custom-revert" : "function conversion(address) { return address.universe == '42' ? { 'city' : address.city, 'street' : address.street, 'zip': '81543', 'state' : 'Bavaria' } : { 'city' : address.city, 'street' : address.street , 'zip' : '80634', 'state' : 'Bavaria' } }",
+            "replaced" : {
+                    "name" : "address",
+                    "type" : "[Address]"
+            }
+        }
+    ]
+
+}

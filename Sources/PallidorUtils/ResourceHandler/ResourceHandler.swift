@@ -2,30 +2,14 @@ import Foundation
 
 /// A protocol that allows functionality to manipulate resources while running a test
 /// The whole logic is implemented based on current `Pallidor` test resources,
-/// which consist of `resource` (input) and `results` (expected) file types
+/// which consist of `resources`, `results`, and `migration guides`. Currently the only requirement is `ResourceContainer` type
 public protocol ResourceHandler {
-    /// Input type resource
-    associatedtype Input: Resource
-    /// Output type resource
-    associatedtype Output: Resource
+    associatedtype Container: ResourceContainer
 }
 
-/// A container of inputs and outputs of `ResourceHandler`s
-/// See usage in `XCTResourceHandlerAssertEqual`
-public enum Container<R: ResourceHandler> {
-    /// Input resource
-    case input(R.Input)
-    /// Output resource
-    case output(R.Output)
-    
-    var instance: Resource {
-        switch self {
-        case let .input(instance):
-            return instance
-        case let .output(instance):
-            return instance
-        }
-    }
+/// Conforming types are suggested to be enums with associated values of type `Resource` returned via instance computed property
+public protocol ResourceContainer {
+    var instance: Resource { get }
 }
 
 public extension ResourceHandler {
@@ -33,15 +17,15 @@ public extension ResourceHandler {
     /// If not equal the test case fails, `expression` is written at `resource` and the next test case is guaranteed a success
     ///  - Parameters:
     ///     - expression `lhs` of equality check
-    ///     - resource: the container of the resource
+    ///     - container: the container of the resource
     ///     - file:`#file` variable by default. `Must` not be changed. The only source of truth to discover resources inside the tests
-    func XCTResourceHandlerAssertEqual(_ expression: String, _ container: Container<Self>, file: String = #file) {
+    func XCTResourceHandlerAssertEqual(_ expression: String, _ container: Self.Container, overrideResult: Bool = false, file: String = #file) {
         do {
-            let resource = container.instance
-            let resourceContent = try resource.content()
+            let instance = container.instance
+            let expectationContent = try instance.content()
             
-            if expression != resourceContent {
-                try resource.write(expression, file: file)
+            if expression != expectationContent, overrideResult {
+                try instance.write(expression, file: file)
             }
             
             /** the project does not build if importing XCTest in a non-testtarget, and the compiler ignores
@@ -55,6 +39,15 @@ public extension ResourceHandler {
 //            XCTAssertEqual(expression, resourceContent)
         } catch {
 //            XCTFail("\(error.localizedDescription)")
+        }
+    }
+    
+    /// A default implementation to directly write the specified content to a resource contained in container
+    func write(content: String, for container: Self.Container, file: String = #file) {
+        do {
+            try container.instance.write(content, file: file)
+        } catch {
+            fatalError("Write failed: \(error.localizedDescription)")
         }
     }
 }

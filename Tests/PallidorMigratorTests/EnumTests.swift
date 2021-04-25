@@ -6,163 +6,55 @@
 import XCTest
 @testable import PallidorMigrator
 
-class EnumTests: XCTestCase {
+class EnumTests: PallidorMigratorXCTestCase {
     func testNoChangeEnum() {
-        let migrationResult = getMigrationResult(
-            migration: noChange,
-            target: readResource(Resources.EnumTimeMode.rawValue)
-        )
+        let migrationResult = migration(.EmptyGuide, target: .EnumTimeMode)
         let result = EnumTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, readResource(Resources.ResultEnumTimeMode.rawValue))
+        
+        XCTAssertEqual(result, expectation(.ResultEnumTimeMode))
     }
-    
-    let deleteEnumCaseChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "object" : {
-                   "enum-name" : "TimeMode"
-               },
-               "target" : "Case",
-               "fallback-value" : {
-                    "case" : "UTC"
-                }
-           }
-       ]
 
-   }
-   """
-    
-    func resource(_ resource: Resources) -> ModifiableFile {
-        modifiableFile(from: readResource(resource.rawValue))
-    }
-    
     func testDeletedCase() {
-        let facade = resource(.EnumTimeModeFacade)
+        let facade = modifiable(.EnumTimeModeFacade)
         TestCodeStore.inject(previous: [facade], current: [])
         
-        let migrationResult = getMigrationResult(
-            migration: deleteEnumCaseChange,
-            target: readResource(Resources.EnumTimeModeDeletedCase.rawValue)
-        )
+        let migrationResult = migration(.DeleteEnumCaseChange, target: .EnumTimeModeDeletedCase)
+        
         let result = EnumTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, readResource(Resources.ResultEnumTimeModeDeletedCase.rawValue))
+        XCTAssertEqual(result, expectation(.ResultEnumTimeModeDeletedCase))
     }
-    
-    let deleteEnumChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "object" : {
-                   "enum-name" : "TimeMode"
-               },
-               "target" : "Signature",
-               "fallback-value" : { }
-           }
-       ]
 
-   }
-   """
-    
     func testDeleted() {
-        let facade = resource(.EnumTimeModeFacade)
+        let facade = modifiable(.EnumTimeModeFacade)
         TestCodeStore.inject(previous: [facade], current: [])
         
         // irrelevant result
-        _ = getMigrationResult(
-            migration: deleteEnumChange,
-            target: readResource(Resources.EnumPlaceholder.rawValue)
-        )
-
+        _ = migration(.DeleteEnumChange, target: .EnumPlaceholder)
+        
         guard let migrationResult = TestCodeStore.instance.enum(facade.id, scope: .currentAPI) else {
             fatalError("Migration failed.")
         }
         let result = EnumTemplate().render(migrationResult)
         
-        XCTAssertEqual(result, readResource(Resources.ResultEnumTimeModeDeleted.rawValue))
+        XCTAssertEqual(result, expectation(.ResultEnumTimeModeDeleted))
     }
-    
-    let renameEnumChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "object" : {
-                   "enum-name" : "TimeRenamedMode"
-               },
-               "target" : "Signature",
-               "original-id" : "TimeMode"
-           }
-       ]
-   }
-   """
     
     func testRenamed() {
-        let migrationResult = getMigrationResult(
-            migration: renameEnumChange,
-            target: readResource(Resources.EnumTimeModeRenamed.rawValue)
-        )
+        let migrationResult = migration(.RenameEnumChange, target: .EnumTimeModeRenamed)
         let result = EnumTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, readResource(Resources.ResultEnumTimeModeRenamed.rawValue))
+        XCTAssertEqual(result, expectation(.ResultEnumTimeModeRenamed))
     }
-    
-    let replaceEnumChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "object" : {
-                   "enum-name" : "MessageLevel"
-               },
-               "target" : "Signature",
-               "replacement-id" : "ServiceLevel",
-               "custom-convert" : "function conversion(o) { return o === 'INFO' ? 1 : 2 }",
-               "custom-revert" : "function conversion(o) { return o === 1 ? 'INFO' : 'ERROR' }",
-                "replaced" : {
-                    "enum-name" : "ServiceLevel",
-                    "type" : "Int"
-                }
-           }
-       ]
 
-   }
-   """
-    
     func testReplaced() {
-        let migrationResult = getMigrationResult(
-            migration: replaceEnumChange,
-            target: readResource(Resources.EnumMessageLevelFacade.rawValue)
-        )
+        let migrationResult = migration(.ReplaceEnumChange, target: .EnumMessageLevelFacade)
         let result = EnumTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, readResource(Resources.ResultEnumMessageLevelReplaced.rawValue))
+        XCTAssertEqual(result, expectation(.ResultEnumMessageLevelReplaced))
     }
     
-    enum Resources: String {
-        case EnumMessageLevelFacade, EnumPlaceholder, EnumTimeMode, EnumTimeModeFacade, EnumTimeModeDeletedCase, EnumTimeModeRenamed
-        case ResultEnumMessageLevelReplaced, ResultEnumTimeMode, ResultEnumTimeModeDeleted, ResultEnumTimeModeDeletedCase, ResultEnumTimeModeRenamed
-    }
         
     static var allTests = [
         ("testNoChangeEnum", testNoChangeEnum),

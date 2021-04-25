@@ -7,535 +7,108 @@
 import XCTest
 @testable import PallidorMigrator
 
-class EndpointIntegrationTests: XCTestCase {
-    let renameEndpointAndReplaceAndDeleteMethodChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "object":{
-                  "operation-id":"updatePetWithForm",
-                  "defined-in":"/pets"
-               },
-               "target" : "Signature",
-               "replacement-id" : "updatePetWithForm",
-               "custom-convert" : "function conversion(o) { return JSON.stringify({ 'type' : 'PSI' } )}",
-               "custom-revert" : "function conversion(o) { return JSON.stringify({ 'type': '', 'of' : { 'type': 'PSI'} } )}",
-               "replaced" : {
-                  "operation-id":"updatePet",
-                  "defined-in":"/pet"
-                }
-           },
-           {
-               "object" : {
-                   "route" : "/pets"
-               },
-               "target" : "Signature",
-               "original-id" : "/pet"
-           },
-           {
-               "object":{
-                  "operation-id":"addPet",
-                  "defined-in":"/pets"
-               },
-               "target" : "Signature",
-               "fallback-value": { }
-           }
-       ]
-   }
-   """
-    
+class EndpointIntegrationTests: PallidorMigratorXCTestCase {
     func testRenamedEndpointAndReplaceAndDeleteMethod() {
-        let current = resource(.PetEndpointRenamedAndReplacedAndDeletedMethod)
-        let facade = resource(.PetEndpointFacadeReplacedMethod)
+        let current = modifiable(.PetEndpointRenamedAndReplacedAndDeletedMethod)
+        let facade = modifiable(.PetEndpointFacadeReplacedMethod)
         TestCodeStore.inject(previous: [facade], current: [current])
         
         do {
-            try current.accept(.migrationSet(from: renameEndpointAndReplaceAndDeleteMethodChange))
+            try current.accept(migrationSet(from: .RenameEndpointAndReplaceAndDeleteMethodChange))
             let result = APITemplate().render(current)
-            XCTAssertEqual(
-                result,
-                readResource(Resources.ResultPetEndpointFacadeRenamedAndReplacedAndDeletedMethod.rawValue)
-            )
+            XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeRenamedAndReplacedAndDeletedMethod))
         } catch {
             XCTFail("Migration failed.")
         }
     }
-    
-    let renameEndpointAndReplaceMethodChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "object":{
-                  "operation-id":"updatePetWithForm",
-                  "defined-in":"/pets"
-               },
-               "target" : "Signature",
-               "replacement-id" : "updatePetWithForm",
-               "custom-convert" : "function conversion(o) { return JSON.stringify({ 'type' : 'PSI' } )}",
-               "custom-revert" : "function conversion(o) { return JSON.stringify({ 'type': '', 'of' : { 'type': 'PSI'} } )}",
-               "replaced" : {
-                  "operation-id":"updatePet",
-                  "defined-in":"/pet"
-                }
-           },
-           {
-               "object" : {
-                   "route" : "/pets"
-               },
-               "target" : "Signature",
-               "original-id" : "/pet"
-           }
-       ]
-   }
-   """
-    
+ 
     func testRenamedEndpointAndReplaceMethod() {
-        let facade = resource(.PetEndpointFacadeReplacedMethod)
-        let current = resource(.PetEndpointRenamedAndReplacedMethod)
+        let facade = modifiable(.PetEndpointFacadeReplacedMethod)
+        let current = modifiable(.PetEndpointRenamedAndReplacedMethod)
         
         TestCodeStore.inject(previous: [facade], current: [current])
         
         do {
-            try current.accept(.migrationSet(from: renameEndpointAndReplaceMethodChange))
+            try current.accept(migrationSet(from: .RenameEndpointAndReplaceMethodChange))
             
             let result = APITemplate().render(current)
             
             XCTAssertEqual(
                 result,
-                readResource(Resources.ResultPetEndpointFacadeRenamedAndReplacedMethod.rawValue)
+                expectation(.ResultPetEndpointFacadeRenamedAndReplacedMethod)
             )
         } catch {
             XCTFail("Migration failed.")
         }
     }
-    
-    let renameEndpointAndDeletedMethodChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "object" : {
-                   "route" : "/pets"
-               },
-               "target" : "Signature",
-               "original-id" : "/pet"
-           },
-           {
-               "object":{
-                  "operation-id":"updatePet",
-                  "defined-in":"/pets"
-               },
-               "target" : "Signature",
-               "fallback-value": { }
-           }
-       ]
-   }
-   """
-    
+
     func testRenamedEndpointAndDeletedMethod() {
-        let facade = resource(.PetEndpointFacadeReplacedMethod)
-        let current = resource(.PetEndpointRenamedAndReplacedMethod)
+        let facade = modifiable(.PetEndpointFacadeReplacedMethod)
+        let current = modifiable(.PetEndpointRenamedAndReplacedMethod)
         
         TestCodeStore.inject(previous: [facade], current: [current])
         
         do {
-            try current.accept(.migrationSet(from: renameEndpointAndDeletedMethodChange))
+            try current.accept(migrationSet(from: .RenameEndpointAndDeletedMethodChange))
             let result = APITemplate().render(current)
             
-            XCTAssertEqual(
-                result,
-                readResource(Resources.ResultPetEndpointFacadeRenamedAndDeletedMethod.rawValue)
-            )
+            XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeRenamedAndDeletedMethod))
         } catch {
             XCTFail("Migration failed.")
         }
     }
-    
-    let renameEndpointAndRenameMethodChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-              "reason": "Security issue related change",
-              "object" : {
-                  "operation-id" : "addMyPet",
-                  "defined-in" : "/pets"
-              },
-              "target" : "Signature",
-              "original-id" : "addPet"
-           },
-           {
-               "object" : {
-                   "route" : "/pets"
-               },
-               "target" : "Signature",
-               "original-id" : "/pet"
-           }
-       ]
-   }
-   """
     
     func testRenamedEndpointAndRenamedMethod() {
-        let modified = getMigrationResult(
-            migration: renameEndpointAndRenameMethodChange,
-            target: readResource(Resources.PetEndpointRenamedAndRenamedMethod.rawValue)
-        )
+        let modified = migration(.RenameEndpointAndRenameMethodChange,
+                                       target: .PetEndpointRenamedAndRenamedMethod)
         
         let result = APITemplate().render(modified)
         
-        XCTAssertEqual(
-            result,
-            readResource(Resources.ResultPetEndpointFacadeRenamedAndRenamedMethod.rawValue)
-        )
+        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeRenamedAndRenamedMethod))
     }
-    
-    let renamedEndpointAndRenameMethodAndReplaceAndDeleteParameterChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-            {
-               "object":{
-                  "operation-id":"updatePetWithFormNew",
-                  "defined-in":"/pets"
-               },
-               "target":"Parameter",
-               "fallback-value" : {
-                   "name" : "status",
-                   "type" : "String",
-                   "required" : "true"
-               }
-            },
-            {
-                "object" : {
-                    "operation-id" : "updatePetWithFormNew",
-                    "defined-in" : "/pets"
-                },
-                "target" : "Parameter",
-                "replacement-id" : "betterId",
-                "type" : "String",
-                "custom-convert" : "function conversion(petId) { return 'Id#' + (petId + 1.86) }",
-                "custom-revert" : "function conversion(petId) { return Int(petId) }",
-                "replaced" : {
-                        "name" : "petId",
-                        "type" : "Int64",
-                        "required" : true
-                }
-            },
-           {
-               "object" : {
-                   "operation-id" : "updatePetWithFormNew",
-                   "defined-in" : "/pets"
-               },
-               "target" : "Signature",
-               "original-id" : "updatePetWithForm"
-           },
-           {
-               "object" : {
-                   "route" : "/pets"
-               },
-               "target" : "Signature",
-               "original-id" : "/pet"
-           }
-       ]
-   }
-   """
-    
+
     func testRenamedEndpointAndRenameMethodAndReplaceAndDeleteParameterChange() {
-        let modified = getMigrationResult(
-            migration: renamedEndpointAndRenameMethodAndReplaceAndDeleteParameterChange,
-            target: readResource(Resources
-                                    .PetEndpointRenamedAndRenamedMethodAndReplacedParameter.rawValue)
-        )
-        
+        let modified = migration(.RenamedEndpointAndRenameMethodAndReplaceAndDeleteParameterChange,
+                                       target: .PetEndpointRenamedAndRenamedMethodAndReplacedParameter)
         let result = APITemplate().render(modified)
         
         XCTAssertEqual(
             result,
-            readResource(Resources
-                            .ResultPetEndpointFacadeRenamedAndRenamedMethodAndReplacedParameter.rawValue)
-        )
-    }
-    
-    let renamedEndpointAndRenameMethodAndAddAndDeleteParameterChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-            {
-               "object":{
-                  "operation-id":"updatePetWithFormNew",
-                  "defined-in":"/pets"
-               },
-               "target":"Parameter",
-               "fallback-value" : {
-                   "name" : "status",
-                   "type" : "String",
-                   "required" : "true"
-               }
-            },
-           {
-               "reason": "Security issue related change",
-               "object" : {
-                   "operation-id" : "updatePetWithFormNew",
-                   "defined-in" : "/pets"
-               },
-               "target" : "Content-Body",
-               "added" : [
-                   {
-                       "name" : "_",
-                       "type" : "Pet",
-                       "default-value" : "{ 'name' : 'Mrs. Fluffy', 'photoUrls': ['xxx'] }"
-                   }
-               ]
-           },
-           {
-               "object" : {
-                   "operation-id" : "updatePetWithFormNew",
-                   "defined-in" : "/pets"
-               },
-               "target" : "Signature",
-               "original-id" : "updatePetWithForm"
-           },
-           {
-               "object" : {
-                   "route" : "/pets"
-               },
-               "target" : "Signature",
-               "original-id" : "/pet"
-           }
-       ]
-   }
-   """
-    
-    func testRenamedEndpointAndRenameMethodAndAddAndDeleteParameterChange() {
-        let modified = getMigrationResult(
-            migration: renamedEndpointAndRenameMethodAndAddAndDeleteParameterChange,
-            target: readResource(Resources
-                                    .PetEndpointRenamedAndRenamedMethodAndAddedAndDeletedParameter.rawValue)
-        )
-        
-        let result = APITemplate().render(modified)
-        
-        XCTAssertEqual(
-            result,
-            readResource(Resources.ResultPetEndpointFacadeRenamedMethodAndAddedAndDeletedParameter.rawValue)
-        )
-    }
-    
-    let renamedEndpointAndRenameMethodAndReplaceAndDeleteParameterAndReplaceReturnValueChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-            {
-               "object":{
-                  "operation-id":"updatePetWithFormNew",
-                  "defined-in":"/pets"
-               },
-               "target":"ReturnValue",
-               "replacement-id":"_",
-               "type":"Pet",
-               "custom-revert":"function conversion(response) { var response = JSON.parse(response) return JSON.stringify({ 'id' : response.code, 'name' : response.message, 'photoUrls': [response.type], 'status' : 'available', 'tags': [ { 'id': 27, 'name': 'tag2' } ] }) }",
-               "replaced":{
-                  "name":"_",
-                  "type":"String"
-               }
-            },
-            {
-               "object":{
-                  "operation-id":"updatePetWithFormNew",
-                  "defined-in":"/pets"
-               },
-               "target":"Parameter",
-               "fallback-value" : {
-                   "name" : "status",
-                   "type" : "String",
-                   "required" : "true"
-               }
-            },
-            {
-                "object" : {
-                    "operation-id" : "updatePetWithFormNew",
-                    "defined-in" : "/pets"
-                },
-                "target" : "Parameter",
-                "replacement-id" : "betterId",
-                "type" : "String",
-                "custom-convert" : "function conversion(petId) { return 'Id#' + (petId + 1.86) }",
-                "custom-revert" : "function conversion(petId) { return Int(petId) }",
-                "replaced" : {
-                        "name" : "petId",
-                        "type" : "Int64",
-                        "required" : true
-                }
-            },
-           {
-               "object" : {
-                   "operation-id" : "updatePetWithFormNew",
-                   "defined-in" : "/pets"
-               },
-               "target" : "Signature",
-               "original-id" : "updatePetWithForm"
-           },
-           {
-               "object" : {
-                   "route" : "/pets"
-               },
-               "target" : "Signature",
-               "original-id" : "/pet"
-           }
-       ]
-   }
-   """
-    
-    func testRenamedEndpointAndRenameMethodAndReplaceAndDeleteParameterAndReplaceReturnValueChange() {
-        let modified = getMigrationResult(
-            migration: renamedEndpointAndRenameMethodAndReplaceAndDeleteParameterAndReplaceReturnValueChange,
-            target:
-                readResource(Resources.PetEndpointRenamedAndRenamedMethodAndReplacedAndDeletedParameterAndReplacedReturnValue.rawValue)
-        )
-        
-        let result = APITemplate().render(modified)
-        
-        XCTAssertEqual(
-            result,
-            readResource(Resources.ResultPetEndpointFacadeRenamedAndRenamedMethodAndReplacedParameterAndReplacedReturnValue.rawValue)
+            expectation(.ResultPetEndpointFacadeRenamedAndRenamedMethodAndReplacedParameter)
         )
     }
 
-    let renamedEndpointAndRenameMethodAndChangedParametersAndReplaceReturnValueChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-            {
-               "object":{
-                  "operation-id":"updatePetWithFormNew",
-                  "defined-in":"/pets"
-               },
-               "target":"ReturnValue",
-               "replacement-id":"_",
-               "type":"Pet",
-               "custom-revert":"function conversion(response) { var response = JSON.parse(response) return JSON.stringify({ 'id' : response.code, 'name' : response.message, 'photoUrls': [response.type], 'status' : 'available', 'tags': [ { 'id': 27, 'name': 'tag2' } ] }) }",
-               "replaced":{
-                  "name":"_",
-                  "type":"String"
-               }
-            },
-           {
-               "object" : {
-                   "operation-id" : "updatePetWithFormNew",
-                   "defined-in" : "/pets"
-               },
-               "target" : "Parameter",
-               "original-id" : "petName",
-               "renamed" : {
-                   "id": "name"
-               }
-           },
-            {
-               "object":{
-                  "operation-id":"updatePetWithFormNew",
-                  "defined-in":"/pets"
-               },
-               "target":"Parameter",
-               "fallback-value" : {
-                   "name" : "status",
-                   "type" : "String",
-                   "required" : "true"
-               }
-            },
-            {
-                "object" : {
-                    "operation-id" : "updatePetWithFormNew",
-                    "defined-in" : "/pets"
-                },
-                "target" : "Parameter",
-                "replacement-id" : "betterId",
-                "type" : "String",
-                "custom-convert" : "function conversion(petId) { return 'Id#' + (petId + 1.86) }",
-                "custom-revert" : "function conversion(petId) { return Int(petId) }",
-                "replaced" : {
-                        "name" : "petId",
-                        "type" : "Int64",
-                        "required" : true
-                }
-            },
-           {
-               "object" : {
-                   "operation-id" : "updatePetWithFormNew",
-                   "defined-in" : "/pets"
-               },
-               "target" : "Signature",
-               "original-id" : "updatePetWithForm"
-           },
-           {
-               "object" : {
-                   "route" : "/pets"
-               },
-               "target" : "Signature",
-               "original-id" : "/pet"
-           }
-       ]
-   }
-   """
-    
-    func testRenamedEndpointAndRenameMethodAndChangedParametersAndReplaceReturnValueChange() {
-        let modified = getMigrationResult(
-            migration: renamedEndpointAndRenameMethodAndChangedParametersAndReplaceReturnValueChange,
-            target: readResource(Resources
-                                    .PetEndpointRenamedAndRenamedMethodAndChangedParametersAndReplacedReturnValue
-                                    .rawValue)
-        )
+    func testRenamedEndpointAndRenameMethodAndAddAndDeleteParameterChange() {
+        let modified = migration(.RenamedEndpointAndRenameMethodAndAddAndDeleteParameterChange,
+                                       target: .PetEndpointRenamedAndRenamedMethodAndAddedAndDeletedParameter)
+        
+        let result = APITemplate().render(modified)
+        
+        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeRenamedMethodAndAddedAndDeletedParameter))
+    }
+
+    func testRenamedEndpointAndRenameMethodAndReplaceAndDeleteParameterAndReplaceReturnValueChange() {
+        let modified = migration(.RenamedEndpointAndRenameMethodAndReplaceAndDeleteParameterAndReplaceReturnValueChange,
+                                       target: .PetEndpointRenamedAndRenamedMethodAndReplacedAndDeletedParameterAndReplacedReturnValue)
         
         let result = APITemplate().render(modified)
         
         XCTAssertEqual(
             result,
-            readResource(Resources
-                            .ResultPetEndpointFacadeRenamedAndRenamedMethodAndChangedParametersAndReplacedReturnValue
-                            .rawValue)
+            expectation(.ResultPetEndpointFacadeRenamedAndRenamedMethodAndReplacedParameterAndReplacedReturnValue)
         )
     }
     
-    enum Resources: String {
-        case PetEndpointRenamedAndReplacedMethod, PetEndpointFacadeReplacedMethod, PetEndpointRenamedAndRenamedMethod, PetEndpointRenamedAndRenamedMethodAndReplacedParameter, PetEndpointRenamedAndReplacedAndDeletedMethod, PetEndpointRenamedAndRenamedMethodAndAddedAndDeletedParameter, PetEndpointRenamedAndRenamedMethodAndReplacedAndDeletedParameterAndReplacedReturnValue, PetEndpointRenamedAndRenamedMethodAndChangedParametersAndReplacedReturnValue
-        case ResultPetEndpointFacadeRenamedAndReplacedMethod, ResultPetEndpointFacadeRenamedAndRenamedMethod, ResultPetEndpointFacadeRenamedAndDeletedMethod, ResultPetEndpointFacadeRenamedAndRenamedMethodAndReplacedParameter, ResultPetEndpointFacadeRenamedAndReplacedAndDeletedMethod, ResultPetEndpointFacadeRenamedMethodAndAddedAndDeletedParameter, ResultPetEndpointFacadeRenamedAndRenamedMethodAndReplacedParameterAndReplacedReturnValue, ResultPetEndpointFacadeRenamedAndRenamedMethodAndChangedParametersAndReplacedReturnValue
-    }
-    
-    func resource(_ resource: Resources) -> ModifiableFile {
-        modifiableFile(from: readResource(resource.rawValue))
+    func testRenamedEndpointAndRenameMethodAndChangedParametersAndReplaceReturnValueChange() {
+        let modified = migration(.RenamedEndpointAndRenameMethodAndChangedParametersAndReplaceReturnValueChange,
+                                       target: .PetEndpointRenamedAndRenamedMethodAndChangedParametersAndReplacedReturnValue)
+        
+        let result = APITemplate().render(modified)
+        
+        XCTAssertEqual(
+            result,
+            expectation(.ResultPetEndpointFacadeRenamedAndRenamedMethodAndChangedParametersAndReplacedReturnValue)
+        )
     }
     
     static var allTests = [

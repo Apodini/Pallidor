@@ -1,0 +1,23 @@
+{
+    "summary" : "Here would be a nice summary what changed between versions",
+    "api-spec": "OpenAPI",
+    "api-type": "REST",
+    "from-version" : "0.0.1b",
+    "to-version" : "0.0.2",
+    "changes" : [
+        {
+            "object" : {
+                "enum-name" : "MessageLevel"
+            },
+            "target" : "Signature",
+            "replacement-id" : "ServiceLevel",
+            "custom-convert" : "function conversion(o) { return o === 'INFO' ? 1 : 2 }",
+            "custom-revert" : "function conversion(o) { return o === 1 ? 'INFO' : 'ERROR' }",
+             "replaced" : {
+                 "enum-name" : "ServiceLevel",
+                 "type" : "Int"
+             }
+        }
+    ]
+
+}

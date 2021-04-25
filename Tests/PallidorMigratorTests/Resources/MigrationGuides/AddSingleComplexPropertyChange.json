@@ -1,0 +1,24 @@
+{
+    "summary" : "Here would be a nice summary what changed between versions",
+    "api-spec": "OpenAPI",
+    "api-type": "REST",
+    "from-version" : "0.0.1b",
+    "to-version" : "0.0.2",
+    "changes" : [
+        {
+            "reason": "Security issue related change",
+            "object" : {
+                "name" : "Pet"
+            },
+            "target" : "Property",
+            "added" : [
+                {
+                    "name" : "category",
+                    "type" : "Category",
+                    "default-value" : "{ 'id' : 42, 'name' : 'SuperPet' }"
+                }
+            ]
+        }
+    ]
+
+}

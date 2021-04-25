@@ -7,42 +7,19 @@
 import XCTest
 @testable import PallidorMigrator
 
-class ModelTests: XCTestCase {
+class ModelTests: PallidorMigratorXCTestCase {
     func testNoChangeToPetModel() {
-        let migrationResult = getMigrationResult(migration: noChange, target: readResource(Resources.ModelPet.rawValue))
+        let migrationResult = migration(.EmptyGuide, target: .ModelPet)
         let result = ModelTemplate().render(migrationResult)
         
-        XCTAssertEqual(result, readResource(Resources.ResultModelPet.rawValue))
+        XCTAssertEqual(result, expectation(.ResultModelPet))
     }
     
-    let deleteModelChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "object" : {
-                   "name" : "ApiResponse"
-               },
-               "target" : "Signature",
-               "fallback-value" : { }
-           }
-       ]
-   }
-   """
-    
     func testDeletedModel() {
-        let facade = modifiableFile(from: readResource(Resources.ModelApiResponseFacadeDeleted.rawValue))
-        
+        let facade = modifiable(.ModelApiResponseFacadeDeleted)
         TestCodeStore.inject(previous: [facade], current: [])
         
-        _ = getMigrationResult(
-            migration: deleteModelChange,
-            target: readResource(Resources.ModelPlaceholder.rawValue)
-        )
+        _ = migration(.DeleteModelChange, target: .ModelPlaceholder)
         
         guard let migrationResult = TestCodeStore.instance.model(facade.id, scope: .currentAPI) else {
             fatalError("Could not retrieve migrated modifiable.")
@@ -50,90 +27,24 @@ class ModelTests: XCTestCase {
 
         let result = ModelTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, readResource(Resources.ResultModelApiResponseDeleted.rawValue))
+        XCTAssertEqual(result, expectation(.ResultModelApiResponseDeleted))
     }
-    
-    let replaceModelChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "object" : {
-                   "name" : "Order"
-               },
-               "target" : "Signature",
-               "replacement-id" : "NewOrder",
-               "custom-convert" : "function conversion(o) { return JSON.stringify({ 'id' : o.id, 'petId' : o.petId, 'quantity': o.quantity  }) }",
-               "custom-revert" : "function conversion(o) { return JSON.stringify({ 'id' : o.id, 'petId' : o.petId, 'quantity': o.quantity, 'complete' : 'false', 'status' : 'available' }) }",
-           }
-       ]
-
-   }
-   """
-    
+ 
     func testReplacedModel() {
-        let migrationResult = getMigrationResult(
-            migration: replaceModelChange,
-            target: readResource(Resources.ModelOrderFacadeReplaced.rawValue)
-        )
-
+        let migrationResult = migration(.ReplaceModelChange, target: .ModelOrderFacadeReplaced)
         let result = ModelTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, readResource(Resources.ResultModelOrderReplaced.rawValue))
+        XCTAssertEqual(result, expectation(.ResultModelOrderReplaced))
     }
-    
-    
-    let renameModelChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "object" : {
-                   "name" : "NewAddress"
-               },
-               "target" : "Signature",
-               "original-id" : "Address"
-           },
-           {
-               "object" : {
-                   "name" : "Customer"
-               },
-               "target" : "Property",
-               "replacement-id" : "address",
-                "type" : "NewAddress",
-              "custom-convert" : "function conversion(o) { return o }",
-              "custom-revert" : "function conversion(o) { return o }",
-               "replaced" : {
-                   "name" : "address",
-                   "type" : "[Address]"
-               }
-           }
-       ]
-   }
-   """
 
     func testRenamedModel() {
-        let migrationResult = getMigrationResult(
-            migration: renameModelChange,
-            target: readResource(Resources.ModelAddressRenamed.rawValue)
-        )
+        let migrationResult = migration(.RenameModelChange, target: .ModelAddressRenamed)
+        
         let result = ModelTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, readResource(Resources.ResultModelAddressRenamed.rawValue))
+        XCTAssertEqual(result, expectation(.ResultModelAddressRenamed))
     }
         
-    enum Resources: String {
-        case ModelPet, ModelApiResponseFacadeDeleted, ModelPlaceholder, ModelOrderFacadeReplaced, ModelAddressRenamed, ModelCustomerRenamedAndReplacedProperty
-        case ResultModelPet, ResultModelApiResponseDeleted, ResultModelOrderReplaced, ResultModelAddressRenamed
-    }
     
     static var allTests = [
         ("testDeletedModel", testDeletedModel),

@@ -7,228 +7,44 @@
 import XCTest
 @testable import PallidorMigrator
 
-class ModelIntegrationTests: XCTestCase {
-    let deletedAndAddedProperty = """
-    {
-        "summary" : "Here would be a nice summary what changed between versions",
-        "api-spec": "OpenAPI",
-        "api-type": "REST",
-        "from-version" : "0.0.1b",
-        "to-version" : "0.0.2",
-        "changes" : [
-            {
-                "object" : {
-                    "name" : "Pet"
-                },
-                "target" : "Property",
-                "fallback-value" : {
-                    "name" : "weight",
-                    "type" : "String",
-                    "default-value" : "fat"
-                }
-            },
-           {
-               "object" : {
-                   "name" : "Pet"
-               },
-               "target" : "Property",
-               "added" : [
-                   {
-                       "name" : "category",
-                       "type" : "Category",
-                       "default-value" : "{ 'id' : 42, 'name' : 'SuperPet' }"
-                   }
-               ]
-           }
-        ]
-
-    }
-    """
-    
+class ModelIntegrationTests: PallidorMigratorXCTestCase {
     func testDeletedAndAddedProperty() {
-        let migrationResult = getMigrationResult(
-            migration: deletedAndAddedProperty,
-            target: readResource(Resources.ModelPet.rawValue))
+        let migrationResult = migration(.DeletedAndAddedProperty, target: .ModelPet)
         let result = ModelTemplate().render(migrationResult)
         
-        XCTAssertEqual(result, readResource(Resources.ResultModelPetAddedAndDeletedProperty.rawValue))
+        XCTAssertEqual(result, expectation(.ResultModelPetAddedAndDeletedProperty))
     }
-    
-    let renameModelAndAddPropertyChange = """
-    {
-        "summary" : "Here would be a nice summary what changed between versions",
-        "api-spec": "OpenAPI",
-        "api-type": "REST",
-        "from-version" : "0.0.1b",
-        "to-version" : "0.0.2",
-        "changes" : [
-           {
-               "object" : {
-                   "name" : "MyPet"
-               },
-               "target" : "Property",
-               "added" : [
-                   {
-                       "name" : "category",
-                       "type" : "Category",
-                       "default-value" : "{ 'id' : 42, 'name' : 'SuperPet' }"
-                   }
-               ]
-           },
-           {
-               "object" : {
-                   "name" : "MyPet"
-               },
-               "target" : "Signature",
-               "original-id" : "Pet"
-           }
-        ]
-
-    }
-    """
     
     func testRenamedModelAndAddProperty() {
-        let migrationResult = getMigrationResult(
-            migration: renameModelAndAddPropertyChange,
-            target: readResource(Resources.ModelPetRenamedAndAddedProperty.rawValue)
-        )
+        let migrationResult = migration(.RenameModelAndAddPropertyChange, target: .ModelPetRenamedAndAddedProperty)
+        
         let result = ModelTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, readResource(Resources.ResultModelPetRenamedAndAddedProperty.rawValue))
+        XCTAssertEqual(result, expectation(.ResultModelPetRenamedAndAddedProperty))
     }
     
-    let renameModelAndReplacePropertyChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "object" : {
-                   "name" : "NewCustomer"
-               },
-               "target" : "Property",
-               "replacement-id" : "addresses",
-               "type" : "[NewAddress]",
-               "custom-convert" : "function conversion(address) { return { 'city' : address.city, 'street' : address.street, 'universe' : '42' } }",
-               "custom-revert" : "function conversion(address) { return address.universe == '42' ? { 'city' : address.city, 'street' : address.street, 'zip': '81543', 'state' : 'Bavaria' } : { 'city' : address.city, 'street' : address.street , 'zip' : '80634', 'state' : 'Bavaria' } }",
-               "replaced" : {
-                       "name" : "address",
-                       "type" : "[Address]"
-               }
-           },
-           {
-               "object" : {
-                   "name" : "NewCustomer"
-               },
-               "target" : "Signature",
-               "original-id" : "Customer"
-           }
-       ]
-   }
-   """
-
-    func testRenamedModelAndReplacedProperty() {
-        let migrationResult = getMigrationResult(
-            migration: renameModelAndReplacePropertyChange,
-            target: readResource(Resources.ModelCustomerRenamedAndReplacedProperty.rawValue)
-        )
+     func testRenamedModelAndReplacedProperty() {
+        let migrationResult = migration(.RenameModelAndReplacePropertyChange, target: .ModelCustomerRenamedAndReplacedProperty)
         let result = ModelTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, readResource(Resources
-                                                .ResultModelCustomerRenamedAndReplacedProperty
-                                                .rawValue))
+        XCTAssertEqual(result, expectation(.ResultModelCustomerRenamedAndReplacedProperty))
     }
     
-    let renameModelAndDeletePropertyChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-          {
-              "object" : {
-                  "name" : "NewCustomer"
-              },
-              "target" : "Property",
-              "fallback-value" : {
-                  "name" : "addresses",
-                  "type" : "[NewAddresses]",
-                  "default-value" : "[{'name' : 'myaddress'}]"
-              }
-          },
-           {
-               "object" : {
-                   "name" : "NewCustomer"
-               },
-               "target" : "Signature",
-               "original-id" : "Customer"
-           }
-       ]
-   }
-   """
-
     func testRenamedModelAndDeletedProperty() {
-        let migrationResult = getMigrationResult(
-            migration: renameModelAndDeletePropertyChange,
-            target: readResource(Resources.ModelCustomerRenamedAndDeletedProperty.rawValue)
-        )
+        let migrationResult = migration(.RenameModelAndDeletePropertyChange, target: .ModelCustomerRenamedAndDeletedProperty)
         let result = ModelTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, readResource(Resources
-                                                .ResultModelCustomerRenamedAndDeletedProperty
-                                                .rawValue))
+        XCTAssertEqual(result, expectation(.ResultModelCustomerRenamedAndDeletedProperty))
     }
-    
-    let renameModelAndRenamedPropertyChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-             {
-                 "object" : {
-                     "name" : "NewCategory"
-                 },
-                 "target" : "Property",
-                 "original-id" : "name",
-                 "renamed" : {
-                     "id" : "namenew"
-                 }
-             },
-           {
-               "object" : {
-                   "name" : "NewCategory"
-               },
-               "target" : "Signature",
-               "original-id" : "Category"
-           }
-       ]
-   }
-   """
 
     func testRenamedModelAndRenamedProperty() {
-        let migrationResult = getMigrationResult(
-            migration: renameModelAndRenamedPropertyChange,
-            target: readResource(Resources.ModelCategoryRenamedAndPropertyRenamed.rawValue)
-        )
+        let migrationResult = migration(.RenameModelAndRenamedPropertyChange, target: .ModelCategoryRenamedAndPropertyRenamed)
+        
         let result = ModelTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, readResource(Resources
-                                                .ResultModelCategoryRenamedAndRenamedProperty
-                                                .rawValue))
+        XCTAssertEqual(result, expectation(.ResultModelCategoryRenamedAndRenamedProperty))
     }
     
-    enum Resources: String {
-        case ModelPet, ModelCustomerRenamedAndReplacedProperty, ModelCustomerRenamedAndDeletedProperty, ModelCategoryRenamedAndPropertyRenamed, ModelPetRenamedAndAddedProperty
-        case ResultModelPetAddedAndDeletedProperty, ResultModelCustomerRenamedAndReplacedProperty, ResultModelCustomerRenamedAndDeletedProperty, ResultModelCategoryRenamedAndRenamedProperty, ResultModelPetRenamedAndAddedProperty
-    }
     
     static var allTests = [
         ("testRenamedModelAndDeletedProperty", testRenamedModelAndDeletedProperty),

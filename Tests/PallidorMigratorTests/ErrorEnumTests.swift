@@ -6,32 +6,19 @@
 import XCTest
 @testable import PallidorMigrator
 
-class ErrorEnumTests: XCTestCase {
+class ErrorEnumTests: PallidorMigratorXCTestCase {
     func testErrorEnumNoChange() {
-        let migrationResult = getMigrationResult(
-            migration: noChange,
-            target: readResource(Resources.ErrorEnum.rawValue))
+        let migrationResult = migration(.EmptyGuide, target: .ErrorEnum)
         let result = ErrorEnumTemplate().render(migrationResult)
-        
-        XCTAssertEqual(result, readResource(Resources.ResultErrorEnum.rawValue))
+        XCTAssertEqual(result, expectation(.ResultErrorEnum))
     }
     
     func testErrorEnumDeletedCase() {
-        guard let enumDeletedCase = getMigrationResult(
-                migration: noChange,
-                target: readResource(Resources
-                                        .ErrorEnumDeletedCase
-                                        .rawValue)
-        ) as? WrappedEnum else {
+        guard let enumDeletedCase = migration(.EmptyGuide, target: .ErrorEnumDeletedCase) as? WrappedEnum else {
             fatalError("Migration failed.")
         }
 
-        guard let enumFacade = getMigrationResult(
-                migration: noChange,
-                target: readResource(Resources
-                                        .ResultErrorEnumDeletedCase
-                                        .rawValue)
-        ) as? WrappedEnum else {
+        guard let enumFacade = migration(.EmptyGuide, target: .ResultErrorEnumDeletedCase) as? WrappedEnum else {
             fatalError("Migration failed.")
         }
         
@@ -43,25 +30,15 @@ class ErrorEnumTests: XCTestCase {
         
         let result = ErrorEnumTemplate().render(enumFacade)
         
-        XCTAssertEqual(result, readResource(Resources.ResultErrorEnumDeletedCase.rawValue))
+        XCTAssertEqual(result, expectation(.ResultErrorEnumDeletedCase))
     }
     
     func testErrorEnumAddCase() {
-        guard let enumAddedCases = getMigrationResult(
-                migration: noChange,
-                target: readResource(Resources
-                                        .ErrorEnumAddedCase
-                                        .rawValue)
-        ) as? WrappedEnum else {
+        guard let enumAddedCases = migration(.EmptyGuide, target: .ErrorEnumAddedCase) as? WrappedEnum else {
             fatalError("Migration failed.")
         }
 
-        guard let enumFacade = getMigrationResult(
-                migration: noChange,
-                target: readResource(Resources
-                                        .ErrorEnumFacadeAddedCase
-                                        .rawValue)
-        ) as? WrappedEnum else {
+        guard let enumFacade = migration(.EmptyGuide, target: .ErrorEnumFacadeAddedCase) as? WrappedEnum else {
             fatalError("Migration failed.")
         }
         
@@ -73,13 +50,9 @@ class ErrorEnumTests: XCTestCase {
         
         let result = ErrorEnumTemplate().render(enumFacade)
         
-        XCTAssertEqual(result, readResource(Resources.ResultErrorEnumAddedCase.rawValue))
+        XCTAssertEqual(result, expectation(.ResultErrorEnumAddedCase))
     }
     
-    enum Resources: String {
-        case ErrorEnum, ErrorEnumAddedCase, ErrorEnumDeletedCase, ErrorEnumFacadeAddedCase, ErrorEnumFacadeDeletedCase
-        case ResultErrorEnum, ResultErrorEnumAddedCase, ResultErrorEnumDeletedCase
-    }
     
     static var allTests = [
         ("testErrorEnumDeletedCase", testErrorEnumDeletedCase),

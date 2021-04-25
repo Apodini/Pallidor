@@ -7,47 +7,14 @@
 import XCTest
 @testable import PallidorMigrator
 
-class MethodParameterTests: XCTestCase {
-    let replaceMNParameterChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "object":{
-                  "operation-id":"updatePetWithForm",
-                  "defined-in":"/pet"
-               },
-               "target" : "Signature",
-               "replacement-id" : "updatePetWithForm",
-               "custom-convert" : "function conversion(input) { return JSON.stringify({ 'name': input.name, 'petAndStatus': { 'petId': input.petId, 'status': input.status }} )}",
-               "replaced" : {
-                  "operation-id":"updatePetWithForm",
-                  "defined-in":"/pet"
-                }
-           }
-       ]
-
-   }
-   """
-    
-    func resource(_ resource: Resources) -> ModifiableFile {
-        modifiableFile(from: readResource(resource.rawValue))
-    }
-    
+class MethodParameterTests: PallidorMigratorXCTestCase {
     func testReplacedMNParametersOfMethod() {
-        let facade = resource(.PetEndpointFacadeReplacedMethod)
-        let current = resource(.PetEndpointReplaceParameter32)
+        let facade = modifiable(.PetEndpointFacadeReplacedMethod)
+        let current = modifiable(.PetEndpointReplaceParameter32)
         
         TestCodeStore.inject(previous: [facade], current: [current])
-        
-        _ = getMigrationResult(
-            migration: replaceMNParameterChange,
-            target: readResource(Resources.PetEndpointReplaceParameter32.rawValue)
-        )
+
+        _ = migration(.ReplaceMNParameterChange, target: .PetEndpointReplaceParameter32)
         
         guard let migratedModifiable = TestCodeStore.instance.endpoint("/pet", scope: .currentAPI) else {
             fatalError("Migration failed.")
@@ -55,44 +22,15 @@ class MethodParameterTests: XCTestCase {
         
         let result = APITemplate().render(migratedModifiable)
         
-        XCTAssertEqual(result, readResource(Resources.ResultPetEndpointFacade32ParameterChange.rawValue))
+        XCTAssertEqual(result, expectation(.ResultPetEndpointFacade32ParameterChange))
     }
-    
-    let replaceM1ParameterChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "object":{
-                  "operation-id":"updatePetWithForm",
-                  "defined-in":"/pet"
-               },
-               "target" : "Signature",
-               "replacement-id" : "updatePetWithForm",
-               "custom-convert" : "function conversion(input) { return JSON.stringify({ 'name': input.name, 'petId': input.petId } )}",
-               "replaced" : {
-                  "operation-id":"updatePetWithForm",
-                  "defined-in":"/pet"
-                }
-           }
-       ]
-
-   }
-   """
     
     func testReplacedM1ParametersOfMethod() {
-        let facade = resource(.PetEndpointFacadeReplacedMethod)
-        let current = resource(.PetEndpointReplaceParameterMN)
+        let facade = modifiable(.PetEndpointFacadeReplacedMethod)
+        let current = modifiable(.PetEndpointReplaceParameterMN)
         TestCodeStore.inject(previous: [facade], current: [current])
         
-        _ = getMigrationResult(
-            migration: replaceM1ParameterChange,
-            target: readResource(Resources.PetEndpointReplaceParameterMN.rawValue)
-        )
+        _ = migration(.ReplaceM1ParameterChange, target: .PetEndpointReplaceParameterMN)
         
         guard let migratedModifiable = TestCodeStore.instance.endpoint("/pet", scope: .currentAPI) else {
             fatalError("Migration failed.")
@@ -100,44 +38,15 @@ class MethodParameterTests: XCTestCase {
         
         let result = APITemplate().render(migratedModifiable)
         
-        XCTAssertEqual(result, readResource(Resources.ResultPetEndpointFacadeM1ParameterChange.rawValue))
+        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeM1ParameterChange))
     }
-    
-    let replace1NParameterChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "object":{
-                  "operation-id":"updatePet",
-                  "defined-in":"/pet"
-               },
-               "target" : "Signature",
-               "replacement-id" : "updatePet",
-               "custom-convert" : "function conversion(input) { return JSON.stringify({ 'name': input.name, 'petId': input.petId, 'status': input.status } )}",
-               "replaced" : {
-                  "operation-id":"updatePet",
-                  "defined-in":"/pet"
-                }
-           }
-       ]
-
-   }
-   """
     
     func testReplaced1NParametersOfMethod() {
-        let facade = resource(.PetEndpointFacadeReplacedMethod)
-        let current = resource(.PetEndpointReplaceParameterMN)
+        let facade = modifiable(.PetEndpointFacadeReplacedMethod)
+        let current = modifiable(.PetEndpointReplaceParameterMN)
         TestCodeStore.inject(previous: [facade], current: [current])
         
-        _ = getMigrationResult(
-            migration: replace1NParameterChange,
-            target: readResource(Resources.PetEndpointReplaceParameterMN.rawValue)
-        )
+        _ = migration(.Replace1NParameterChange, target: .PetEndpointReplaceParameterMN)
         
         guard let migratedModifiable = TestCodeStore.instance.endpoint("/pet", scope: .currentAPI) else {
             fatalError("Migration failed.")
@@ -145,317 +54,68 @@ class MethodParameterTests: XCTestCase {
         
         let result = APITemplate().render(migratedModifiable)
         
-        XCTAssertEqual(result, readResource(Resources.ResultPetEndpointFacade1NParameterChange.rawValue))
+        XCTAssertEqual(result, expectation(.ResultPetEndpointFacade1NParameterChange))
     }
-    
-    let addParameterChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "reason": "Security issue related change",
-               "object" : {
-                   "operation-id" : "updatePet",
-                   "defined-in" : "/pet"
-               },
-               "target" : "Parameter",
-               "added" : [
-                   {
-                       "name" : "status",
-                       "type" : "String",
-                       "default-value" : "available"
-                   }
-               ]
-           }
-       ]
 
-   }
-   """
-    
     /// has added param `status: String` to `updatePet()`
     func testAddedParameter() {
-        let migrationResult = getMigrationResult(
-            migration: addParameterChange,
-            target: readResource( Resources.PetEndpointAddedParameter.rawValue)
-        )
+        let migrationResult = migration(.AddParameterChange, target: .PetEndpointAddedParameter)
         let result = APITemplate().render(migrationResult)
         
-        XCTAssertEqual(result, readResource(Resources.ResultPetEndpointFacadeAddedParameter.rawValue))
+        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeAddedParameter))
     }
-    
-    let deleteParameterChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "object" : {
-                   "operation-id" : "updateUser",
-                   "defined-in" : "/user"
-               },
-               "target" : "Parameter",
-               "fallback-value" : {
-                   "name" : "username",
-                   "type" : "String"
-               }
-           }
-       ]
-
-   }
-   """
     
     func testDeletedParameter() {
-        let migrationResult = getMigrationResult(
-            migration: deleteParameterChange,
-            target: readResource(Resources.UserEndpointDeletedParameter.rawValue)
-        )
+        let migrationResult = migration(.DeleteParameterChange, target: .UserEndpointDeletedParameter)
         let result = APITemplate().render(migrationResult)
         
-        XCTAssertEqual(result, readResource(Resources.ResultUserEndpointFacadeDeletedParameter.rawValue))
+        XCTAssertEqual(result, expectation(.ResultUserEndpointFacadeDeletedParameter))
     }
-    
-    let renameMethodParameterChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "reason": "Security issue related change",
-               "object" : {
-                   "operation-id" : "findPetsByStatus",
-                   "defined-in" : "/pet"
-               },
-               "target" : "Parameter",
-               "original-id" : "status",
-               "renamed" : {
-                   "id": "petStatus"
-               }
-           }
-       ]
-
-   }
-   """
     
     func testRenamedParameter() {
-        let migrationResult = getMigrationResult(
-            migration: renameMethodParameterChange,
-            target: readResource(Resources.PetEndpointRenamedParameter.rawValue)
-        )
+        let migrationResult = migration(.RenameMethodParameterChange, target: .PetEndpointRenamedParameter)
         let result = APITemplate().render(migrationResult)
         
-        XCTAssertEqual(result, readResource(Resources.ResultPetEndpointFacadeRenamedParameter.rawValue))
+        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeRenamedParameter))
     }
-    
-    let replaceMethodParameterChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "object" : {
-                   "operation-id" : "updatePetWithForm",
-                   "defined-in" : "/pet"
-               },
-               "target" : "Parameter",
-               "replacement-id" : "betterId",
-               "type" : "Double",
-               "custom-convert" : "function conversion(petId) { return (petId + 1.86) }",
-               "custom-revert" : "function conversion(petId) { return (petId + 1.86) }",
-               "replaced" : {
-                       "name" : "petId",
-                       "type" : "Int64",
-                       "required" : true
-               }
-           }
-       ]
-
-   }
-   """
     
     /// replaced param `petId: Int64` with `betterId: Double` in `updatePetWithForm()`
     func testReplacedParameter() {
-        let migrationResult = getMigrationResult(
-            migration: replaceMethodParameterChange,
-            target: readResource(Resources.PetEndpointReplacedParameter.rawValue)
-        )
+        let migrationResult = migration(.ReplaceMethodParameterChange, target: .PetEndpointReplacedParameter)
         let result = APITemplate().render(migrationResult)
         
-        XCTAssertEqual(result, readResource(Resources.ResultPetEndpointFacadeReplacedParameter.rawValue))
+        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeReplacedParameter))
     }
-    
-    let requiringMethodParameterChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "object" : {
-                   "operation-id" : "findPetsByStatus",
-                   "defined-in" : "/pet"
-               },
-               "target" : "Parameter",
-               "replacement-id" : "status",
-               "type" : "String",
-               "replaced" : {
-                       "name" : "status",
-                       "type" : "String",
-                       "default-value" : "available",
-                       "required" : true
-               }
-           }
-       ]
-
-   }
-   """
     
     /// optional param `petId: Int64` is now  required
     func testRequiringParameter() {
-        let migrationResult = getMigrationResult(
-            migration: requiringMethodParameterChange,
-            target: readResource(Resources.PetEndpointRequiringParameter.rawValue)
-        )
+        let migrationResult = migration(.RequiringMethodParameterChange, target: .PetEndpointRequiringParameter)
         let result = APITemplate().render(migrationResult)
         
-        XCTAssertEqual(result, readResource(Resources.ResultPetEndpointFacadeRequiredParameter.rawValue))
+        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeRequiredParameter))
     }
-    
-    /// represented as `element` parameter
-     let replaceMethodContentBodyChange = """
-    {
-        "summary" : "Here would be a nice summary what changed between versions",
-        "api-spec": "OpenAPI",
-        "api-type": "REST",
-        "from-version" : "0.0.1b",
-        "to-version" : "0.0.2",
-        "changes" : [
-            {
-                "object" : {
-                    "operation-id" : "placeOrder",
-                    "defined-in" : "/store"
-                },
-                "target" : "Content-Body",
-                "replacement-id" : "_",
-                "type" : "Customer",
-                "custom-convert" : "function conversion(placeholder) { return placeholder }",
-                "custom-revert" : "function conversion(placeholder) { return placeholder }",
-                "replaced" : {
-                        "name" : "_",
-                        "type" : "Order",
-                        "required" : true
-                }
-            }
-        ]
-
-    }
-    """
-    
+   
     /// method `placeOrder` now has content-type of `Customer` instead of `Order`
     func testReplacedContentBodyStoreEndpoint() {
-        let migrationResult = getMigrationResult(
-            migration: replaceMethodContentBodyChange,
-            target: readResource(Resources.StoreEndpointReplaceContentBody.rawValue)
-        )
+        let migrationResult = migration(.ReplaceMethodContentBodyChange, target: .StoreEndpointReplaceContentBody)
         let result = APITemplate().render(migrationResult)
         
-        XCTAssertEqual(result, readResource(Resources.ResultStoreEndpointFacadeReplacedContentBody.rawValue))
+        XCTAssertEqual(result, expectation(.ResultStoreEndpointFacadeReplacedContentBody))
     }
-    
-    let addContentBodyChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "reason": "Security issue related change",
-               "object" : {
-                   "operation-id" : "findPetsByStatus",
-                   "defined-in" : "/pet"
-               },
-               "target" : "Content-Body",
-               "added" : [
-                   {
-                       "name" : "_",
-                       "type" : "Pet",
-                       "default-value" : "{ 'name' : 'Mrs. Fluffy', 'photoUrls': ['xxx'] }"
-                   }
-               ]
-           }
-       ]
 
-   }
-   """
-    
     /// method `findPetsByStatus` has a new content-type of `Pet`
     func testAddedContentBodyPetEndpoint() {
-        let migrationResult = getMigrationResult(
-            migration: addContentBodyChange,
-            target: readResource(Resources.PetEndpointAddedContentBody.rawValue)
-        )
+        let migrationResult = migration(.AddContentBodyChange, target: .PetEndpointAddedContentBody)
         let result = APITemplate().render(migrationResult)
         
-        XCTAssertEqual(result, readResource(Resources.ResultPetEndpointFacadeAddedContentBody.rawValue))
+        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeAddedContentBody))
     }
-    
-    let replaceDefaultValueChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "object" : {
-                   "operation-id" : "findPetsByStatus",
-                   "defined-in" : "/pet"
-               },
-               "target" : "Parameter",
-               "replacement-id" : "status",
-               "type" : "String",
-               "replaced" : {
-                       "name" : "status",
-                       "type" : "String",
-                       "default-value" : "available"
-               }
-           }
-        ]
-
-   }
-   """
     
     func testDefaultParameterPetEndpoint() {
-        let migrationResult = getMigrationResult(
-            migration: replaceDefaultValueChange,
-            target: readResource(Resources.PetEndpointDefaultParameter.rawValue)
-        )
+        let migrationResult = migration(.ReplaceDefaultValueChange, target: .PetEndpointDefaultParameter)
         let result = APITemplate().render(migrationResult)
         
-        XCTAssertEqual(result, readResource(Resources.ResultPetEndpointFacadeDefaultParameter.rawValue))
-    }
-    
-    enum Resources: String {
-        case PetEndpointAddedParameter, UserEndpointDeletedParameter, PetEndpointRenamedParameter, PetEndpointReplacedParameter, StoreEndpointReplaceContentBody, PetEndpointAddedContentBody, PetEndpointReplacedMethod, PetEndpointFacadeReplacedMethod, PetEndpointReplaceParameterMN, PetEndpointReplaceParameter32, PetEndpointDefaultParameter, PetEndpointRequiringParameter, PetEndpointFacade
-
-        case ResultPetEndpointFacadeAddedParameter, ResultUserEndpointFacadeDeletedParameter, ResultPetEndpointFacadeRenamedParameter, ResultPetEndpointFacadeReplacedParameter, ResultStoreEndpointFacadeReplacedContentBody, ResultPetEndpointFacadeAddedContentBody, ResultPetEndpointFacadeReplacedMethodInSameEndpoint, ResultPetEndpointFacadeM1ParameterChange, ResultPetEndpointFacade1NParameterChange, ResultPetEndpointFacade32ParameterChange, ResultPetEndpointFacadeDefaultParameter, ResultPetEndpointFacadeRequiredParameter
+        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeDefaultParameter))
     }
     
     static var allTests = [

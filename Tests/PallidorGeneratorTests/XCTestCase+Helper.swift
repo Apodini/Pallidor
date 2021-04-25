@@ -7,8 +7,21 @@ import OpenAPIKit
 import PallidorUtils
 
 extension XCTestCase: ResourceHandler {
-    public typealias Input = Resources
-    public typealias Output = Results
+    public typealias Container = InnerContainer
+    
+    public enum InnerContainer: ResourceContainer {
+        case resources(Resources)
+        case results(Results)
+        
+        public var instance: Resource {
+            switch self {
+            case let .resources(instance):
+                return instance
+            case let .results(instance):
+                return instance
+            }
+        }
+    }
     
     public enum Resources: String, Resource {
         case petstore, petstore_httpMethodChanged,

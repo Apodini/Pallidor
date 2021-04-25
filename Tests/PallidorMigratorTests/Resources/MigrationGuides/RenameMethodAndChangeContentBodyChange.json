@@ -1,0 +1,35 @@
+{
+    "summary" : "Here would be a nice summary what changed between versions",
+    "api-spec": "OpenAPI",
+    "api-type": "REST",
+    "from-version" : "0.0.1b",
+    "to-version" : "0.0.2",
+    "changes" : [
+        {
+            "reason": "Security issue related change",
+            "object" : {
+                "operation-id" : "updateMyPet",
+                "defined-in" : "/pet"
+            },
+            "target" : "Signature",
+            "original-id" : "updatePet"
+        },
+         {
+             "object" : {
+                "operation-id" : "updatePet",
+                "defined-in" : "/pet"
+             },
+             "target" : "Content-Body",
+             "replacement-id" : "_",
+             "type" : "Order",
+             "custom-convert" : "function conversion(placeholder) { return placeholder }",
+             "custom-revert" : "function conversion(placeholder) { return placeholder }",
+             "replaced" : {
+                     "name" : "_",
+                     "type" : "Pet",
+                     "required" : true
+             }
+         }
+    ]
+
+}
