@@ -1,6 +1,5 @@
 import XCTest
 import Foundation
-import SourceryFramework
 import PathKit
 @testable import PallidorMigrator
 
@@ -17,19 +16,12 @@ extension XCTestCase {
    }
    """ }
     
-    func getMigrationResult(migration: String, target: String) -> Modifiable {
-        // swiftlint:disable force_try
-        let fileParser = try! FileParser(contents: target)
-        let code = try! fileParser.parse()
-        guard let types = WrappedTypes(types: code.types).modifiableFile else {
-            fatalError("Could not retrieve types.")
-        }
-        
-        try! types.accept(.migrationSet(from: migration))
-        // swiftlint:enable force_try
-        
+    func getMigrationResult(migration: String, target: String) -> ModifiableFile {
+        let types = modifiableFile(from: target)
+        XCTAssertNoThrow(try types.accept(.migrationSet(from: migration)))
         return types
     }
+    
     
     func readResource(_ resource: String) -> String {
         guard let fileURL = Bundle.module.url(forResource: resource, withExtension: "md") else {

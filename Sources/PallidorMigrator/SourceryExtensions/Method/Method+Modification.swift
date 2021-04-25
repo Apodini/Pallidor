@@ -121,9 +121,7 @@ extension WrappedMethod {
             guard let replaceIndex = self.parameters.firstIndex(where: { $0.id == change.replacementId }) else {
                 fatalError("Replacement was not found in source code.")
             }
-            // must provide replacement due to migration guide constraints
-            // swiftlint:disable:next force_unwrapping
-            guard let param = change.replaced! as? Parameter else {
+            guard let param = change.replaced as? Parameter else {
                 fatalError("Replaced value is malformed. Must be parameter.")
             }
             let original = createMethodParameter(param: param)
@@ -131,9 +129,7 @@ extension WrappedMethod {
             self.parameters[replaceIndex] = original
             self.paramsRequireJSContext = true
         case .returnValue:
-            // must provide replacement due to migration guide constraints
-            // swiftlint:disable:next force_unwrapping
-            guard let returnValue = change.replaced! as? ReturnValue else {
+            guard let returnValue = change.replaced as? ReturnValue else {
                 fatalError("Replaced value is malformed. Must be return value.")
             }
             self.returnTypeName = WrappedTypeName(
@@ -165,7 +161,7 @@ extension WrappedMethod {
             fatalError("Changed method could not be found in previous facade.")
         }
         changeMethod.accept(change: change)
-        if let changeEndpoint = store?.endpoint(method.definedIn, scope: .current) {
+        if let changeEndpoint = store?.endpoint(method.definedIn, scope: .currentAPI) {
             changeEndpoint.specialImports.insert("import JavaScriptCore")
             changeEndpoint.methods.append(changeMethod)
         }
@@ -204,8 +200,8 @@ extension WrappedMethod {
                 fatalError("Return type change is malformed.")
             }
             methodToModify.accept(change: rChange)
-            if store?.method(methodToModify.shortName, scope: .current) == nil {
-                guard let endpoint = store?.endpoint(targetMethod.definedIn, scope: .current) else {
+            if store?.method(methodToModify.shortName, scope: .currentAPI) == nil {
+                guard let endpoint = store?.endpoint(targetMethod.definedIn, scope: .currentAPI) else {
                     fatalError("Endpoint could not be found in library layer: \(targetMethod.definedIn)")
                 }
                 endpoint.methods.append(methodToModify)
@@ -228,7 +224,7 @@ extension WrappedMethod {
                 fatalError("Method to modify could not be found.")
             }
             methodToModify = facadeMethod
-            guard let changeEndpoint = store?.endpoint(targetMethod.definedIn, scope: .current) else {
+            guard let changeEndpoint = store?.endpoint(targetMethod.definedIn, scope: .currentAPI) else {
                 fatalError("Endpoint could not be found: \(targetMethod.definedIn)")
             }
             changeEndpoint.specialImports.insert("import JavaScriptCore")
@@ -237,7 +233,7 @@ extension WrappedMethod {
             methodToModify = self
         }
 
-        guard let replacementMethod = store?.method(targetMethod.operationId, scope: .current) else {
+        guard let replacementMethod = store?.method(targetMethod.operationId, scope: .currentAPI) else {
             fatalError("Replacement method was not found in library layer.")
         }
 
@@ -364,9 +360,8 @@ extension WrappedMethod {
     /// - Parameter change: ReplaceChange affecting this method
     /// - Returns: function which creates the map string
     private func mapStringFunction(change: ReplaceChange) -> (String) -> String {
-        // replacement type must be provided due to migration guide constraints
-        // swiftlint:disable:next force_unwrapping
-        !change.type!.isPrimitiveType ? mapStringComplexTypes(change)
-        : mapStringPrimitiveTypes(change)
+        change.type?.isPrimitiveType == false
+            ? mapStringComplexTypes(change)
+            : mapStringPrimitiveTypes(change)
     }
 }

@@ -6,30 +6,7 @@
 //
 
 import Foundation
-import SourceryFramework
 import PathKit
-
-/// Scope of layers
-enum Scope: CaseIterable {
-    case current
-    case previousFacade
-    
-    private var folderPrefix: String {
-        self == .current ? "" : "Persistent"
-    }
-    
-    var modelsPath: Path {
-        Path("\(folderPrefix)Models")
-    }
-    
-    var apisPath: Path {
-        Path("\(folderPrefix)APIs")
-    }
-    
-    var errorEnumFileName: String {
-        "\(self == .current ? "_" : "")APIErrors.swift"
-    }
-}
 
 /// Location of storing the parsed source code (API & previous Facade)
 class CodeStore: Store {
@@ -37,13 +14,13 @@ class CodeStore: Store {
     var previousFacade: [ModifiableFile]
     /// parsed source code located in API folders
     var currentAPI: [ModifiableFile]
-
+    
     /// Initializes the code store with empty layers
     init() {
         previousFacade = []
         currentAPI = []
     }
-
+    
     /// Collects source code form Models and APIs folders, and the respective error enums
     /// - Parameter targetDirectory: path to source code files
     func collect(at targetDirectory: Path) {
@@ -59,7 +36,6 @@ class CodeStore: Store {
     private func collectCode(for scope: Scope, in targetDirectory: Path) {
         let modelsDirectory = targetDirectory + scope.modelsPath
         let apisDirectory = targetDirectory + scope.apisPath
-        let errorEnumFileName = scope.errorEnumFileName
         
         let modelFileNames = FileManager
             .swiftFilesInDirectory(atPath: modelsDirectory.string + "/")
@@ -71,7 +47,7 @@ class CodeStore: Store {
         
         importModifiableFiles(with: apiFileNames, from: apisDirectory, for: scope)
         
-        importModifiableFiles(with: [errorEnumFileName], from: targetDirectory, for: scope)
+        importModifiableFiles(with: [scope.errorEnumFileName], from: targetDirectory, for: scope)
     }
     
     /// Reads and parses the source code inside of target directories and stores it in the CodeStore
@@ -80,20 +56,10 @@ class CodeStore: Store {
     ///   - directory: path of directory
     ///   - scope: scope where the code should be read from
     private func importModifiableFiles(with fileNames: [String], from directory: Path, for scope: Scope) {
-        do {
-            for file in fileNames {
-                let absolutePath = directory + Path(file)
-                let content = try absolutePath.read(.utf8)
-                let fileparser = try FileParser(contents: content, path: absolutePath)
-                let code = try fileparser.parse()
-                guard let types = WrappedTypes(types: code.types).modifiableFile else {
-                    fatalError("Modifiable file could not be retrieved.")
-                }
-                
-                scope == .current ? currentAPI.append(types) : previousFacade.append(types)
+        for path in fileNames.map({ directory + Path($0) }) {
+            if let content = try? path.read(.utf8) { // `APIErrors` not available in first generation, hence ignoring read throw
+                insert(modifiable: modifiableFile(from: content, path: path), in: scope)
             }
-        } catch {
-            fatalError("Endpoints could not be loaded.")
         }
     }
 }

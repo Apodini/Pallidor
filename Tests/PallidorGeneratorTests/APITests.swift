@@ -7,9 +7,7 @@ class APITests: XCTestCase {
     
     func testParseTypeAliasResultMethod() {
         initSUT(resource: .lufthansa)
-        // Is initialized by `initSUT` statement
-        // swiftlint:disable:next force_unwrapping
-        if let test = sut!.getOperation("getPassengerFlights", in: "Flightschedules") {
+        if let test = sut?.getOperation("getPassengerFlights", in: "Flightschedules") {
             XCTResourceHandlerAssertEqual(test.description, .output(.LH_GetPassengerFlights))
         } else {
             XCTFail("Library could not be generated.")
@@ -18,9 +16,7 @@ class APITests: XCTestCase {
     
     func testParseDefaultResultMethod() {
         initSUT(resource: .petstore)
-        // Is initialized by `initSUT` statement
-        // swiftlint:disable:next force_unwrapping
-        if let test = sut!.getOperation("addPet", in: "Pet") {
+        if let test = sut?.getOperation("addPet", in: "Pet") {
             XCTResourceHandlerAssertEqual(test.description, .output(.Pet_addPet))
         } else {
             XCTFail("Library could not be generated.")
@@ -29,9 +25,7 @@ class APITests: XCTestCase {
     
     func testParseDefaultResultMethodNoAuth() {
         initSUT(resource: .petstore_httpMethodChanged)
-        // Is initialized by `initSUT` statement
-        // swiftlint:disable:next force_unwrapping
-        if let test = sut!.getOperation("addPet", in: "Pet") {
+        if let test = sut?.getOperation("addPet", in: "Pet") {
             // modify "authorization" parameter to be optional.
             // uses authorized result of "addPet" method
             var result = readResult(.Pet_addPet)
@@ -47,9 +41,7 @@ class APITests: XCTestCase {
     
     func testParseSimpleResultMethod() {
         initSUT(resource: .petstore)
-        // Is initialized by `initSUT` statement
-        // swiftlint:disable:next force_unwrapping
-        if let test = sut!.getOperation("updatePetWithForm", in: "Pet") {
+        if let test = sut?.getOperation("updatePetWithForm", in: "Pet") {
             XCTResourceHandlerAssertEqual(test.description, .output(.Pet_updatePetWithForm))
         } else {
             XCTFail("Library could not be generated.")
@@ -58,9 +50,7 @@ class APITests: XCTestCase {
     
     func testParseSimpleEndpointMethod() {
         initSUT(resource: .petstore)
-        // Is initialized by `initSUT` statement
-        // swiftlint:disable:next force_unwrapping
-        if let test = sut!.getEndpoint("Pet") {
+        if let test = sut?.getEndpoint("Pet") {
             XCTResourceHandlerAssertEqual(test.description, .output(.Pet_Endpoint))
         } else {
             XCTFail("Library could not be generated.")
@@ -69,9 +59,7 @@ class APITests: XCTestCase {
     
     func testParseSimpleEndpointMethodChangedHTTPMethod() {
         initSUT(resource: .petstore_httpMethodChanged)
-        // Is initialized by `initSUT` statement
-        // swiftlint:disable:next force_unwrapping
-        if let test = sut!.getOperation("updatePet", in: "Pet") {
+        if let test = sut?.getOperation("updatePet", in: "Pet") {
             XCTResourceHandlerAssertEqual(test.description, .output(.Pet_updatePetChangedHTTPMethod))
         } else {
             XCTFail("Library could not be generated.")
@@ -80,9 +68,7 @@ class APITests: XCTestCase {
     
     func testParseSimpleEndpointMinMaxMethod() {
         initSUT(resource: .petstore_minMax)
-        // Is initialized by `initSUT` statement
-        // swiftlint:disable:next force_unwrapping
-        if let test = sut!.getOperation("getPetById", in: "Pet") {
+        if let test = sut?.getOperation("getPetById", in: "Pet") {
             XCTResourceHandlerAssertEqual(test.description, .output(.Pet_getPetByIdMinMax))
         } else {
             XCTFail("Library could not be generated.")
@@ -100,9 +86,7 @@ class APITests: XCTestCase {
         }
         TypeAliases.parse(resolvedDoc: apiSpec)
         sut = APIConverter(apiSpec)
-        // Is initialized in previous statement
-        // swiftlint:disable:next force_unwrapping
-        sut!.parse()
+        sut?.parse()
     }
     
     override func tearDown() {

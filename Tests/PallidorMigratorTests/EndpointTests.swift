@@ -5,7 +5,6 @@
 // Line length exceeds due to convert/revert definition in migration guide
 // swiftlint:disable identifier_name
 import XCTest
-import SourceryFramework
 @testable import PallidorMigrator
 
 class EndpointTests: XCTestCase {
@@ -39,13 +38,7 @@ class EndpointTests: XCTestCase {
     }
         
     func testRenamedAndAddMethod() {
-        // swiftlint:disable:next force_try
-        let fp = try! FileParser(contents: readResource(Resources.PetEndpointFacadeAddMethod.rawValue))
-        // swiftlint:disable:next force_try
-        let code = try! fp.parse()
-        guard let facade = WrappedTypes(types: code.types).modifiableFile else {
-            fatalError("Could not retrieve previous modifiable.")
-        }
+        let facade = modifiableFile(from: readResource(Resources.PetEndpointFacadeAddMethod.rawValue))
         
         TestCodeStore.inject(previous: [facade], current: [])
         let migrationResult = getMigrationResult(
@@ -79,14 +72,7 @@ class EndpointTests: XCTestCase {
    """
     
     func testDeleted() {
-        // swiftlint:disable:next force_try
-        let fp = try! FileParser(contents: readResource(Resources.PetEndpointFacade.rawValue))
-        // swiftlint:disable:next force_try
-        let code = try! fp.parse()
-        guard let facade = WrappedTypes(types: code.types).modifiableFile else {
-            fatalError("Could not retrieve previous modifiable.")
-        }
-        
+        let facade = resource(.PetEndpointFacade)
         TestCodeStore.inject(previous: [facade], current: [])
         
         /// irrelevant for deleted migration
@@ -95,7 +81,7 @@ class EndpointTests: XCTestCase {
             target: readResource(Resources.EndpointPlaceholder.rawValue)
         )
         
-        guard let migrationResult = TestCodeStore.instance.endpoint(facade.id, scope: .current) else {
+        guard let migrationResult = TestCodeStore.instance.endpoint(facade.id, scope: .currentAPI) else {
             fatalError("Migration failed.")
         }
         
@@ -159,6 +145,10 @@ class EndpointTests: XCTestCase {
     enum Resources: String {
         case PetEndpointRenamed, PetEndpointFacade, EndpointPlaceholder, PetEndpointRenamedMethodAndContentBody, PetEndpointFacadeAddMethod
         case ResultPetEndpointFacadeRenamed, ResultPetEndpointFacadeDeleted, ResultPetEndpointFacadeRenamedMethodAndContentBody
+    }
+    
+    func resource(_ resource: Resources) -> ModifiableFile {
+        modifiableFile(from: readResource(resource.rawValue))
     }
     
     static var allTests = [

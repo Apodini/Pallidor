@@ -117,7 +117,7 @@ class MigrationGuide: Decodable {
         case .method(let method):
             if case .signature = change.target {
                 modifiable = store?.method(method.operationId)
-                guard let endpoint = store?.endpoint(method.definedIn, scope: .current) else {
+                guard let endpoint = store?.endpoint(method.definedIn, scope: .currentAPI) else {
                     fatalError("Deleted endpoint \(method.definedIn) was not found in previous facade.")
                 }
                 guard let wrappedMethod = modifiable as? WrappedMethod else {

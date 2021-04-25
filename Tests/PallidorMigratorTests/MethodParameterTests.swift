@@ -5,7 +5,6 @@
 // Line length exceeds due to convert/revert definition in migration guide
 // swiftlint:disable identifier_name type_body_length file_length line_length
 import XCTest
-import SourceryFramework
 @testable import PallidorMigrator
 
 class MethodParameterTests: XCTestCase {
@@ -35,22 +34,13 @@ class MethodParameterTests: XCTestCase {
    }
    """
     
+    func resource(_ resource: Resources) -> ModifiableFile {
+        modifiableFile(from: readResource(resource.rawValue))
+    }
+    
     func testReplacedMNParametersOfMethod() {
-        // swiftlint:disable:next force_try
-        let fp = try! FileParser(contents: readResource(Resources.PetEndpointReplaceParameter32.rawValue))
-        // swiftlint:disable:next force_try
-        let code = try! fp.parse()
-        guard let current = WrappedTypes(types: code.types).modifiableFile else {
-            fatalError("Could not retrieve current modifiable.")
-        }
-        
-        // swiftlint:disable:next force_try
-        let fp2 = try! FileParser(contents: readResource(Resources.PetEndpointFacadeReplacedMethod.rawValue))
-        // swiftlint:disable:next force_try
-        let code2 = try! fp2.parse()
-        guard let facade = WrappedTypes(types: code2.types).modifiableFile else {
-            fatalError("Could not retrieve previous modifiable.")
-        }
+        let facade = resource(.PetEndpointFacadeReplacedMethod)
+        let current = resource(.PetEndpointReplaceParameter32)
         
         TestCodeStore.inject(previous: [facade], current: [current])
         
@@ -59,7 +49,7 @@ class MethodParameterTests: XCTestCase {
             target: readResource(Resources.PetEndpointReplaceParameter32.rawValue)
         )
         
-        guard let migratedModifiable = TestCodeStore.instance.endpoint("/pet", scope: .current) else {
+        guard let migratedModifiable = TestCodeStore.instance.endpoint("/pet", scope: .currentAPI) else {
             fatalError("Migration failed.")
         }
         
@@ -95,22 +85,8 @@ class MethodParameterTests: XCTestCase {
    """
     
     func testReplacedM1ParametersOfMethod() {
-        // swiftlint:disable:next force_try
-        let fp = try! FileParser(contents: readResource(Resources.PetEndpointReplaceParameterMN.rawValue))
-        // swiftlint:disable:next force_try
-        let code = try! fp.parse()
-        guard let current = WrappedTypes(types: code.types).modifiableFile else {
-            fatalError("Could not retrieve current modifiable.")
-        }
-        
-        // swiftlint:disable:next force_try
-        let fp2 = try! FileParser(contents: readResource(Resources.PetEndpointFacadeReplacedMethod.rawValue))
-        // swiftlint:disable:next force_try
-        let code2 = try! fp2.parse()
-        guard let facade = WrappedTypes(types: code2.types).modifiableFile else {
-            fatalError("Could not retrieve previous modifiable.")
-        }
-        
+        let facade = resource(.PetEndpointFacadeReplacedMethod)
+        let current = resource(.PetEndpointReplaceParameterMN)
         TestCodeStore.inject(previous: [facade], current: [current])
         
         _ = getMigrationResult(
@@ -118,7 +94,7 @@ class MethodParameterTests: XCTestCase {
             target: readResource(Resources.PetEndpointReplaceParameterMN.rawValue)
         )
         
-        guard let migratedModifiable = TestCodeStore.instance.endpoint("/pet", scope: .current) else {
+        guard let migratedModifiable = TestCodeStore.instance.endpoint("/pet", scope: .currentAPI) else {
             fatalError("Migration failed.")
         }
         
@@ -154,22 +130,8 @@ class MethodParameterTests: XCTestCase {
    """
     
     func testReplaced1NParametersOfMethod() {
-        // swiftlint:disable:next force_try
-        let fp = try! FileParser(contents: readResource(Resources.PetEndpointReplaceParameterMN.rawValue))
-        // swiftlint:disable:next force_try
-        let code = try! fp.parse()
-        guard let current = WrappedTypes(types: code.types).modifiableFile else {
-            fatalError("Could not retrieve current modifiable.")
-        }
-        
-        // swiftlint:disable:next force_try
-        let fp2 = try! FileParser(contents: readResource(Resources.PetEndpointFacadeReplacedMethod.rawValue))
-        // swiftlint:disable:next force_try
-        let code2 = try! fp2.parse()
-        guard let facade = WrappedTypes(types: code2.types).modifiableFile else {
-            fatalError("Could not retrieve previous modifiable.")
-        }
-        
+        let facade = resource(.PetEndpointFacadeReplacedMethod)
+        let current = resource(.PetEndpointReplaceParameterMN)
         TestCodeStore.inject(previous: [facade], current: [current])
         
         _ = getMigrationResult(
@@ -177,7 +139,7 @@ class MethodParameterTests: XCTestCase {
             target: readResource(Resources.PetEndpointReplaceParameterMN.rawValue)
         )
         
-        guard let migratedModifiable = TestCodeStore.instance.endpoint("/pet", scope: .current) else {
+        guard let migratedModifiable = TestCodeStore.instance.endpoint("/pet", scope: .currentAPI) else {
             fatalError("Migration failed.")
         }
         

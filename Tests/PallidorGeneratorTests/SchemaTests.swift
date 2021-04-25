@@ -7,9 +7,7 @@ class SchemaTests: XCTestCase {
     
     func testParseDefaultSchema() {
         initSUT(resource: .petstore)
-        // Is initialized by `initSUT` statement
-        // swiftlint:disable:next force_unwrapping
-        if let test = sut!.getSchema(name: "Pet") {
+        if let test = sut?.getSchema(name: "Pet") {
             XCTAssertEqual(test.description, readResult(.Pet))
         } else {
             XCTFail("Library could not be generated.")
@@ -18,9 +16,7 @@ class SchemaTests: XCTestCase {
     
     func testParseComplexSchema() {
         initSUT(resource: .lufthansa)
-        // Is initialized by `initSUT` statement
-        // swiftlint:disable:next force_unwrapping
-        if let test = sut!.getSchema(name: "FlightAggregate") {
+        if let test = sut?.getSchema(name: "FlightAggregate") {
             XCTAssertEqual(test.description, readResult(.FlightAggregate))
         } else {
             XCTFail("Library could not be generated.")
@@ -29,9 +25,7 @@ class SchemaTests: XCTestCase {
     
     func testParseDefaultEnum() {
         initSUT(resource: .lufthansa)
-        // Is initialized by `initSUT` statement
-        // swiftlint:disable:next force_unwrapping
-        if let test = sut!.getSchema(name: "MessageLevel") {
+        if let test = sut?.getSchema(name: "MessageLevel") {
             XCTAssertEqual(test.description, readResult(.MessageLevel))
         } else {
             XCTFail("Library could not be generated.")
@@ -40,9 +34,7 @@ class SchemaTests: XCTestCase {
     
     func testParseResolvedTypeAliasSchema() {
         initSUT(resource: .lufthansa)
-        // Is initialized by `initSUT` statement
-        // swiftlint:disable:next force_unwrapping
-        if let test = sut!.getSchema(name: "PeriodOfOperation") {
+        if let test = sut?.getSchema(name: "PeriodOfOperation") {
             XCTAssertEqual(test.description, readResult(.PeriodOfOperation))
         } else {
             XCTFail("Library could not be generated.")
@@ -51,9 +43,7 @@ class SchemaTests: XCTestCase {
     
     func testParseOneOfSchema() {
         initSUT(resource: .wines)
-        // Is initialized by `initSUT` statement
-        // swiftlint:disable:next force_unwrapping
-        if let test = sut!.getSchema(name: "PaymentInstallmentSchedule") {
+        if let test = sut?.getSchema(name: "PaymentInstallmentSchedule") {
             XCTAssertEqual(test.description, readResult(.PaymentInstallmentSchedule))
         } else {
             XCTFail("Library could not be generated.")
@@ -62,9 +52,7 @@ class SchemaTests: XCTestCase {
     
     func testParseAnyOfSchema() {
         initSUT(resource: .wines_any)
-        // Is initialized by `initSUT` statement
-        // swiftlint:disable:next force_unwrapping
-        if let test = sut!.getSchema(name: "PaymentInstallmentSchedule") {
+        if let test = sut?.getSchema(name: "PaymentInstallmentSchedule") {
             XCTAssertEqual(test.description, readResult(.PaymentInstallmentSchedule_Any))
         } else {
             XCTFail("Library could not be generated.")

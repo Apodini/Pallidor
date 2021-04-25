@@ -5,7 +5,6 @@
 // Line length exceeds due to convert/revert definition in migration guide
 // swiftlint:disable identifier_name line_length
 import XCTest
-import SourceryFramework
 @testable import PallidorMigrator
 
 class MethodIntegrationTests: XCTestCase {

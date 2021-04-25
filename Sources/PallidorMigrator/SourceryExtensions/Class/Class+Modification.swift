@@ -97,11 +97,7 @@ extension WrappedClass {
     /// handle renaming a property
     /// - Parameter renameChange: RenameChange affecting a property of this model
     internal func handleRenameProperty(_ renameChange: RenameChange) {
-        guard let renamed = self
-                .variables
-                // must provide renamed object due to migration guide constraints
-                // swiftlint:disable:next force_unwrapping
-                .first(where: { $0.id == renameChange.renamed!.id }) else {
+        guard let renamed = variables.first(where: { $0.id == renameChange.renamed?.id }) else {
             fatalError("Renamed model not provided.")
         }
 

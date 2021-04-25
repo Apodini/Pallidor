@@ -10,7 +10,7 @@ import PathKit
 
 /// Template which represents the code structure for an endpoint
 struct APITemplate: CodeTemplate {
-    func render(_ modifiable: Modifiable) -> String {
+    func render(_ modifiable: ModifiableFile) -> String {
         guard let facadeStruct = modifiable as? WrappedStruct else {
             fatalError("APITemplate requires struct.")
         }

@@ -25,7 +25,7 @@ extension Store {
     ///   - modifiable: modifiable to insert
     ///   - scope: where the modifiable file should be inserted
     func insert(modifiable: ModifiableFile, in scope: Scope = .previousFacade) {
-        scope == .current ? currentAPI.append(modifiable) : previousFacade.append(modifiable)
+        scope == .currentAPI ? currentAPI.append(modifiable) : previousFacade.append(modifiable)
     }
 
     /// Retrieves a method by `id`
@@ -69,21 +69,21 @@ extension Store {
     /// Retrieves all enums from Store, except of OpenAPIError ones
     /// - Parameter scope: where the enums should be retrieved from
     /// - Returns: List of all enums
-    func enums(scope: Scope = .current) -> [WrappedEnum] {
+    func enums(scope: Scope = .currentAPI) -> [WrappedEnum] {
         modifiables(WrappedEnum.self, scope: scope).filter { $0.localName.removePrefix != "OpenAPIError" }
     }
     
     /// Retrieves all endpoints
     /// - Parameter scope: where the endpoints should be retrieved from
     /// - Returns: List of all endpoints
-    func endpoints(scope: Scope = .current) -> [WrappedStruct] {
+    func endpoints(scope: Scope = .currentAPI) -> [WrappedStruct] {
         modifiables(WrappedStruct.self, scope: scope)
     }
     
     /// Retrieves all models
     /// - Parameter scope: where the models should be retrieved from
     /// - Returns: List of all models
-    func models(scope: Scope = .current) -> [WrappedClass] {
+    func models(scope: Scope = .currentAPI) -> [WrappedClass] {
         modifiables(WrappedClass.self, scope: scope)
     }
 }
@@ -94,8 +94,8 @@ fileprivate extension Store {
     ///   - type: type of modifiables
     ///   - scope: where the modifiables should be retrieved from
     /// - Returns: list of modifiables
-    func modifiables<M: ModifiableFile>(_ type: M.Type = M.self, scope: Scope = .current) -> [M] {
-        (scope == .current ? currentAPI : previousFacade)
+    func modifiables<M: ModifiableFile>(_ type: M.Type = M.self, scope: Scope = .currentAPI) -> [M] {
+        (scope == .currentAPI ? currentAPI : previousFacade)
             .filter { $0 is M } as? [M] ?? []
     }
     

@@ -4,7 +4,6 @@
 // source code with Sourcery.
 // swiftlint:disable identifier_name
 import XCTest
-import SourceryFramework
 @testable import PallidorMigrator
 
 class EnumTests: XCTestCase {
@@ -40,16 +39,12 @@ class EnumTests: XCTestCase {
    }
    """
     
+    func resource(_ resource: Resources) -> ModifiableFile {
+        modifiableFile(from: readResource(resource.rawValue))
+    }
+    
     func testDeletedCase() {
-        // swiftlint:disable:next force_try
-        let fp = try! FileParser(contents: readResource(Resources.EnumTimeModeFacade.rawValue))
-        // swiftlint:disable:next force_try
-        let code = try! fp.parse()
-        let types = WrappedTypes(types: code.types)
-        guard let facade = types.modifiableFile else {
-            fatalError("Could not retrieve previous modifiable.")
-        }
-        
+        let facade = resource(.EnumTimeModeFacade)
         TestCodeStore.inject(previous: [facade], current: [])
         
         let migrationResult = getMigrationResult(
@@ -82,15 +77,7 @@ class EnumTests: XCTestCase {
    """
     
     func testDeleted() {
-        // swiftlint:disable:next force_try
-        let fp = try! FileParser(contents: readResource(Resources.EnumTimeModeFacade.rawValue))
-        // swiftlint:disable:next force_try
-        let code = try! fp.parse()
-        let types = WrappedTypes(types: code.types)
-        guard let facade = types.modifiableFile else {
-            fatalError("Could not retrieve previous modifiable.")
-        }
-        
+        let facade = resource(.EnumTimeModeFacade)
         TestCodeStore.inject(previous: [facade], current: [])
         
         // irrelevant result
@@ -99,7 +86,7 @@ class EnumTests: XCTestCase {
             target: readResource(Resources.EnumPlaceholder.rawValue)
         )
 
-        guard let migrationResult = TestCodeStore.instance.enum(facade.id, scope: .current) else {
+        guard let migrationResult = TestCodeStore.instance.enum(facade.id, scope: .currentAPI) else {
             fatalError("Migration failed.")
         }
         let result = EnumTemplate().render(migrationResult)

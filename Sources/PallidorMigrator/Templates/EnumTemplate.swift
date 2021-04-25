@@ -6,13 +6,10 @@
 //
 
 import Foundation
-import SourceryFramework
-import SourceryRuntime
-import PathKit
 
 /// Template which represents the code structure for an enum
 struct EnumTemplate: CodeTemplate {
-    func render(_ modifiable: Modifiable) -> String {
+    func render(_ modifiable: ModifiableFile) -> String {
         guard let facadeEnum = modifiable as? WrappedEnum else {
             fatalError("EnumTemplate requires enum.")
         }

@@ -4,7 +4,6 @@
 // source code with Sourcery. 
 // swiftlint:disable identifier_name
 import XCTest
-import SourceryFramework
 @testable import PallidorMigrator
 
 class OfTypeModelTests: XCTestCase {
@@ -102,15 +101,7 @@ class OfTypeModelTests: XCTestCase {
    """
     
     func testOfTypeModelDeleted() {
-        // swiftlint:disable:next force_try
-        let fp = try! FileParser(contents: readResource(Resources.ModelOfTypeFacade.rawValue))
-        // swiftlint:disable:next force_try
-        let code = try! fp.parse()
-        let types = WrappedTypes(types: code.types)
-        guard let facade = types.modifiableFile else {
-            fatalError("Could not retrieve previous modifiable.")
-        }
-        
+        let facade = modifiableFile(from: readResource(Resources.ModelOfTypeFacade.rawValue))
         TestCodeStore.inject(previous: [facade], current: [])
     
         _ = getMigrationResult(

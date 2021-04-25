@@ -23,4 +23,11 @@ extension Path {
             }
             return persPath
     }
+    
+    /// Writes `content` at `self` if not empty and returns back its URL.
+    func write(content: String) throws -> URL? {
+        guard !content.isEmpty else { return nil }
+        try write(content)
+        return url
+    }
 }

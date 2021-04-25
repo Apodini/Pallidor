@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import SourceryFramework
+import PathKit
 
 /// Protocol all source code types (structs, enums, etc.) must conform to
 protocol Modifiable: AnyObject {
@@ -40,5 +42,24 @@ extension ModifiableFile {
     func accept(_ migrationSet: MigrationSet) throws {
         self.store = migrationSet.store
         try migrationSet.activate(for: self)
+    }
+}
+
+/// Initializes a modifiable file object by using `SourceryFramework`s `FileParser`
+/// - Parameters:
+///    - content: string content that should be parsed
+///    - path: path to file that should be parsed
+func modifiableFile(from content: String, path: Path? = nil) -> ModifiableFile {
+    do {
+        let fileparser = try FileParser(contents: content, path: path)
+        let code = try fileparser.parse()
+        
+        guard let modifiableFile = WrappedTypes(types: code.types).modifiableFile else {
+            fatalError("Could not retrieve current modifiable.")
+        }
+        
+        return modifiableFile
+    } catch {
+        fatalError("\(error.localizedDescription)")
     }
 }

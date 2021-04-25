@@ -5,7 +5,6 @@
 // Line length exceeds due to convert/revert definition in migration guide
 // swiftlint:disable identifier_name line_length
 import XCTest
-import SourceryFramework
 @testable import PallidorMigrator
 
 class ModelTests: XCTestCase {
@@ -36,15 +35,7 @@ class ModelTests: XCTestCase {
    """
     
     func testDeletedModel() {
-        // swiftlint:disable:next force_try
-        let fp = try! FileParser(contents: readResource(Resources.ModelApiResponseFacadeDeleted.rawValue))
-        // swiftlint:disable:next force_try
-        let code = try! fp.parse()
-        let types = WrappedTypes(types: code.types)
-        
-        guard let facade = types.modifiableFile else {
-            fatalError("Could not retrieve previous modifiable.")
-        }
+        let facade = modifiableFile(from: readResource(Resources.ModelApiResponseFacadeDeleted.rawValue))
         
         TestCodeStore.inject(previous: [facade], current: [])
         
@@ -53,7 +44,7 @@ class ModelTests: XCTestCase {
             target: readResource(Resources.ModelPlaceholder.rawValue)
         )
         
-        guard let migrationResult = TestCodeStore.instance.model(facade.id, scope: .current) else {
+        guard let migrationResult = TestCodeStore.instance.model(facade.id, scope: .currentAPI) else {
             fatalError("Could not retrieve migrated modifiable.")
         }
 

@@ -95,9 +95,7 @@ class MigrationSet {
                 }
                 
                 let change = change.typed(DeleteChange.self)
-                // Change must specify a fallback value due to migration guide constraints.
-                // swiftlint:disable:next force_unwrapping
-                target.cases.append(facade.cases.first(where: { $0.name == change.fallbackValue!.id! })!)
+                target.cases.append(facade.cases.first(where: { $0.name == change.fallbackValue?.id })!)
                 return DeleteMigration(solvable: true, executeOn: target, change: change)
             }
         }

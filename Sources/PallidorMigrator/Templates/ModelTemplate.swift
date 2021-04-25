@@ -6,13 +6,10 @@
 //
 
 import Foundation
-import SourceryFramework
-import SourceryRuntime
-import PathKit
 
 /// Template which represents the code structure for a model
 struct ModelTemplate: CodeTemplate {
-    func render(_ modifiable: Modifiable) -> String {
+    func render(_ modifiable: ModifiableFile) -> String {
         guard let facadeModel = modifiable as? WrappedClass else {
             fatalError("ModelTemplate requires classes.")
         }

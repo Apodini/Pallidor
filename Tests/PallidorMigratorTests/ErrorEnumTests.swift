@@ -4,7 +4,6 @@
 // source code with Sourcery.
 // swiftlint:disable identifier_name
 import XCTest
-import SourceryFramework
 @testable import PallidorMigrator
 
 class ErrorEnumTests: XCTestCase {
