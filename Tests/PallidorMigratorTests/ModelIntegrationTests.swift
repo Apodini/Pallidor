@@ -12,7 +12,7 @@ class ModelIntegrationTests: PallidorMigratorXCTestCase {
         let migrationResult = migration(.DeletedAndAddedProperty, target: .ModelPet)
         let result = ModelTemplate().render(migrationResult)
         
-        XCTAssertEqual(result, expectation(.ResultModelPetAddedAndDeletedProperty))
+        XCTMigratorAssertEqual(result, .results(.ResultModelPetAddedAndDeletedProperty))
     }
     
     func testRenamedModelAndAddProperty() {
@@ -20,21 +20,21 @@ class ModelIntegrationTests: PallidorMigratorXCTestCase {
         
         let result = ModelTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, expectation(.ResultModelPetRenamedAndAddedProperty))
+        XCTMigratorAssertEqual(result, .results(.ResultModelPetRenamedAndAddedProperty))
     }
     
      func testRenamedModelAndReplacedProperty() {
         let migrationResult = migration(.RenameModelAndReplacePropertyChange, target: .ModelCustomerRenamedAndReplacedProperty)
         let result = ModelTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, expectation(.ResultModelCustomerRenamedAndReplacedProperty))
+        XCTMigratorAssertEqual(result, .results(.ResultModelCustomerRenamedAndReplacedProperty))
     }
     
     func testRenamedModelAndDeletedProperty() {
         let migrationResult = migration(.RenameModelAndDeletePropertyChange, target: .ModelCustomerRenamedAndDeletedProperty)
         let result = ModelTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, expectation(.ResultModelCustomerRenamedAndDeletedProperty))
+        XCTMigratorAssertEqual(result, .results(.ResultModelCustomerRenamedAndDeletedProperty))
     }
 
     func testRenamedModelAndRenamedProperty() {
@@ -42,7 +42,7 @@ class ModelIntegrationTests: PallidorMigratorXCTestCase {
         
         let result = ModelTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, expectation(.ResultModelCategoryRenamedAndRenamedProperty))
+        XCTMigratorAssertEqual(result, .results(.ResultModelCategoryRenamedAndRenamedProperty))
     }
     
     

@@ -12,7 +12,7 @@ class EnumTests: PallidorMigratorXCTestCase {
         let result = EnumTemplate().render(migrationResult)
 
         
-        XCTAssertEqual(result, expectation(.ResultEnumTimeMode))
+        XCTMigratorAssertEqual(result, .results(.ResultEnumTimeMode))
     }
 
     func testDeletedCase() {
@@ -23,7 +23,7 @@ class EnumTests: PallidorMigratorXCTestCase {
         
         let result = EnumTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, expectation(.ResultEnumTimeModeDeletedCase))
+        XCTMigratorAssertEqual(result, .results(.ResultEnumTimeModeDeletedCase))
     }
 
     func testDeleted() {
@@ -38,21 +38,21 @@ class EnumTests: PallidorMigratorXCTestCase {
         }
         let result = EnumTemplate().render(migrationResult)
         
-        XCTAssertEqual(result, expectation(.ResultEnumTimeModeDeleted))
+        XCTMigratorAssertEqual(result, .results(.ResultEnumTimeModeDeleted))
     }
     
     func testRenamed() {
         let migrationResult = migration(.RenameEnumChange, target: .EnumTimeModeRenamed)
         let result = EnumTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, expectation(.ResultEnumTimeModeRenamed))
+        XCTMigratorAssertEqual(result, .results(.ResultEnumTimeModeRenamed))
     }
 
     func testReplaced() {
         let migrationResult = migration(.ReplaceEnumChange, target: .EnumMessageLevelFacade)
         let result = EnumTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, expectation(.ResultEnumMessageLevelReplaced))
+        XCTMigratorAssertEqual(result, .results(.ResultEnumMessageLevelReplaced))
     }
     
         

@@ -10,7 +10,7 @@ class ErrorEnumTests: PallidorMigratorXCTestCase {
     func testErrorEnumNoChange() {
         let migrationResult = migration(.EmptyGuide, target: .ErrorEnum)
         let result = ErrorEnumTemplate().render(migrationResult)
-        XCTAssertEqual(result, expectation(.ResultErrorEnum))
+        XCTMigratorAssertEqual(result, .results(.ResultErrorEnum))
     }
     
     func testErrorEnumDeletedCase() {
@@ -30,7 +30,7 @@ class ErrorEnumTests: PallidorMigratorXCTestCase {
         
         let result = ErrorEnumTemplate().render(enumFacade)
         
-        XCTAssertEqual(result, expectation(.ResultErrorEnumDeletedCase))
+        XCTMigratorAssertEqual(result, .results(.ResultErrorEnumDeletedCase))
     }
     
     func testErrorEnumAddCase() {
@@ -50,7 +50,7 @@ class ErrorEnumTests: PallidorMigratorXCTestCase {
         
         let result = ErrorEnumTemplate().render(enumFacade)
         
-        XCTAssertEqual(result, expectation(.ResultErrorEnumAddedCase))
+        XCTMigratorAssertEqual(result, .results(.ResultErrorEnumAddedCase))
     }
     
     

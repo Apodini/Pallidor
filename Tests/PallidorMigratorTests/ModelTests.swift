@@ -12,7 +12,7 @@ class ModelTests: PallidorMigratorXCTestCase {
         let migrationResult = migration(.EmptyGuide, target: .ModelPet)
         let result = ModelTemplate().render(migrationResult)
         
-        XCTAssertEqual(result, expectation(.ResultModelPet))
+        XCTMigratorAssertEqual(result, .results(.ResultModelPet))
     }
     
     func testDeletedModel() {
@@ -27,14 +27,14 @@ class ModelTests: PallidorMigratorXCTestCase {
 
         let result = ModelTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, expectation(.ResultModelApiResponseDeleted))
+        XCTMigratorAssertEqual(result, .results(.ResultModelApiResponseDeleted))
     }
  
     func testReplacedModel() {
         let migrationResult = migration(.ReplaceModelChange, target: .ModelOrderFacadeReplaced)
         let result = ModelTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, expectation(.ResultModelOrderReplaced))
+        XCTMigratorAssertEqual(result, .results(.ResultModelOrderReplaced))
     }
 
     func testRenamedModel() {
@@ -42,7 +42,7 @@ class ModelTests: PallidorMigratorXCTestCase {
         
         let result = ModelTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, expectation(.ResultModelAddressRenamed))
+        XCTMigratorAssertEqual(result, .results(.ResultModelAddressRenamed))
     }
         
     

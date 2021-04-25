@@ -22,7 +22,7 @@ class MethodParameterTests: PallidorMigratorXCTestCase {
         
         let result = APITemplate().render(migratedModifiable)
         
-        XCTAssertEqual(result, expectation(.ResultPetEndpointFacade32ParameterChange))
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacade32ParameterChange))
     }
     
     func testReplacedM1ParametersOfMethod() {
@@ -38,7 +38,7 @@ class MethodParameterTests: PallidorMigratorXCTestCase {
         
         let result = APITemplate().render(migratedModifiable)
         
-        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeM1ParameterChange))
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeM1ParameterChange))
     }
     
     func testReplaced1NParametersOfMethod() {
@@ -54,7 +54,7 @@ class MethodParameterTests: PallidorMigratorXCTestCase {
         
         let result = APITemplate().render(migratedModifiable)
         
-        XCTAssertEqual(result, expectation(.ResultPetEndpointFacade1NParameterChange))
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacade1NParameterChange))
     }
 
     /// has added param `status: String` to `updatePet()`
@@ -62,21 +62,21 @@ class MethodParameterTests: PallidorMigratorXCTestCase {
         let migrationResult = migration(.AddParameterChange, target: .PetEndpointAddedParameter)
         let result = APITemplate().render(migrationResult)
         
-        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeAddedParameter))
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeAddedParameter))
     }
     
     func testDeletedParameter() {
         let migrationResult = migration(.DeleteParameterChange, target: .UserEndpointDeletedParameter)
         let result = APITemplate().render(migrationResult)
         
-        XCTAssertEqual(result, expectation(.ResultUserEndpointFacadeDeletedParameter))
+        XCTMigratorAssertEqual(result, .results(.ResultUserEndpointFacadeDeletedParameter))
     }
     
     func testRenamedParameter() {
         let migrationResult = migration(.RenameMethodParameterChange, target: .PetEndpointRenamedParameter)
         let result = APITemplate().render(migrationResult)
         
-        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeRenamedParameter))
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeRenamedParameter))
     }
     
     /// replaced param `petId: Int64` with `betterId: Double` in `updatePetWithForm()`
@@ -84,7 +84,7 @@ class MethodParameterTests: PallidorMigratorXCTestCase {
         let migrationResult = migration(.ReplaceMethodParameterChange, target: .PetEndpointReplacedParameter)
         let result = APITemplate().render(migrationResult)
         
-        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeReplacedParameter))
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeReplacedParameter))
     }
     
     /// optional param `petId: Int64` is now  required
@@ -92,7 +92,7 @@ class MethodParameterTests: PallidorMigratorXCTestCase {
         let migrationResult = migration(.RequiringMethodParameterChange, target: .PetEndpointRequiringParameter)
         let result = APITemplate().render(migrationResult)
         
-        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeRequiredParameter))
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeRequiredParameter))
     }
    
     /// method `placeOrder` now has content-type of `Customer` instead of `Order`
@@ -100,7 +100,7 @@ class MethodParameterTests: PallidorMigratorXCTestCase {
         let migrationResult = migration(.ReplaceMethodContentBodyChange, target: .StoreEndpointReplaceContentBody)
         let result = APITemplate().render(migrationResult)
         
-        XCTAssertEqual(result, expectation(.ResultStoreEndpointFacadeReplacedContentBody))
+        XCTMigratorAssertEqual(result, .results(.ResultStoreEndpointFacadeReplacedContentBody))
     }
 
     /// method `findPetsByStatus` has a new content-type of `Pet`
@@ -108,14 +108,14 @@ class MethodParameterTests: PallidorMigratorXCTestCase {
         let migrationResult = migration(.AddContentBodyChange, target: .PetEndpointAddedContentBody)
         let result = APITemplate().render(migrationResult)
         
-        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeAddedContentBody))
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeAddedContentBody))
     }
     
     func testDefaultParameterPetEndpoint() {
         let migrationResult = migration(.ReplaceDefaultValueChange, target: .PetEndpointDefaultParameter)
         let result = APITemplate().render(migrationResult)
         
-        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeDefaultParameter))
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeDefaultParameter))
     }
     
     static var allTests = [

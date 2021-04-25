@@ -132,12 +132,12 @@ class PallidorMigratorXCTestCase: XCTestCase, ResourceHandler {
     
     /// Returns the string content of result
     func expectation(_ result: Results) -> String {
-        String(resourceContent(resource: result).dropLast())
+        resourceContent(resource: result)
     }
     
     /// Returns the string content of resource
     func resource(_ resource: Resources) -> String {
-        String(resourceContent(resource: resource).dropLast())
+        resourceContent(resource: resource)
     }
     
     /// Returns the string content of migration guide
@@ -159,6 +159,22 @@ class PallidorMigratorXCTestCase: XCTestCase, ResourceHandler {
             fatalError("Migration guide is malformed")
         }
         return migrationGuide.handled(in: TestCodeStore.instance).migrationSet
+    }
+    
+    /// AssertEqual used throughout the target
+    func XCTMigratorAssertEqual(_ expression: String, _ container: Container, overrideResource: Bool = true) {
+        let instance = container.instance
+        do {
+            let instanceContent = try instance.content()
+            
+            if expression != instanceContent, overrideResource {
+                write(content: expression, for: container)
+            }
+            
+            XCTAssertEqual(expression, instanceContent)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
     }
 }
 

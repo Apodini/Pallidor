@@ -13,47 +13,35 @@ class MethodIntegrationTests: PallidorMigratorXCTestCase {
         
         let result = APITemplate().render(migrationResult)
         
-        XCTAssertEqual(
-            result,
-            expectation(.ResultPetEndpointFacadeRenamedMethodAndReplacedDeletedParameter)
-        )
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeRenamedMethodAndReplacedDeletedParameter))
     }
         
     func testRenameMethodAndAddedParameter() {
         let migrationResult = migration(.RenameMethodAndAddParameterChange, target: .PetEndpointRenamedMethodAndAddedParameter)
         let result = APITemplate().render(migrationResult)
         
-        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeRenamedMethodAndAddedParameter))
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeRenamedMethodAndAddedParameter))
     }
     
     func testRenamedMethodAndRenameParameter() {
         let migrationResult = migration(.RenameMethodAndRenameParameterChange, target: .PetEndpointRenamedMethodAndRenamedParameter)
         let result = APITemplate().render(migrationResult)
         
-        XCTAssertEqual(
-            result,
-            expectation(.ResultPetEndpointFacadeRenamedMethodAndRenamedParameter)
-        )
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeRenamedMethodAndRenamedParameter))
     }
 
     func testRenamedMethodAndDeletedParameter() {
         let migrationResult = migration(.RenameMethodAndDeleteParameterChange, target: .PetEndpointRenamedMethodAndDeletedParameter)
         let result = APITemplate().render(migrationResult)
 
-        XCTAssertEqual(
-            result,
-            expectation(.ResultPetEndpointFacadeRenamedMethodAndDeletedParameter)
-        )
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeRenamedMethodAndDeletedParameter))
     }
 
     func testRenamedMethodAndReplacedReturnValue() {
         let migrationResult = migration(.RenameMethodAndReplacedReturnValueChange, target: .PetEndpointRenamedMethodAndReplacedReturnValue)
         let result = APITemplate().render(migrationResult)
 
-        XCTAssertEqual(
-            result,
-            expectation(.ResultPetEndpointRenamedMethodAndReplacedReturnValue)
-        )
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointRenamedMethodAndReplacedReturnValue))
     }
     
     static var allTests = [

@@ -13,7 +13,7 @@ class ModelPropertyTests: PallidorMigratorXCTestCase {
         let migrationResult = migration(.AddSinglePrimitivePropertyChange, target: .ModelAddress)
         let result = ModelTemplate().render(migrationResult)
         
-        XCTAssertEqual(result, expectation(.ResultModelAddressAddedSimpleProperty))
+        XCTMigratorAssertEqual(result, .results(.ResultModelAddressAddedSimpleProperty))
     }
     
     /// simulates that `category` property was added after initial facade generation
@@ -22,7 +22,7 @@ class ModelPropertyTests: PallidorMigratorXCTestCase {
         
         let result = ModelTemplate().render(migrationResult)
         
-        XCTAssertEqual(result, expectation(.ResultModelPetAddedComplexProperty))
+        XCTMigratorAssertEqual(result, .results(.ResultModelPetAddedComplexProperty))
     }
     
     /// simulates a removed property `weight : String` from `Pet`
@@ -31,14 +31,14 @@ class ModelPropertyTests: PallidorMigratorXCTestCase {
         let migrationResult = migration(.DeletePropertyChange, target: .ModelPet)
         let result = ModelTemplate().render(migrationResult)
         
-        XCTAssertEqual(result, expectation(.ResultModelPetDeletedProperty))
+        XCTMigratorAssertEqual(result, .results(.ResultModelPetDeletedProperty))
     }
     
     func testReplacedProperty() {
         let migrationResult = migration(.ReplacePropertyTypeChange, target: .ModelCustomerReplacedProperty)
         let result = ModelTemplate().render(migrationResult)
         
-        XCTAssertEqual(result, expectation(.ResultModelCustomerReplacedProperty))
+        XCTMigratorAssertEqual(result, .results(.ResultModelCustomerReplacedProperty))
     }
 
     /// renames two properties from different models (`Pet` & `Category`)
@@ -46,12 +46,12 @@ class ModelPropertyTests: PallidorMigratorXCTestCase {
         let migrationResultPet = migration(.RenamePropertyChange, target: .ModelPetRenamedProperty)
         let resultPet = ModelTemplate().render(migrationResultPet)
         
-        XCTAssertEqual(resultPet, expectation(.ResultModelPetRenamedProperty))
+        XCTMigratorAssertEqual(resultPet, .results(.ResultModelPetRenamedProperty))
         
         let migrationResultCategory = migration(.RenamePropertyChange, target: .ModelCategoryRenamedProperty)
         let resultCategory = ModelTemplate().render(migrationResultCategory)
         
-        XCTAssertEqual(resultCategory, expectation(.ResultModelCategoryRenamedProperty))
+        XCTMigratorAssertEqual(resultCategory, .results(.ResultModelCategoryRenamedProperty))
     }
     
     

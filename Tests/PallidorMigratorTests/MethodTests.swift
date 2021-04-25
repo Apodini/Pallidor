@@ -36,7 +36,7 @@ class MethodTests: PallidorMigratorXCTestCase {
         let migrationResult = migration(.RenameMethodChange, target: .PetEndpointRenamedMethod)
         let result = APITemplate().render(migrationResult)
         
-        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeRenamedMethod))
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeRenamedMethod))
     }
     
     let deleteMethodChange = """
@@ -71,7 +71,7 @@ class MethodTests: PallidorMigratorXCTestCase {
       
         let result = APITemplate().render(current)
 
-        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeDeletedMethod))
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeDeletedMethod))
     }
     
     /// method `updatePet()` is replaced by `updateMyPet()` in `User` endpoint
@@ -91,7 +91,7 @@ class MethodTests: PallidorMigratorXCTestCase {
         
         let result = APITemplate().render(modAPI)
         
-        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeReplacedMethod))
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeReplacedMethod))
     }
         
     /// method `updatePet()` is replaced by `updatePetWithForm()` in `Pet` endpoint (same)
@@ -108,7 +108,7 @@ class MethodTests: PallidorMigratorXCTestCase {
         
         let result = APITemplate().render(endpoint)
         
-        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeReplacedMethodInSameEndpoint))
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeReplacedMethodInSameEndpoint))
     }
 
     func testReplacedReturnValue() {
@@ -116,7 +116,7 @@ class MethodTests: PallidorMigratorXCTestCase {
         
         let result = APITemplate().render(migrationResult)
         
-        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeReplacedReturnValue))
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeReplacedReturnValue))
     }
     
     

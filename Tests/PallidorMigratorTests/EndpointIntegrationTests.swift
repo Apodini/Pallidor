@@ -16,7 +16,7 @@ class EndpointIntegrationTests: PallidorMigratorXCTestCase {
         do {
             try current.accept(migrationSet(from: .RenameEndpointAndReplaceAndDeleteMethodChange))
             let result = APITemplate().render(current)
-            XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeRenamedAndReplacedAndDeletedMethod))
+            XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeRenamedAndReplacedAndDeletedMethod))
         } catch {
             XCTFail("Migration failed.")
         }
@@ -33,9 +33,9 @@ class EndpointIntegrationTests: PallidorMigratorXCTestCase {
             
             let result = APITemplate().render(current)
             
-            XCTAssertEqual(
+            XCTMigratorAssertEqual(
                 result,
-                expectation(.ResultPetEndpointFacadeRenamedAndReplacedMethod)
+                .results(.ResultPetEndpointFacadeRenamedAndReplacedMethod)
             )
         } catch {
             XCTFail("Migration failed.")
@@ -52,7 +52,7 @@ class EndpointIntegrationTests: PallidorMigratorXCTestCase {
             try current.accept(migrationSet(from: .RenameEndpointAndDeletedMethodChange))
             let result = APITemplate().render(current)
             
-            XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeRenamedAndDeletedMethod))
+            XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeRenamedAndDeletedMethod))
         } catch {
             XCTFail("Migration failed.")
         }
@@ -64,7 +64,7 @@ class EndpointIntegrationTests: PallidorMigratorXCTestCase {
         
         let result = APITemplate().render(modified)
         
-        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeRenamedAndRenamedMethod))
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeRenamedAndRenamedMethod))
     }
 
     func testRenamedEndpointAndRenameMethodAndReplaceAndDeleteParameterChange() {
@@ -72,10 +72,7 @@ class EndpointIntegrationTests: PallidorMigratorXCTestCase {
                                        target: .PetEndpointRenamedAndRenamedMethodAndReplacedParameter)
         let result = APITemplate().render(modified)
         
-        XCTAssertEqual(
-            result,
-            expectation(.ResultPetEndpointFacadeRenamedAndRenamedMethodAndReplacedParameter)
-        )
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeRenamedAndRenamedMethodAndReplacedParameter))
     }
 
     func testRenamedEndpointAndRenameMethodAndAddAndDeleteParameterChange() {
@@ -84,7 +81,7 @@ class EndpointIntegrationTests: PallidorMigratorXCTestCase {
         
         let result = APITemplate().render(modified)
         
-        XCTAssertEqual(result, expectation(.ResultPetEndpointFacadeRenamedMethodAndAddedAndDeletedParameter))
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeRenamedMethodAndAddedAndDeletedParameter))
     }
 
     func testRenamedEndpointAndRenameMethodAndReplaceAndDeleteParameterAndReplaceReturnValueChange() {
@@ -93,10 +90,7 @@ class EndpointIntegrationTests: PallidorMigratorXCTestCase {
         
         let result = APITemplate().render(modified)
         
-        XCTAssertEqual(
-            result,
-            expectation(.ResultPetEndpointFacadeRenamedAndRenamedMethodAndReplacedParameterAndReplacedReturnValue)
-        )
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeRenamedAndRenamedMethodAndReplacedParameterAndReplacedReturnValue))
     }
     
     func testRenamedEndpointAndRenameMethodAndChangedParametersAndReplaceReturnValueChange() {
@@ -105,10 +99,7 @@ class EndpointIntegrationTests: PallidorMigratorXCTestCase {
         
         let result = APITemplate().render(modified)
         
-        XCTAssertEqual(
-            result,
-            expectation(.ResultPetEndpointFacadeRenamedAndRenamedMethodAndChangedParametersAndReplacedReturnValue)
-        )
+        XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeRenamedAndRenamedMethodAndChangedParametersAndReplacedReturnValue))
     }
     
     static var allTests = [

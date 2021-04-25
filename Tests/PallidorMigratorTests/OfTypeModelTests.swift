@@ -11,21 +11,21 @@ class OfTypeModelTests: PallidorMigratorXCTestCase {
         let migrationResult = migration(.EmptyGuide, target: .ModelOfType)
         let result = ModelTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, expectation(.ResultModelOfType))
+        XCTMigratorAssertEqual(result, .results(.ResultModelOfType))
     }
     
     func testOfTypeModelRenamed() {
         let migrationResult = migration(.RenameOfTypeModelChange, target: .ModelOfTypeRenamed)
         let result = ModelTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, expectation(.ResultModelOfTypeRenamed))
+        XCTMigratorAssertEqual(result, .results(.ResultModelOfTypeRenamed))
     }
     
     func testOfTypeModelDeletedCase() {
         let migrationResult = migration(.DeleteOfTypeEnumCaseChange, target: .ModelOfTypeFacade)
         let result = ModelTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, expectation(.ResultModelOfTypeDeletedCase))
+        XCTMigratorAssertEqual(result, .results(.ResultModelOfTypeDeletedCase))
     }
         
     func testOfTypeModelDeleted() {
@@ -39,7 +39,7 @@ class OfTypeModelTests: PallidorMigratorXCTestCase {
         }
         let result = ModelTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, expectation(.ResultModelOfTypeDeleted))
+        XCTMigratorAssertEqual(result, .results(.ResultModelOfTypeDeleted))
     }
     
     func testOfTypeModelReplaced() {
@@ -47,7 +47,7 @@ class OfTypeModelTests: PallidorMigratorXCTestCase {
         
         let result = ModelTemplate().render(migrationResult)
 
-        XCTAssertEqual(result, expectation(.ResultModelOfTypeReplaced))
+        XCTMigratorAssertEqual(result, .results(.ResultModelOfTypeReplaced))
     }
     
     static var allTests = [
