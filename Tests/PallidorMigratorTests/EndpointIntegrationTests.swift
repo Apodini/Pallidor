@@ -33,10 +33,7 @@ class EndpointIntegrationTests: PallidorMigratorXCTestCase {
             
             let result = APITemplate().render(current)
             
-            XCTMigratorAssertEqual(
-                result,
-                .results(.ResultPetEndpointFacadeRenamedAndReplacedMethod)
-            )
+            XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeRenamedAndReplacedMethod))
         } catch {
             XCTFail("Migration failed.")
         }
