@@ -15,5 +15,4 @@
             "custom-revert" : "function conversion(o) { return JSON.stringify({ 'id' : o.id, 'petId' : o.petId, 'quantity': o.quantity, 'complete' : 'false', 'status' : 'available' }) }",
         }
     ]
-
 }

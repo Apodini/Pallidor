@@ -11,9 +11,8 @@
             },
             "target" : "Signature",
             "fallback-value" : {
-                 "id" : "PaymentInstallmentSchedule"
-             }
+                "id" : "PaymentInstallmentSchedule"
+            }
         }
     ]
-
 }

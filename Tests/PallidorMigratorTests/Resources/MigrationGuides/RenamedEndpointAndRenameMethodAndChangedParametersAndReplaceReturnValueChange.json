@@ -5,20 +5,20 @@
     "from-version" : "0.0.1b",
     "to-version" : "0.0.2",
     "changes" : [
-         {
+        {
             "object":{
-               "operation-id":"updatePetWithFormNew",
-               "defined-in":"/pets"
+                "operation-id":"updatePetWithFormNew",
+                "defined-in":"/pets"
             },
             "target":"ReturnValue",
             "replacement-id":"_",
             "type":"Pet",
             "custom-revert":"function conversion(response) { var response = JSON.parse(response) return JSON.stringify({ 'id' : response.code, 'name' : response.message, 'photoUrls': [response.type], 'status' : 'available', 'tags': [ { 'id': 27, 'name': 'tag2' } ] }) }",
             "replaced":{
-               "name":"_",
-               "type":"String"
+                "name":"_",
+                "type":"String"
             }
-         },
+        },
         {
             "object" : {
                 "operation-id" : "updatePetWithFormNew",
@@ -30,10 +30,10 @@
                 "id": "name"
             }
         },
-         {
+        {
             "object":{
-               "operation-id":"updatePetWithFormNew",
-               "defined-in":"/pets"
+                "operation-id":"updatePetWithFormNew",
+                "defined-in":"/pets"
             },
             "target":"Parameter",
             "fallback-value" : {
@@ -41,23 +41,23 @@
                 "type" : "String",
                 "required" : "true"
             }
-         },
-         {
-             "object" : {
-                 "operation-id" : "updatePetWithFormNew",
-                 "defined-in" : "/pets"
-             },
-             "target" : "Parameter",
-             "replacement-id" : "betterId",
-             "type" : "String",
-             "custom-convert" : "function conversion(petId) { return 'Id#' + (petId + 1.86) }",
-             "custom-revert" : "function conversion(petId) { return Int(petId) }",
-             "replaced" : {
-                     "name" : "petId",
-                     "type" : "Int64",
-                     "required" : true
-             }
-         },
+        },
+        {
+            "object" : {
+                "operation-id" : "updatePetWithFormNew",
+                "defined-in" : "/pets"
+            },
+            "target" : "Parameter",
+            "replacement-id" : "betterId",
+            "type" : "String",
+            "custom-convert" : "function conversion(petId) { return 'Id#' + (petId + 1.86) }",
+            "custom-revert" : "function conversion(petId) { return Int(petId) }",
+            "replaced" : {
+                "name" : "petId",
+                "type" : "Int64",
+                "required" : true
+            }
+        },
         {
             "object" : {
                 "operation-id" : "updatePetWithFormNew",

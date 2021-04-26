@@ -14,22 +14,22 @@
             "target" : "Signature",
             "original-id" : "updatePet"
         },
-         {
-             "object" : {
+        {
+            "object" : {
                 "operation-id" : "updatePet",
                 "defined-in" : "/pet"
-             },
-             "target" : "Content-Body",
-             "replacement-id" : "_",
-             "type" : "Order",
-             "custom-convert" : "function conversion(placeholder) { return placeholder }",
-             "custom-revert" : "function conversion(placeholder) { return placeholder }",
-             "replaced" : {
-                     "name" : "_",
-                     "type" : "Pet",
-                     "required" : true
-             }
-         }
+            },
+            "target" : "Content-Body",
+            "replacement-id" : "_",
+            "type" : "Order",
+            "custom-convert" : "function conversion(placeholder) { return placeholder }",
+            "custom-revert" : "function conversion(placeholder) { return placeholder }",
+            "replaced" : {
+                "name" : "_",
+                "type" : "Pet",
+                "required" : true
+            }
+        }
     ]
-
+    
 }

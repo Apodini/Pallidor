@@ -5,10 +5,10 @@
     "from-version" : "0.0.1b",
     "to-version" : "0.0.2",
     "changes" : [
-         {
+        {
             "object":{
-               "operation-id":"updatePetWithFormNew",
-               "defined-in":"/pets"
+                "operation-id":"updatePetWithFormNew",
+                "defined-in":"/pets"
             },
             "target":"Parameter",
             "fallback-value" : {
@@ -16,7 +16,7 @@
                 "type" : "String",
                 "required" : "true"
             }
-         },
+        },
         {
             "reason": "Security issue related change",
             "object" : {

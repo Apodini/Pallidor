@@ -7,17 +7,16 @@
     "changes" : [
         {
             "object":{
-               "operation-id":"updatePetWithForm",
-               "defined-in":"/pet"
+                "operation-id":"updatePetWithForm",
+                "defined-in":"/pet"
             },
             "target" : "Signature",
             "replacement-id" : "updatePetWithForm",
             "custom-convert" : "function conversion(input) { return JSON.stringify({ 'name': input.name, 'petId': input.petId } )}",
             "replaced" : {
-               "operation-id":"updatePetWithForm",
-               "defined-in":"/pet"
-             }
+                "operation-id":"updatePetWithForm",
+                "defined-in":"/pet"
+            }
         }
     ]
-
 }

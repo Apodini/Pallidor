@@ -5,16 +5,16 @@
     "from-version" : "0.0.1b",
     "to-version" : "0.0.2",
     "changes" : [
-          {
-              "object" : {
-                  "name" : "NewCategory"
-              },
-              "target" : "Property",
-              "original-id" : "name",
-              "renamed" : {
-                  "id" : "namenew"
-              }
-          },
+        {
+            "object" : {
+                "name" : "NewCategory"
+            },
+            "target" : "Property",
+            "original-id" : "name",
+            "renamed" : {
+                "id" : "namenew"
+            }
+        },
         {
             "object" : {
                 "name" : "NewCategory"

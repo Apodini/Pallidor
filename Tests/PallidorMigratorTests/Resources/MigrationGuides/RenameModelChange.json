@@ -18,9 +18,9 @@
             },
             "target" : "Property",
             "replacement-id" : "address",
-             "type" : "NewAddress",
-           "custom-convert" : "function conversion(o) { return o }",
-           "custom-revert" : "function conversion(o) { return o }",
+            "type" : "NewAddress",
+            "custom-convert" : "function conversion(o) { return o }",
+            "custom-revert" : "function conversion(o) { return o }",
             "replaced" : {
                 "name" : "address",
                 "type" : "[Address]"

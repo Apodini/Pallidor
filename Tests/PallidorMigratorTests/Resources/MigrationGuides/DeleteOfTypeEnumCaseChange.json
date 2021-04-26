@@ -11,9 +11,8 @@
             },
             "target" : "Case",
             "fallback-value" : {
-                 "id" : "PsdInstallmentSchedule"
-             }
+                "id" : "PsdInstallmentSchedule"
+            }
         }
     ]
-
 }

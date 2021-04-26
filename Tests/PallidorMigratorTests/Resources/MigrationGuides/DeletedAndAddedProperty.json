@@ -16,19 +16,18 @@
                 "default-value" : "fat"
             }
         },
-       {
-           "object" : {
-               "name" : "Pet"
-           },
-           "target" : "Property",
-           "added" : [
-               {
-                   "name" : "category",
-                   "type" : "Category",
-                   "default-value" : "{ 'id' : 42, 'name' : 'SuperPet' }"
-               }
-           ]
-       }
+        {
+            "object" : {
+                "name" : "Pet"
+            },
+            "target" : "Property",
+            "added" : [
+                {
+                    "name" : "category",
+                    "type" : "Category",
+                    "default-value" : "{ 'id' : 42, 'name' : 'SuperPet' }"
+                }
+            ]
+        }
     ]
-
 }

@@ -14,12 +14,11 @@
             "replacement-id" : "status",
             "type" : "String",
             "replaced" : {
-                    "name" : "status",
-                    "type" : "String",
-                    "default-value" : "available",
-                    "required" : true
+                "name" : "status",
+                "type" : "String",
+                "default-value" : "available",
+                "required" : true
             }
         }
     ]
-
 }

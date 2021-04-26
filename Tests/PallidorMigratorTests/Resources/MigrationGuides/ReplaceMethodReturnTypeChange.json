@@ -1,52 +1,52 @@
 {
-   "lang":"Swift",
-   "summary":"Here would be a nice summary what changed between versions",
-   "api-spec":"OpenAPI",
-   "api-type":"REST",
-   "from-version":"0.0.1b",
-   "to-version":"0.0.2",
-   "changes":[
-      {
-         "object":{
-            "operation-id":"updatePet",
-            "defined-in":"/pet"
-         },
-         "target":"ReturnValue",
-         "replacement-id":"_",
-         "type":"ApiResponse",
-         "custom-revert":"function conversion(response) { var response = JSON.parse(response) return JSON.stringify({ 'id' : response.code, 'name' : response.message, 'photoUrls': [response.type], 'status' : 'available', 'tags': [ { 'id': 27, 'name': 'tag2' } ] }) }",
-         "replaced":{
-            "name":"_",
-            "type":"Pet"
-         }
-      },
-      {
-         "object":{
-            "operation-id":"findPetsByStatus",
-            "defined-in":"/pet"
-         },
-         "target":"ReturnValue",
-         "replacement-id":"_",
-         "type":"[ApiResponse]",
-         "custom-revert":"function conversion(response) { var response = JSON.parse(response) return JSON.stringify({ 'id' : response.code, 'name' : response.message, 'photoUrls': [response.type], 'status' : 'available', 'tags': [ { 'id': 27, 'name': 'tag2' } ] }) }",
-         "replaced":{
-            "name":"_",
-            "type":"[Pet]"
-         }
-      },
-      {
-         "object":{
-            "operation-id":"addPet",
-            "defined-in":"/pet"
-         },
-         "target":"ReturnValue",
-         "replacement-id":"_",
-         "type":"Int32",
-         "custom-revert": "function conversion(o) { return JSON.stringify({ 'type' : 'object' } )}",
-         "replaced":{
-            "name":"_",
-            "type":"Pet"
-         }
-      }
-   ]
+    "lang":"Swift",
+    "summary":"Here would be a nice summary what changed between versions",
+    "api-spec":"OpenAPI",
+    "api-type":"REST",
+    "from-version":"0.0.1b",
+    "to-version":"0.0.2",
+    "changes":[
+        {
+            "object":{
+                "operation-id":"updatePet",
+                "defined-in":"/pet"
+            },
+            "target":"ReturnValue",
+            "replacement-id":"_",
+            "type":"ApiResponse",
+            "custom-revert":"function conversion(response) { var response = JSON.parse(response) return JSON.stringify({ 'id' : response.code, 'name' : response.message, 'photoUrls': [response.type], 'status' : 'available', 'tags': [ { 'id': 27, 'name': 'tag2' } ] }) }",
+            "replaced":{
+                "name":"_",
+                "type":"Pet"
+            }
+        },
+        {
+            "object":{
+                "operation-id":"findPetsByStatus",
+                "defined-in":"/pet"
+            },
+            "target":"ReturnValue",
+            "replacement-id":"_",
+            "type":"[ApiResponse]",
+            "custom-revert":"function conversion(response) { var response = JSON.parse(response) return JSON.stringify({ 'id' : response.code, 'name' : response.message, 'photoUrls': [response.type], 'status' : 'available', 'tags': [ { 'id': 27, 'name': 'tag2' } ] }) }",
+            "replaced":{
+                "name":"_",
+                "type":"[Pet]"
+            }
+        },
+        {
+            "object":{
+                "operation-id":"addPet",
+                "defined-in":"/pet"
+            },
+            "target":"ReturnValue",
+            "replacement-id":"_",
+            "type":"Int32",
+            "custom-revert": "function conversion(o) { return JSON.stringify({ 'type' : 'object' } )}",
+            "replaced":{
+                "name":"_",
+                "type":"Pet"
+            }
+        }
+    ]
 }

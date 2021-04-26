@@ -5,17 +5,17 @@
     "from-version" : "0.0.1b",
     "to-version" : "0.0.2",
     "changes" : [
-         {
+        {
             "object":{
-               "operation-id":"addMyPet",
-               "defined-in":"/pet"
+                "operation-id":"addMyPet",
+                "defined-in":"/pet"
             },
             "target":"Content-Body",
             "fallback-value" : {
                 "name" : "_",
                 "type" : "Pet"
             }
-         },
+        },
         {
             "object" : {
                 "operation-id" : "addMyPet",

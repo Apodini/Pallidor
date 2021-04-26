@@ -16,11 +16,10 @@
             "custom-convert" : "function conversion(placeholder) { return placeholder }",
             "custom-revert" : "function conversion(placeholder) { return placeholder }",
             "replaced" : {
-                    "name" : "_",
-                    "type" : "Order",
-                    "required" : true
+                "name" : "_",
+                "type" : "Order",
+                "required" : true
             }
         }
     ]
-
 }

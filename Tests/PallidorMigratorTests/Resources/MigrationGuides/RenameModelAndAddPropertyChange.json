@@ -5,26 +5,25 @@
     "from-version" : "0.0.1b",
     "to-version" : "0.0.2",
     "changes" : [
-       {
-           "object" : {
-               "name" : "MyPet"
-           },
-           "target" : "Property",
-           "added" : [
-               {
-                   "name" : "category",
-                   "type" : "Category",
-                   "default-value" : "{ 'id' : 42, 'name' : 'SuperPet' }"
-               }
-           ]
-       },
-       {
-           "object" : {
-               "name" : "MyPet"
-           },
-           "target" : "Signature",
-           "original-id" : "Pet"
-       }
+        {
+            "object" : {
+                "name" : "MyPet"
+            },
+            "target" : "Property",
+            "added" : [
+                {
+                    "name" : "category",
+                    "type" : "Category",
+                    "default-value" : "{ 'id' : 42, 'name' : 'SuperPet' }"
+                }
+            ]
+        },
+        {
+            "object" : {
+                "name" : "MyPet"
+            },
+            "target" : "Signature",
+            "original-id" : "Pet"
+        }
     ]
-
 }

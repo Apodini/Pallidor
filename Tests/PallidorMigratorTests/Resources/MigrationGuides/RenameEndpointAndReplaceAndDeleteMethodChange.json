@@ -7,17 +7,17 @@
     "changes" : [
         {
             "object":{
-               "operation-id":"updatePetWithForm",
-               "defined-in":"/pets"
+                "operation-id":"updatePetWithForm",
+                "defined-in":"/pets"
             },
             "target" : "Signature",
             "replacement-id" : "updatePetWithForm",
             "custom-convert" : "function conversion(o) { return JSON.stringify({ 'type' : 'PSI' } )}",
             "custom-revert" : "function conversion(o) { return JSON.stringify({ 'type': '', 'of' : { 'type': 'PSI'} } )}",
             "replaced" : {
-               "operation-id":"updatePet",
-               "defined-in":"/pet"
-             }
+                "operation-id":"updatePet",
+                "defined-in":"/pet"
+            }
         },
         {
             "object" : {
@@ -28,8 +28,8 @@
         },
         {
             "object":{
-               "operation-id":"addPet",
-               "defined-in":"/pets"
+                "operation-id":"addPet",
+                "defined-in":"/pets"
             },
             "target" : "Signature",
             "fallback-value": { }

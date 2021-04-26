@@ -15,10 +15,9 @@
             "custom-convert" : "function conversion(address) { return { 'city' : address.city, 'street' : address.street, 'universe' : '42' } }",
             "custom-revert" : "function conversion(address) { return address.universe == '42' ? { 'city' : address.city, 'street' : address.street, 'zip': '81543', 'state' : 'Bavaria' } : { 'city' : address.city, 'street' : address.street , 'zip' : '80634', 'state' : 'Bavaria' } }",
             "replaced" : {
-                    "name" : "address",
-                    "type" : "[Address]"
+                "name" : "address",
+                "type" : "[Address]"
             }
         }
     ]
-
 }

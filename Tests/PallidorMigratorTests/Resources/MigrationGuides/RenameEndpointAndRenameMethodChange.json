@@ -6,13 +6,13 @@
     "to-version" : "0.0.2",
     "changes" : [
         {
-           "reason": "Security issue related change",
-           "object" : {
-               "operation-id" : "addMyPet",
-               "defined-in" : "/pets"
-           },
-           "target" : "Signature",
-           "original-id" : "addPet"
+            "reason": "Security issue related change",
+            "object" : {
+                "operation-id" : "addMyPet",
+                "defined-in" : "/pets"
+            },
+            "target" : "Signature",
+            "original-id" : "addPet"
         },
         {
             "object" : {

@@ -5,10 +5,10 @@
     "from-version" : "0.0.1b",
     "to-version" : "0.0.2",
     "changes" : [
-         {
+        {
             "object":{
-               "operation-id":"updatePetWithFormNew",
-               "defined-in":"/pet"
+                "operation-id":"updatePetWithFormNew",
+                "defined-in":"/pet"
             },
             "target":"Parameter",
             "fallback-value" : {
@@ -16,23 +16,23 @@
                 "type" : "String",
                 "required" : "true"
             }
-         },
-         {
-             "object" : {
-                 "operation-id" : "updatePetWithFormNew",
-                 "defined-in" : "/pet"
-             },
-             "target" : "Parameter",
-             "replacement-id" : "betterId",
-             "type" : "String",
-             "custom-convert" : "function conversion(petId) { return 'Id#' + (petId + 1.86) }",
-             "custom-revert" : "function conversion(petId) { return Int(petId) }",
-             "replaced" : {
-                     "name" : "petId",
-                     "type" : "Int64",
-                     "required" : true
-             }
-         },
+        },
+        {
+            "object" : {
+                "operation-id" : "updatePetWithFormNew",
+                "defined-in" : "/pet"
+            },
+            "target" : "Parameter",
+            "replacement-id" : "betterId",
+            "type" : "String",
+            "custom-convert" : "function conversion(petId) { return 'Id#' + (petId + 1.86) }",
+            "custom-revert" : "function conversion(petId) { return Int(petId) }",
+            "replaced" : {
+                "name" : "petId",
+                "type" : "Int64",
+                "required" : true
+            }
+        },
         {
             "object" : {
                 "operation-id" : "updatePetWithFormNew",

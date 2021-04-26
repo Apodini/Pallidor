@@ -16,11 +16,10 @@
             "custom-convert" : "function conversion(petId) { return (petId + 1.86) }",
             "custom-revert" : "function conversion(petId) { return (petId + 1.86) }",
             "replaced" : {
-                    "name" : "petId",
-                    "type" : "Int64",
-                    "required" : true
+                "name" : "petId",
+                "type" : "Int64",
+                "required" : true
             }
         }
     ]
-
 }

@@ -14,8 +14,8 @@
         },
         {
             "object":{
-               "operation-id":"updatePet",
-               "defined-in":"/pets"
+                "operation-id":"updatePet",
+                "defined-in":"/pets"
             },
             "target" : "Signature",
             "fallback-value": { }

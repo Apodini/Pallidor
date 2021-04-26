@@ -15,5 +15,4 @@
             "custom-revert" : "function conversion(o) { return JSON.stringify({ 'type': '', 'of' : { 'type': 'PSI'} } )}",
         }
     ]
-
 }

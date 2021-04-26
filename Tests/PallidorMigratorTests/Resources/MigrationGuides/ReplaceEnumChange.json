@@ -13,11 +13,10 @@
             "replacement-id" : "ServiceLevel",
             "custom-convert" : "function conversion(o) { return o === 'INFO' ? 1 : 2 }",
             "custom-revert" : "function conversion(o) { return o === 1 ? 'INFO' : 'ERROR' }",
-             "replaced" : {
-                 "enum-name" : "ServiceLevel",
-                 "type" : "Int"
-             }
+            "replaced" : {
+                "enum-name" : "ServiceLevel",
+                "type" : "Int"
+            }
         }
     ]
-
 }

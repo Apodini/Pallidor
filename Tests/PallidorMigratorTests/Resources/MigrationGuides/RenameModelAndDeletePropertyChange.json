@@ -5,17 +5,17 @@
     "from-version" : "0.0.1b",
     "to-version" : "0.0.2",
     "changes" : [
-       {
-           "object" : {
-               "name" : "NewCustomer"
-           },
-           "target" : "Property",
-           "fallback-value" : {
-               "name" : "addresses",
-               "type" : "[NewAddresses]",
-               "default-value" : "[{'name' : 'myaddress'}]"
-           }
-       },
+        {
+            "object" : {
+                "name" : "NewCustomer"
+            },
+            "target" : "Property",
+            "fallback-value" : {
+                "name" : "addresses",
+                "type" : "[NewAddresses]",
+                "default-value" : "[{'name' : 'myaddress'}]"
+            }
+        },
         {
             "object" : {
                 "name" : "NewCustomer"

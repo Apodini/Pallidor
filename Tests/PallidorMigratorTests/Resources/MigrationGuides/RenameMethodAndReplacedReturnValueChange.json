@@ -5,20 +5,20 @@
     "from-version" : "0.0.1b",
     "to-version" : "0.0.2",
     "changes" : [
-         {
+        {
             "object":{
-               "operation-id":"addMyPet",
-               "defined-in":"/pet"
+                "operation-id":"addMyPet",
+                "defined-in":"/pet"
             },
             "target":"ReturnValue",
             "replacement-id":"_",
             "type":"Order",
             "custom-revert":"function conversion(response) { var response = JSON.parse(response) return JSON.stringify({ 'id' : response.code, 'name' : response.message, 'photoUrls': [response.type], 'status' : 'available', 'tags': [ { 'id': 27, 'name': 'tag2' } ] }) }",
             "replaced":{
-               "name":"_",
-               "type":"Pet"
+                "name":"_",
+                "type":"Pet"
             }
-         },
+        },
         {
             "reason": "Security issue related change",
             "object" : {

@@ -5,18 +5,18 @@
     "from-version" : "0.0.1b",
     "to-version" : "0.0.2",
     "changes" : [
-          {
-              "reason": "Security issue related change",
-              "object" : {
-                  "operation-id" : "findMyPetsByStatus",
-                  "defined-in" : "/pet"
-              },
-              "target" : "Parameter",
-              "original-id" : "status",
-              "renamed" : {
-                  "id": "petStatus"
-              }
-          },
+        {
+            "reason": "Security issue related change",
+            "object" : {
+                "operation-id" : "findMyPetsByStatus",
+                "defined-in" : "/pet"
+            },
+            "target" : "Parameter",
+            "original-id" : "status",
+            "renamed" : {
+                "id": "petStatus"
+            }
+        },
         {
             "object" : {
                 "operation-id" : "findMyPetsByStatus",
