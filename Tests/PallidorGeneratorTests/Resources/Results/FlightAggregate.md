@@ -6,19 +6,19 @@ import Foundation
 class _FlightAggregate: Codable {
 
 
-var airline: String?/** The data elements */
+var airline: String/** The data elements */
 //sourcery: isCustomType
 var dataElements: [_DataElement]?
-var flightNumber: Int?/** The legs */
+var flightNumber: Int/** The legs */
 //sourcery: isCustomType
 var legs: [_Leg]?
 //sourcery: isCustomType
-var periodOfOperationLT: _PeriodOfOperation?
+var periodOfOperationLT: _PeriodOfOperation
 //sourcery: isCustomType
-var periodOfOperationUTC: _PeriodOfOperation?
-var suffix: String?
+var periodOfOperationUTC: _PeriodOfOperation
+var suffix: String
 
-init(airline: String?, dataElements: [_DataElement]?, flightNumber: Int?, legs: [_Leg]?, periodOfOperationLT: _PeriodOfOperation?, periodOfOperationUTC: _PeriodOfOperation?, suffix: String?) {
+init(airline: String, dataElements: [_DataElement]?, flightNumber: Int, legs: [_Leg]?, periodOfOperationLT: _PeriodOfOperation, periodOfOperationUTC: _PeriodOfOperation, suffix: String) {
 
         self.airline = airline
 self.dataElements = dataElements
