@@ -52,26 +52,24 @@ public struct PallidorMigrator {
         
         let modelDirectory = targetDirectory + Path("Models")
         let apiDirectory = targetDirectory + Path("APIs")
-
-        let migrationSet = migrationGuide.migrationSet
         
         let modelFacade = Facade(
             ModelTemplate.self,
             modifiables: store.models(),
             targetDirectory: modelDirectory,
-            migrationSet: migrationSet
+            migrationGuide: migrationGuide
         )
         let enumFacade = Facade(
             EnumTemplate.self,
             modifiables: store.enums(),
             targetDirectory: modelDirectory,
-            migrationSet: migrationSet
+            migrationGuide: migrationGuide
         )
         let apiFacade = Facade(
             APITemplate.self,
             modifiables: store.endpoints(),
             targetDirectory: apiDirectory,
-            migrationSet: migrationSet
+            migrationGuide: migrationGuide
         )
         
         // error enum for .current scope is always rendered through MetaModelConverter of PallidorGenerator

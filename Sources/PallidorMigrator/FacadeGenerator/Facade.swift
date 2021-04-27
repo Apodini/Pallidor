@@ -8,7 +8,7 @@
 import Foundation
 import PathKit
 
-/// Used to persist modifiable files after the changes specified in the migration set
+/// Used to persist modifiable files after the changes specified in the migration guide
 class Facade {
     /// code template used to apply to modifiables
     let template: CodeTemplate
@@ -16,27 +16,27 @@ class Facade {
     let modifiables: [ModifiableFile]
     /// target directory
     let targetDirectory: Path
-    /// migration set if available
-    let migrationSet: MigrationSet?
+    /// migration guide if available
+    let migrationGuide: MigrationGuide?
     
-    init(_ template: CodeTemplate.Type, modifiables: [ModifiableFile], targetDirectory: Path, migrationSet: MigrationSet?) {
+    init(_ template: CodeTemplate.Type, modifiables: [ModifiableFile], targetDirectory: Path, migrationGuide: MigrationGuide?) {
         self.template = template.init()
         self.modifiables = modifiables
         self.targetDirectory = targetDirectory
-        self.migrationSet = migrationSet
+        self.migrationGuide = migrationGuide
     }
     
     /// Applies changes to modifiables, persists the files and returns back the path urls of each file
     /// - Throws: error if writing fails
     /// - Returns: List of file URLs
     func persist() throws -> [URL] {
-        guard let migrationSet = migrationSet else {
-            fatalError("Migration set not initialized")
+        guard let migrationGuide = migrationGuide else {
+            fatalError("Migration guide not initialized")
         }
         
         return try modifiables
             .map { modifiable in
-                try modifiable.accept(migrationSet)
+                try modifiable.accept(migrationGuide)
                 
                 let target = targetDirectory.persistentPath + Path("\(modifiable.fileName).swift")
                 

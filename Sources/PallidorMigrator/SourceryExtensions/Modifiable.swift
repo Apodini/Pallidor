@@ -19,7 +19,6 @@ protocol Modifiable: AnyObject {
     var annotation: Annotation? { get set }
 
     /// Modifies the source code type according to the change as stated in migration guide.
-    /// Is called from within the migration process of `MigrationSet`
     /// - Parameter change: change as stated in migration guide
     func accept(change: Change)
 }
@@ -32,16 +31,16 @@ protocol ModifiableFile: Modifiable {
     /// After setting the property, this `ModifiableFile` passes the reference to `Modifiable` properties that need access to the `Store`
     var store: Store? { get set }
     
-    /// Accepts the changes of `migrationSet`. The modifiables additionally gets the `Store` injected from the migration set
-    /// - Parameter migrationSet: set of changes
+    /// Accepts the changes of `migrationGuide`. The modifiables additionally gets the `Store` injected from the migration guide
+    /// - Parameter migrationGuide: migration guide
     /// - Throws: error if any of the changes is not supported for migration
-    func accept(_ migrationSet: MigrationSet) throws
+    func accept(_ migrationGuide: MigrationGuide) throws
 }
 
 extension ModifiableFile {
-    func accept(_ migrationSet: MigrationSet) throws {
-        self.store = migrationSet.store
-        try migrationSet.activate(for: self)
+    func accept(_ migrationGuide: MigrationGuide) throws {
+        self.store = migrationGuide.store
+        try migrationGuide.activate(for: self)
     }
 }
 

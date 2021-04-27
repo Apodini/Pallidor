@@ -70,8 +70,7 @@ class MigrationGuide: Decodable {
     }
     
     /// Migration guides can only be initialized via `init(from decoder: Decoder)` throughout the project
-    /// This method *must* be called right after init or latest right before passing the `migrationSet` property,
-    /// in order to inject the store to each modifiable
+    /// This method *must* be called right after init in order to inject the store to each modifiable
     func handled(in store: Store) -> MigrationGuide {
         self.store = store
         changes
@@ -127,16 +126,7 @@ class MigrationGuide: Decodable {
             }
         }
 
-        if let modifiable = modifiable {
-            modifiable.accept(change: change)
-        }
-    }
-}
-
-extension MigrationGuide {
-    /// The set of migrations which result from this migration guide
-    var migrationSet: MigrationSet {
-        MigrationSet(guide: self)
+        modifiable?.accept(change: change)
     }
 }
 
@@ -148,5 +138,59 @@ extension MigrationGuide {
     
     static func guide(from path: String) throws -> MigrationGuide {
         try JSONDecoder().decode(Self.self, from: try Data(contentsOf: URL(fileURLWithPath: path)))
+    }
+}
+
+extension MigrationGuide {
+    /// Activates and executes all migrations according to changes
+    /// - Parameter modifiable: the modifiable which is about to be changed
+    /// - Throws: error if change type could not be detected
+    /// - Returns: the migrated modifiable
+    func activate(for modifiable: ModifiableFile) throws {
+        try changes.compactMap { change -> MigrationContainer? in
+            if change.object.identifier == modifiable.id {
+                return createMigration(change: change, target: modifiable)
+            }
+            return nil
+        }.forEach { try $0.execute() }
+    }
+    
+    /// creates the migration required to adapt the modifiable
+    /// - Parameters:
+    ///   - change: change that affects modifiable
+    ///   - target: modifiable
+    /// - Returns: migration which adapts the modifiable according to changes
+    private func createMigration(change: Change, target: Modifiable) -> MigrationContainer {
+        // solvable has to be checked on constraint conditions (aka. remove endpoint not supported)
+        switch change.changeType {
+        case .add, .rename:
+            return MigrationContainer(solvable: true, executeOn: target, change: change)
+        case .delete:
+            if case .enum(let targetEnum) = change.object, let enumId = targetEnum.id {
+                if case .case = change.target {
+                    guard let facade = store?.enum(enumId) else {
+                        fatalError("Enum was not found in previous facade.")
+                    }
+                    guard let target = target as? WrappedEnum else {
+                        fatalError("Target is no enum.")
+                    }
+                    
+                    let change = change.typed(DeleteChange.self)
+                    target.cases.append(facade.cases.first(where: { $0.name == change.fallbackValue?.id })!)
+                    return MigrationContainer(solvable: true, executeOn: target, change: change)
+                }
+            }
+            return MigrationContainer(solvable: true, executeOn: target, change: change)
+        case .replace:
+            if case .method(let method) = change.object, case .signature = change.target, method.definedIn != target.id {
+                guard let target = store?.method(method.operationId) else {
+                    fatalError("Target replacement method was not found.")
+                }
+                return MigrationContainer(solvable: true, executeOn: target, change: change)
+            }
+            return MigrationContainer(solvable: true, executeOn: target, change: change)
+        case .nil:
+            fatalError("No change type detected")
+        }
     }
 }

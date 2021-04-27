@@ -12,7 +12,7 @@ struct Pallidor: ParsableCommand {
     
     @Option(name: .shortAndLong, help: "URL of OpenAPI specification of the package to be generated")
     /// URL of OpenAPI specification of the package to be generated
-    var openapiSpecificationURL: String = "/Users/eld/Desktop/response.txt" // TODO remove
+    var openapiSpecificationURL: String = "/Users/eld/Desktop/pallidor_libraries/openAPI.txt"
     
     @Option(name: .shortAndLong, help: "URL of migration guide of the package to be generated")
     /// URL of migration guide of the package to be generated

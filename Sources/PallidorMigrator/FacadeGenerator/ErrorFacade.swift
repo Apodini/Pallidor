@@ -11,7 +11,7 @@ import PathKit
 /// Not handled via migration guide, but through local comparison of enums
 class ErrorFacade: Facade {
     init(modifiables: [ModifiableFile], targetDirectory: Path) {
-        super.init(ErrorEnumTemplate.self, modifiables: modifiables, targetDirectory: targetDirectory, migrationSet: nil)
+        super.init(ErrorEnumTemplate.self, modifiables: modifiables, targetDirectory: targetDirectory, migrationGuide: nil)
     }
     
     /// Compares `APIErrors` enum cases, applies changes if any, persists the files and returns back the path urls of each file

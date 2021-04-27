@@ -148,17 +148,17 @@ class PallidorMigratorXCTestCase: XCTestCase, ResourceHandler {
     /// Returns the migrated target from migration guide
     func migration(_ guide: MigrationGuides, target: Resources) -> ModifiableFile {
         let types = modifiableFile(from: resource(target))
-        XCTAssertNoThrow(try types.accept(migrationSet(from: guide)))
+        XCTAssertNoThrow(try types.accept(migrationGuide(from: guide)))
         return types
     }
     
-    /// All migration sets used throughout the target initialized through this method.
+    /// All migration guides used throughout the target initialized through this method.
     /// Injects the store accordingly to singleton of `TestCodeStore`
-    func migrationSet(from guide: MigrationGuides) -> MigrationSet {
+    func migrationGuide(from guide: MigrationGuides) -> MigrationGuide {
         guard let migrationGuide = try? MigrationGuide.guide(with: migrationGuide(guide)) else {
             fatalError("Migration guide is malformed")
         }
-        return migrationGuide.handled(in: TestCodeStore.instance).migrationSet
+        return migrationGuide.handled(in: TestCodeStore.instance)
     }
     
     /// AssertEqual used throughout the target

@@ -14,7 +14,7 @@ class EndpointIntegrationTests: PallidorMigratorXCTestCase {
         TestCodeStore.inject(previous: [facade], current: [current])
         
         do {
-            try current.accept(migrationSet(from: .RenameEndpointAndReplaceAndDeleteMethodChange))
+            try current.accept(migrationGuide(from: .RenameEndpointAndReplaceAndDeleteMethodChange))
             let result = APITemplate().render(current)
             XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeRenamedAndReplacedAndDeletedMethod))
         } catch {
@@ -29,7 +29,7 @@ class EndpointIntegrationTests: PallidorMigratorXCTestCase {
         TestCodeStore.inject(previous: [facade], current: [current])
         
         do {
-            try current.accept(migrationSet(from: .RenameEndpointAndReplaceMethodChange))
+            try current.accept(migrationGuide(from: .RenameEndpointAndReplaceMethodChange))
             
             let result = APITemplate().render(current)
             
@@ -46,7 +46,7 @@ class EndpointIntegrationTests: PallidorMigratorXCTestCase {
         TestCodeStore.inject(previous: [facade], current: [current])
         
         do {
-            try current.accept(migrationSet(from: .RenameEndpointAndDeletedMethodChange))
+            try current.accept(migrationGuide(from: .RenameEndpointAndDeletedMethodChange))
             let result = APITemplate().render(current)
             
             XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeRenamedAndDeletedMethod))

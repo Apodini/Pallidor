@@ -68,10 +68,16 @@ extension OperationModel {
         let requestBody = RequestBodyModel.resolve(request: endpoint.requestBody?.underlyingRequest)
         let responses = endpoint.responses.map { ResponseModel.resolve(code: $0, response: $1.underlyingResponse) }
         let parameters = endpoint.parameters.map { ParameterModel.resolve(param: $0) }
-        guard let operationId = endpoint.operationId else {
+        guard var operationId = endpoint.operationId else {
             fatalError("Methods must specify an operation id!")
         }
-         return OperationModel(
+        
+        /// specified operation name in Apodini
+        if let specifiedOperationName = endpoint.apodiniOperationName {
+            operationId = specifiedOperationName
+        }
+        
+        return OperationModel(
             operationId: operationId,
             detail: endpoint.endpointDescription,
             httpMethod: endpoint.method,
@@ -80,13 +86,13 @@ extension OperationModel {
             requiresAuth: !endpoint.security.isEmpty,
             requestBody: requestBody,
             responses: responses
-         )
-     }
+        )
+    }
 }
 
 extension OperationModel: CustomStringConvertible {
     var comment: String {
-            """
+        """
             /**
             \(detail?.removeOAIIllegalCharacters() ?? "")
             \(requestBody != nil ?
@@ -113,7 +119,7 @@ extension OperationModel: CustomStringConvertible {
     
     /// mapping for failures of method
     var failureTryMap: String {
-            """
+        """
             .tryMap { data, response in
                     guard let r = response as? HTTPURLResponse, 200..<299 ~= r.statusCode else {
                     let httpResponse = response as! HTTPURLResponse
@@ -130,7 +136,7 @@ extension OperationModel: CustomStringConvertible {
                                 :
                                 ""
                         }
-                    .joined(separator: "\n"))
+                        .joined(separator: "\n"))
             
                         throw _OpenAPIError.urlError(URLError(URLError.Code(rawValue: httpResponse.statusCode)))
                     }
@@ -141,19 +147,19 @@ extension OperationModel: CustomStringConvertible {
     
     /// success decoding for method
     var successDecoding: String {
-            successType.isPrimitiveAndNoCollection
-                ? successType == "String" ? "return String(data: data, encoding: .utf8)!" : "return \(successType)(String(data: data, encoding: .utf8)!)!"
+        successType.isPrimitiveAndNoCollection
+            ? successType == "String" ? "return String(data: data, encoding: .utf8)!" : "return \(successType)(String(data: data, encoding: .utf8)!)!"
             : "return data"
     }
     
     /// changes content type if request body is in binary format
     var specialContentType: String? {
-            if let requestBody = requestBody {
-                return requestBody.formats.contains(where: { $0.rawValue == "application/octet-stream" }) ?
-                    " = \"application/octet-stream\""
-                    : nil
-            }
-            return nil
+        if let requestBody = requestBody {
+            return requestBody.formats.contains(where: { $0.rawValue == "application/octet-stream" }) ?
+                " = \"application/octet-stream\""
+                : nil
+        }
+        return nil
     }
     
     /// description for this methods `NetworkManager` call
@@ -180,26 +186,26 @@ extension OperationModel: CustomStringConvertible {
     }
     
     var description: String {
-            let parametersString: [String] =
-                [
-                        parameters
-                        .sortedMap({ $0.description }, on: \.name)
-                        .joined(separator: ", "),
-                    
-                        requestBody?.description ?? "",
-                    """
-authorization: HTTPAuthorization\(
-    requiresAuth ? "" : "?") = NetworkManager.authorization\(
-        requiresAuth ? "!" : ""), contentType: String?\(
-            specialContentType != nil ?
-                // Nil checked in previous statement
-                // swiftlint:disable:next force_unwrapping
-                specialContentType! : " = NetworkManager.defaultContentType")
-"""
-                ]
-            let isGeneric = NotOfResolver.isGeneric(type: successType)
-            let parameterGuards = parameters.map { $0.limitGuard }.skipEmptyJoined(separator: "\n")
-            return """
+        let parametersString: [String] =
+            [
+                parameters
+                    .sortedMap({ $0.description }, on: \.name)
+                    .joined(separator: ", "),
+                
+                requestBody?.description ?? "",
+                """
+                authorization: HTTPAuthorization\(
+                    requiresAuth ? "" : "?") = NetworkManager.authorization\(
+                        requiresAuth ? "!" : ""), contentType: String?\(
+                            specialContentType != nil ?
+                                // Nil checked in previous statement
+                                // swiftlint:disable:next force_unwrapping
+                                specialContentType! : " = NetworkManager.defaultContentType")
+                """
+            ]
+        let isGeneric = NotOfResolver.isGeneric(type: successType)
+        let parameterGuards = parameters.map { $0.limitGuard }.skipEmptyJoined(separator: "\n")
+        return """
             \(comment)
             static func \(operationId)\(isGeneric ? "<T : Codable>" : "")(\(parametersString.skipEmptyJoined(separator: ", "))) -> AnyPublisher<\(isGeneric ? "\(successType)<T>" : successType), Error> {
             \(!parameters.isEmpty ? "var" : "let") path = NetworkManager.basePath! + "\(path.rawValue)"

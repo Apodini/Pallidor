@@ -30,9 +30,22 @@ extension EndpointModel {
     ///   - route: Resolved route from OpenAPI document
     /// - Returns: resolved EndpointModel
     static func resolve(path: OpenAPI.Path, route: ResolvedRoute) -> EndpointModel {
-        let endpoint = EndpointModel(name: path.components[0].upperFirst(), operations: [], detail: route.summary)
+        let endpointName = route.endpoints.apodiniEndpointName?.upperFirst() ?? path.components[0].upperFirst()
+        let endpoint = EndpointModel(name: endpointName, operations: [], detail: route.summary)
         endpoint.operations = route.endpoints.map { OperationModel.resolve(endpoint: $0) }
         return endpoint
+    }
+}
+
+fileprivate extension Array where Element == ResolvedEndpoint {
+    var apodiniEndpointName: String? {
+        first?.endpointVendorExtensions["x-pallidorEndpointName"]?.value as? String
+    }
+}
+
+extension ResolvedEndpoint {
+    var apodiniOperationName: String? {
+        endpointVendorExtensions["x-pallidorOperationName"]?.value as? String
     }
 }
 
