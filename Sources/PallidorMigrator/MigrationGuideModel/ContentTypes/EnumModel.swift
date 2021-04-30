@@ -42,7 +42,7 @@ class EnumModel: ContentType {
     /// enum primitive type (e.g. String)
     var type: String?
     /// list of enum cases
-    var cases: [Case] = [Case]()
+    var cases: [Case]
 
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -50,15 +50,7 @@ class EnumModel: ContentType {
         self.enumName = try container.decode(String.self, forKey: .enumName)
         self.type = try? container.decode(String.self, forKey: .type)
 
-        let cases = try? container.nestedUnkeyedContainer(forKey: .cases)
-
-        if var caseContainer = cases {
-            while !caseContainer.isAtEnd {
-                let value = try caseContainer.decode(String.self)
-                self.cases.append(Case(case: value))
-            }
-        }
-
+        self.cases = (try container.decodeIfPresent([Case].self, forKey: .cases)) ?? []
         try super.init(from: decoder)
         self.id = enumName
     }
