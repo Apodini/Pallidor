@@ -8,28 +8,7 @@ import XCTest
 @testable import PallidorMigrator
 
 class MethodTests: PallidorMigratorXCTestCase {
-    let renameMethodChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "reason": "Security issue related change",
-               "object" : {
-                   "operation-id" : "addMyPet",
-                   "defined-in" : "/pet"
-               },
-               "target" : "Signature",
-               "original-id" : "addPet"
-           }
-       ]
-
-   }
-   """
-    
+  
     /// method `addPet()` is renamed to `addMyPet()`
     /// parameters & return value remain the same
     func testRenamedMethod() {
@@ -38,27 +17,6 @@ class MethodTests: PallidorMigratorXCTestCase {
         
         XCTMigratorAssertEqual(result, .results(.ResultPetEndpointFacadeRenamedMethod))
     }
-    
-    let deleteMethodChange = """
-   {
-       "summary" : "Here would be a nice summary what changed between versions",
-       "api-spec": "OpenAPI",
-       "api-type": "REST",
-       "from-version" : "0.0.1b",
-       "to-version" : "0.0.2",
-       "changes" : [
-           {
-               "object" : {
-                   "operation-id" : "addPet",
-                   "defined-in" : "/pet"
-               },
-               "target" : "Signature",
-               "fallback-value" : { }
-           }
-       ]
-   }
-   """
-    
     
     func testDeletedMethod() throws {
         let facade = modifiable(.PetEndpointFacade)

@@ -42,29 +42,20 @@ class MigrationGuide: Decodable {
         self.versionFrom = SemanticVersion(versionString: try container.decode(String.self, forKey: .versionFrom))
         self.versionTo = SemanticVersion(versionString: try container.decode(String.self, forKey: .versionTo))
 
-        self.changes = [Change]()
+        self.changes = []
 
         var changesContainer = try container.nestedUnkeyedContainer(forKey: .changes)
 
         while !changesContainer.isAtEnd {
-            if let value = try? changesContainer.decode(AddChange.self) {
-                self.changes.append(value)
-                continue
-            }
-            if let value = try? changesContainer.decode(RenameChange.self) {
-                self.changes.append(value)
-                continue
-            }
-            if let value = try? changesContainer.decode(DeleteChange.self) {
-                self.changes.append(value)
-                continue
-            }
-            if let value = try? changesContainer.decode(ReplaceChange.self) {
-                self.changes.append(value)
-                continue
-            }
-            if let value = try? changesContainer.decode(Change.self) {
-                self.changes.append(value)
+            [
+                AddChange.self,
+                RenameChange.self,
+                DeleteChange.self,
+                ReplaceChange.self
+            ].forEach { changeType in
+                if let value = try? changesContainer.decode(changeType) {
+                    self.changes.append(value)
+                }
             }
         }
     }
@@ -75,8 +66,7 @@ class MigrationGuide: Decodable {
         self.store = store
         changes
             .filter { $0.changeType == .delete }
-            .map { $0.typed(DeleteChange.self) }
-            .forEach { addDeleted(change: $0) }
+            .forEach { addDeleted(change: $0.typed(DeleteChange.self)) }
         
         return self
     }
