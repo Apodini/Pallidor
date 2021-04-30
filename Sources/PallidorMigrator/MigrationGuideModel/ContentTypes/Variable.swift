@@ -26,7 +26,6 @@ class Variable: ContentType {
         case type
         case name
         case required
-        case isCustomType = "is-custom"
         case defaultValue = "default-value"
     }
 

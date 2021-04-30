@@ -54,14 +54,12 @@ extension WrappedStruct {
         case .replace:
             specialImports.insert("import JavaScriptCore")
         case .rename:
-            let change = change.typed(RenameChange.self)
             if case .signature = change.target, case .endpoint = change.object {
-                handleEndpointRenameChange(change)
+                handleEndpointRenameChange(change.typed(RenameChange.self))
             }
         case .delete:
-            let change = change.typed(DeleteChange.self)
             if case .signature = change.target, case .endpoint = change.object {
-                handleEndpointDeletedChange(change)
+                handleEndpointDeletedChange(change.typed(DeleteChange.self))
             }
         default:
             guard case .method = change.object else {

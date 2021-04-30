@@ -55,7 +55,7 @@ class EnumModel: ContentType {
         if var caseContainer = cases {
             while !caseContainer.isAtEnd {
                 let value = try caseContainer.decode(String.self)
-                self.cases.append(EnumModel.Case(case: value))
+                self.cases.append(Case(case: value))
             }
         }
 
